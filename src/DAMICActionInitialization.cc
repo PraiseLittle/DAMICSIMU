@@ -1,6 +1,10 @@
 #include "DAMICActionInitialization.hh"
 
 #include "DAMICPrimaryGeneratorAction.hh"
+#include "DAMICRunAction.hh"
+#include "DAMICEventAction.hh"
+#include "DAMICSteppingAction.hh"
+
 
 DAMICActionInitialization::DAMICActionInitialization(DAMICDetectorConstruction* detector)
 : G4VUserActionInitialization(),
@@ -20,4 +24,11 @@ void DAMICActionInitialization::Build() const
 
   DAMICPrimaryGeneratorAction* primary = new DAMICPrimaryGeneratorAction();
   SetUserAction(primary);
+  DAMICRunAction* runAction = new DAMICRunAction;
+  SetUserAction(runAction);
+
+  DAMICEventAction* eventAction = new DAMICEventAction(runAction);
+  SetUserAction(eventAction);
+  DAMICSteppingAction* steppingAction = new DAMICSteppingAction(eventAction);
+  SetUserAction(steppingAction);
 }

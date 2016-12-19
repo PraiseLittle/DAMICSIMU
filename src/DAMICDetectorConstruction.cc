@@ -91,17 +91,25 @@ G4VPhysicalVolume* DAMICDetectorConstruction::Construct()
 
   G4double Module44Z = CopperBoxZ-148.59/2-66.4464;
   G4ThreeVector Module44Vect = G4ThreeVector(0,0,Module44Z);
+  G4ThreeVector uModule44 = G4ThreeVector(0,-1,0);
+  G4ThreeVector vModule44 = G4ThreeVector(1,0,0);
+  G4ThreeVector wModule44 = G4ThreeVector(0,0,1);
+  G4RotationMatrix* Module44Rot = new G4RotationMatrix(uModule44, vModule44, wModule44);
   /*------Module42Pos-----*/
 
   G4double Module42Z = Module44Z + 10;
   G4ThreeVector Module42Vect = G4ThreeVector(0,0,Module42Z);
+  G4ThreeVector uModule42 = G4ThreeVector(0,-1,0);
+  G4ThreeVector vModule42 = G4ThreeVector(1,0,0);
+  G4ThreeVector wModule42 = G4ThreeVector(0,0,1);
+  G4RotationMatrix* Module42Rot = new G4RotationMatrix(uModule42, vModule42, wModule42);
 
   G4PVPlacement* CopperBoxPV = new G4PVPlacement(0, CopperBoxVect, CopperBoxLV, "CopperBoxPV", WorldLV, false, 0, fCheckOverlaps);
   G4PVPlacement* InnerLeadPV = new G4PVPlacement(InnerLeadRot, InnerLeadVect, InnerLeadLV, "InnerLeadPV", WorldLV, false, 0, fCheckOverlaps);
   G4PVPlacement* VesselPV = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), VesselLV, "VesselPV", WorldLV, false, 0, fCheckOverlaps);
   G4PVPlacement* OutterLeadPV = new G4PVPlacement(0, OutterLeadVect, OutterLeadLV, "OutterLeadPV", WorldLV, false, 0, fCheckOverlaps);
-  G4PVPlacement* Module44PV = new G4PVPlacement(0, Module44Vect, Module44LV, "Module44PV", WorldLV, false, 0, fCheckOverlaps);
-  G4PVPlacement* Module42PV = new G4PVPlacement(0, Module42Vect, Module42LV, "Module42PV", WorldLV, false, 0, fCheckOverlaps);
+  G4PVPlacement* Module44PV = new G4PVPlacement(Module44Rot, Module44Vect, Module44LV, "Module44PV", WorldLV, false, 0, fCheckOverlaps);
+  G4PVPlacement* Module42PV = new G4PVPlacement(Module42Rot, Module42Vect, Module42LV, "Module42PV", WorldLV, false, 0, fCheckOverlaps);
 
   return WorldPV;
 
