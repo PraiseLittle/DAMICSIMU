@@ -27,6 +27,6 @@ void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
 
   G4String Name = volume->GetName();
 
-  G4cout << " La particule à toucher le volume: " << Name << G4endl;
+  G4cout << " La particule a touché le volume: " << Name << G4endl;
 
 }
