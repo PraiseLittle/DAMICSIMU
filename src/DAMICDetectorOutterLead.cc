@@ -1,4 +1,6 @@
 #include "DAMICDetectorOutterLead.hh"
+#include "DAMICDetectorVessel.hh"
+#include "DAMICDetectorCopperBox.hh"
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 
@@ -27,29 +29,63 @@
 #include "G4SystemOfUnits.hh"
 #include <cmath>
 
-G4LogicalVolume* GetConstructionOutterLead()
-{
+
+G4LogicalVolume* GetConstructionVesselandOutter(){
+
   G4double boxX = 1*m;
   G4double boxY = 1*m;
   G4double boxZ = 1*m;
 
 
-  G4Box* boxOutterLead = new G4Box("BoxOutterLead", boxX, boxY, boxZ);
+  G4Box* BaseGeo = new G4Box("BaseGeo", boxX, boxY, boxZ);
+  G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
+  G4LogicalVolume* Base = new G4LogicalVolume(BaseGeo, Galac, "OutterLead");
+
+  G4LogicalVolume* LowerTubeLV = GetConstructionLowerTube();
+
+  G4LogicalVolume* LowerEndLV = GetConstructionLowerEnd();
+  G4double PosZLowerEnd = -755.65*mm/2-(12.7*mm+3.175*mm)/2+3.175*mm;
+  G4double PosYLowerEnd = 0;
+  G4double PosXLowerEnd = 0;
+  G4ThreeVector VectLowerEnd = G4ThreeVector(PosXLowerEnd, PosYLowerEnd, PosZLowerEnd);
+
+
+  G4LogicalVolume* LowerFlangeLV = GetConstructionLowerFlange();
+  G4double PosZLowerFlange = 755.65/2*mm+28.448/2*mm;
+  G4double PosYLowerFlange = 0;
+  G4double PosXLowerFlange = 0;
+  G4ThreeVector VectLowerFlange = G4ThreeVector(PosXLowerFlange, PosYLowerFlange, PosZLowerFlange);
+
+  G4LogicalVolume* UpperFlangeLV = GetConstructionUpperFlange();
+  G4double PosZUpperFlange = PosZLowerFlange + 28.448*mm;
+  G4double PosYUpperFlange = 0;
+  G4double PosXUpperFlange = 0;
+  G4ThreeVector VectUpperFlange = G4ThreeVector(PosXUpperFlange, PosYUpperFlange, PosZUpperFlange);
+
+
+  /*-----------------------LEAD---------------------*/
+
+  G4LogicalVolume* Assembly1LV = GetConstructionAssembly1();
+  G4double PosZAssembly1 = PosZLowerEnd - 1.5748/2*mm - (12.7*mm+3.175*mm)/2;
+  G4ThreeVector VectAssembly1 = G4ThreeVector(0,0,PosZAssembly1);
+
+  G4LogicalVolume* Assembly2LV = GetConstructionAssembly2();
+
 
   /*--------BottomLead------*/
 
-  G4double BottomLeadX = 304.8*mm;
-  G4double BottomLeadY = 304.8*mm;
-  G4double BottomLeadZ = 50.8*mm;
+  G4double BottomLeadX = 304.800*mm;
+  G4double BottomLeadY = 304.800*mm;
+  G4double BottomLeadZ = 50.800*mm;
 
   G4Box* boxBottomLeadFinal = new G4Box("boxBottomLeadFinal", BottomLeadX/2, BottomLeadY/2, BottomLeadZ/2);
-  G4Material* CopperMain = G4Material::GetMaterial("G4_Cu");
-  G4LogicalVolume * BoxBottomLead = new G4LogicalVolume(boxBottomLeadFinal, CopperMain,"BoxBottomLead");
+  G4Material* LeadMain = G4Material::GetMaterial("G4_Pb");
+  G4LogicalVolume * BoxBottomLead = new G4LogicalVolume(boxBottomLeadFinal, LeadMain,"BoxBottomLead");
 
   /*------InsideLead------*/
 
-  G4double boxInsideX = 304.8*mm;
-  G4double boxInsideY = 304.8*mm;
+  G4double boxInsideX = 304.800*mm;
+  G4double boxInsideY = 304.800*mm;
   G4double boxInsideZ = 203.2*mm;
   G4double rmBoxX = 203.2*mm;
   G4double rmBoxY = 203.2*mm;
@@ -65,41 +101,38 @@ G4LogicalVolume* GetConstructionOutterLead()
 
   G4SubtractionSolid* InsideLeadFinal = new G4SubtractionSolid("InsideLeadFinal", boxInside, rmBoxInside, InsideTr);
 
-  G4LogicalVolume* InsideLead1 = new G4LogicalVolume(InsideLeadFinal, CopperMain, "InsideLead1");
-  G4LogicalVolume* InsideLead2 = new G4LogicalVolume(InsideLeadFinal, CopperMain, "InsideLead2");
+  G4LogicalVolume* InsideLead1 = new G4LogicalVolume(InsideLeadFinal, LeadMain, "InsideLead1");
+  G4LogicalVolume* InsideLead2 = new G4LogicalVolume(InsideLeadFinal, LeadMain, "InsideLead2");
 
   /*-------------TopLead-----------*/
 
-  G4double TopLeadX = 304.8*mm;
-  G4double TopLeadY = 304.8*mm;
+  G4double TopLeadX = 304.800*mm;
+  G4double TopLeadY = 304.800*mm;
   G4double TopLeadZ = 25.4*mm;
 
-  G4Box* boxTopLeadFinal = new G4Box("boxTopLeadFinal", TopLeadX/2, TopLeadY/2, TopLeadZ/2);
+  G4double rmBoxXTop = 203.2*mm;
+  G4double rmBoxYTop = 203.2*mm;
+  G4double rmBoxZTop = 25.4*mm;
 
+  G4Box* boxTopLead = new G4Box("boxTopLead", TopLeadX/2, TopLeadY/2, TopLeadZ/2);
+  G4Box* rmBoxTop = new G4Box("rmBoxTop", rmBoxXTop/2, rmBoxYTop/2, rmBoxZTop);
 
-  G4LogicalVolume * BoxTopLead = new G4LogicalVolume(boxTopLeadFinal, CopperMain,"BoxTopLead");
+  G4ThreeVector TopVect = G4ThreeVector(0,0,0);
+  G4RotationMatrix* rot0Top = new G4RotationMatrix;
+  G4Transform3D TopTr = G4Transform3D(*rot0Inside, InsideVect);
 
-  /*---------Placement-------*/
+  G4SubtractionSolid* boxTopLeadFinal = new G4SubtractionSolid("BoxTopLeadFinal", boxTopLead, rmBoxTop, TopTr);
 
+  G4LogicalVolume * BoxTopLead = new G4LogicalVolume(boxTopLeadFinal, LeadMain,"BoxTopLead");
 
-
-  G4Material* Air = G4Material::GetMaterial("G4_AIR");
-  G4LogicalVolume* OutterLead = new G4LogicalVolume(boxOutterLead, Air, "OutterLead");
-
-  G4LogicalVolume* Assembly1LV = GetConstructionAssembly1();
-  G4LogicalVolume* Assembly2LV = GetConstructionAssembly2();
 
   /*---------BoxBottomLeadPos-------*/
 
-  G4double BoxBottomLeadZ = -217.424*mm;
+  G4double BoxBottomLeadZ = PosZAssembly1 - 26.188*mm;
   G4ThreeVector BoxBottomLeadVect = G4ThreeVector(0,0,BoxBottomLeadZ);
 
-  /*------Assembly1Pos------*/
-  G4double Assembly1Z = BoxBottomLeadZ + 26.187*mm;
-  G4ThreeVector Assembly1Vect = G4ThreeVector(0,0,Assembly1Z);
-
   /*------InsideLead1Pos------*/
-  G4double InsideLead1Z = Assembly1Z + 102.3874*mm;
+  G4double InsideLead1Z = PosZAssembly1 + 102.3874*mm;
   G4ThreeVector InsideLead1Vect = G4ThreeVector(0,0,InsideLead1Z);
 
   /*------Assembly2Pos----*/
@@ -115,24 +148,57 @@ G4LogicalVolume* GetConstructionOutterLead()
   G4ThreeVector TopLeadVect = G4ThreeVector(0,0,TopLeadPosZ);
 
 
+/*-------------------------------------CopperBox---------------------------------*/
 
-  G4PVPlacement* Assembly1PV = new G4PVPlacement(0, Assembly1Vect, Assembly1LV, "Assembly1PV", OutterLead, false, 0, false);
-  G4PVPlacement* Assembly2PV = new G4PVPlacement(0, Assembly2Vect, Assembly2LV, "Assembly2PV", OutterLead, false, 0, false);
-  G4PVPlacement* BoxTopLeadPV = new G4PVPlacement(0, TopLeadVect, BoxTopLead, "BoxTopLeadPV", OutterLead, false, 0, false);
-  G4PVPlacement* BoxBottomLeadPV = new G4PVPlacement(0, BoxBottomLeadVect, BoxBottomLead, "BoxBottomLeadPV", OutterLead, false, 0, false);
-  G4PVPlacement* InsideLead1PV = new G4PVPlacement(0, InsideLead1Vect, InsideLead1, "InsideLead1PV", OutterLead, false, 0, false);
-  G4PVPlacement* InsideLead2PV = new G4PVPlacement(0, InsideLead2Vect, InsideLead2, "InsideLead2PV", OutterLead, false, 0, false);
-  return OutterLead;
+  G4LogicalVolume* CopperBoxAndInnerLV = GetConstructionCopperAndInner();
+  G4double PosZCopperInner = -120;
+  G4ThreeVector VectCopperInner = G4ThreeVector(0,0,PosZCopperInner);
 
+
+
+  G4PVPlacement* LowerTubePV = new G4PVPlacement(0, G4ThreeVector(0,0,0), LowerTubeLV, "LowerTubePV", Base, false, 0, false);
+  G4PVPlacement* LowerEndPV = new G4PVPlacement(0, VectLowerEnd, LowerEndLV, "LowerEndPV", Base, false, 0, false);
+  G4PVPlacement* LowerFlangePV = new G4PVPlacement(0, VectLowerFlange, LowerFlangeLV, "LowerFlangePV", Base, false, 0, false);
+  G4PVPlacement* UpperFlangePV = new G4PVPlacement(0, VectUpperFlange, UpperFlangeLV, "UpperFlangePV", Base, false, 0, false);
+  G4PVPlacement* Assembly1PV = new G4PVPlacement(0, VectAssembly1, Assembly1LV, "Assembly1PV", Base, false, 0, false);
+  G4PVPlacement* Assembly2PV = new G4PVPlacement(0, Assembly2Vect, Assembly2LV, "Assembly2PV", Base, false, 0, false);
+  G4PVPlacement* BoxTopLeadPV = new G4PVPlacement(0, TopLeadVect, BoxTopLead, "BoxTopLeadPV", Base, false, 0, false);
+  G4PVPlacement* BoxBottomLeadPV = new G4PVPlacement(0, BoxBottomLeadVect, BoxBottomLead, "BoxBottomLeadPV", Base, false, 0, false);
+  G4PVPlacement* InsideLead1PV = new G4PVPlacement(0, InsideLead1Vect, InsideLead1, "InsideLead1PV", Base, false, 0, false);
+  G4PVPlacement* InsideLead2PV = new G4PVPlacement(0, InsideLead2Vect, InsideLead2, "InsideLead2PV", Base, false, 0, false);
+  G4PVPlacement* CopperBoxAndInnerPV = new G4PVPlacement(0, VectCopperInner, CopperBoxAndInnerLV, "CopperBoxAndInnerPV", Base, false, 0, false);
+  return Base;
 }
+
 
 G4LogicalVolume* GetConstructionAssembly1()
 {
-  G4double boxAssembly1X = 303.53*mm;
-  G4double boxAssembly1Y = 303.53*mm;
-  G4double boxAssembly1Z = 36.576*mm;
+  G4double boxAssembly1X = 203.2*mm;
+  G4double boxAssembly1Y = 203.2*mm;
+  G4double boxAssembly1Z = 1.5748*mm+9.525*mm+25.4*mm;
 
-  G4Box* boxAssembly1 = new G4Box("BoxAssembly1", boxAssembly1X, boxAssembly1Y, boxAssembly1Z);
+  G4double box2X = 303.53*mm;
+  G4double box2Y = 303.53*mm;
+  G4double box2Z = 1.5748*mm;
+
+  G4double rmTubR = 203.2*mm;
+  G4double rmTubH = 1.5748*mm+9.525*mm+25.4*mm;
+  G4double A0 = 0;
+  G4double A360 = 2*M_PI+1;
+
+  G4Box* box1 = new G4Box("box1", boxAssembly1X/2, boxAssembly1Y/2, boxAssembly1Z/2);
+  G4Box* box2 = new G4Box("box2", box2X/2, box2Y/2, box2Z/2);
+  G4Tubs* Tub = new G4Tubs("Tub",A0, rmTubR/2, rmTubH,A0, A360);
+
+  G4double PosUnionZ = (9.525*mm+25.4*mm+1.5748)/2;
+  G4ThreeVector VectUnion = G4ThreeVector(0,0,PosUnionZ);
+  G4RotationMatrix* rotrien = new G4RotationMatrix;
+  G4Transform3D TrUnion = G4Transform3D(*rotrien, VectUnion);
+
+  G4Transform3D TRRM = G4Transform3D(*rotrien, G4ThreeVector(0,0,0));
+
+  G4UnionSolid* Union1  = new G4UnionSolid("Union1", box2,box1, TrUnion);
+  G4SubtractionSolid* boxAssembly1 = new G4SubtractionSolid("Assembly1", Union1, Tub, TRRM);
 
   G4LogicalVolume* RestraintSheetLV = GetConstructionRestraintSheet();
   G4LogicalVolume* RestraintBlocks1LV = GetConstructionRestraintBlocks();
@@ -146,8 +212,8 @@ G4LogicalVolume* GetConstructionAssembly1()
 
   /*--------RestraintBlocks1Pos*-------*/
   G4double RestraintBlocks1Z = 6.3373*mm;
-  G4double RestraintBlocks1Y = -101.346*sqrt(2)/2*mm;
-  G4double RestraintBlocks1X = -101.346*sqrt(2)/2*mm;
+  G4double RestraintBlocks1Y = -101.346*sqrt(2)/2*mm-0.237;
+  G4double RestraintBlocks1X = -101.346*sqrt(2)/2*mm-0.237;
   G4ThreeVector RestraintBlocks1Vect = G4ThreeVector(RestraintBlocks1X, RestraintBlocks1Y, RestraintBlocks1Z);
   G4ThreeVector uRestraint1 = G4ThreeVector(1,0,0);
   G4ThreeVector vRestraint1 = G4ThreeVector(0,1,0);
@@ -225,8 +291,8 @@ G4LogicalVolume* GetConstructionAssembly1()
   G4RotationMatrix* CornerBlocks4Rot = new G4RotationMatrix(uCorner4, vCorner4, wCorner4);
 
 
-  G4Material* Air = G4Material::GetMaterial("G4_AIR");
-  G4LogicalVolume* Assembly1 = new G4LogicalVolume(boxAssembly1, Air, "OutterLead");
+  G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
+  G4LogicalVolume* Assembly1 = new G4LogicalVolume(boxAssembly1, Galac, "OutterLead");
 
 
 
@@ -246,11 +312,32 @@ G4LogicalVolume* GetConstructionAssembly1()
 
 G4LogicalVolume* GetConstructionAssembly2()
 {
-  G4double boxAssembly2X = 303.53*mm;
-  G4double boxAssembly2Y = 303.53*mm;
-  G4double boxAssembly2Z = 36.576*mm;
+  G4double boxAssembly1X = 203.2*mm;
+  G4double boxAssembly1Y = 203.2*mm;
+  G4double boxAssembly1Z = 1.5748*mm+9.525*mm*2;
 
-  G4Box* boxAssembly2 = new G4Box("BoxAssembly2", boxAssembly2X, boxAssembly2Y, boxAssembly2Z);
+  G4double box2X = 303.53*mm;
+  G4double box2Y = 303.53*mm;
+  G4double box2Z = 1.5748*mm;
+
+  G4double rmTubR = 203.2*mm;
+  G4double rmTubH = 1.5748*mm+9.525*2*mm;
+  G4double A0 = 0;
+  G4double A360 = 2*M_PI+1;
+
+  G4Box* box1 = new G4Box("box1", boxAssembly1X/2, boxAssembly1Y/2, boxAssembly1Z/2);
+  G4Box* box2 = new G4Box("box2", box2X/2, box2Y/2, box2Z/2);
+  G4Tubs* Tub = new G4Tubs("Tub",A0, rmTubR/2, rmTubH,A0, A360);
+
+  G4double PosUnionZ = 0;
+  G4ThreeVector VectUnion = G4ThreeVector(0,0,PosUnionZ);
+  G4RotationMatrix* rotrien = new G4RotationMatrix;
+  G4Transform3D TrUnion = G4Transform3D(*rotrien, VectUnion);
+
+  G4Transform3D TRRM = G4Transform3D(*rotrien, G4ThreeVector(0,0,0));
+
+  G4UnionSolid* Union1  = new G4UnionSolid("Union1", box2,box1, TrUnion);
+  G4SubtractionSolid* boxAssembly2 = new G4SubtractionSolid("Assembly1", Union1, Tub, TRRM);
 
 
   G4LogicalVolume* RestraintSheetLV = GetConstructionRestraintSheet();
@@ -265,9 +352,9 @@ G4LogicalVolume* GetConstructionAssembly2()
 
 
   /*--------RestraintBlocks1Pos*-------*/
-  G4double RestraintBlocks1Z = 6.3373*mm;
-  G4double RestraintBlocks1Y = -101.346*sqrt(2)/2*mm;
-  G4double RestraintBlocks1X = -101.346*sqrt(2)/2*mm;
+  G4double RestraintBlocks1Z = (1.5748*mm+9.525*mm)/2;
+  G4double RestraintBlocks1Y = -101.346*sqrt(2)/2*mm-0.237;
+  G4double RestraintBlocks1X = -101.346*sqrt(2)/2*mm-0.237;
   G4ThreeVector RestraintBlocks1Vect = G4ThreeVector(RestraintBlocks1X, RestraintBlocks1Y, RestraintBlocks1Z);
   G4ThreeVector uRestraint1 = G4ThreeVector(1,0,0);
   G4ThreeVector vRestraint1 = G4ThreeVector(0,1,0);
@@ -329,8 +416,8 @@ G4LogicalVolume* GetConstructionAssembly2()
   G4ThreeVector RestraintBlocks8Vect = G4ThreeVector(RestraintBlocks8X, RestraintBlocks8Y, RestraintBlocks8Z);
 
 
-  G4Material* Air = G4Material::GetMaterial("G4_AIR");
-  G4LogicalVolume* Assembly2 = new G4LogicalVolume(boxAssembly2, Air, "OutterLead");
+  G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
+  G4LogicalVolume* Assembly2 = new G4LogicalVolume(boxAssembly2, Galac, "OutterLead");
 
 
   G4PVPlacement* RestraintSheetPV = new G4PVPlacement(0, G4ThreeVector(0,0,0), RestraintSheetLV, "RestraintSheetPV", Assembly2, false, 0, false);
@@ -352,7 +439,7 @@ G4LogicalVolume* GetConstructionCornerLead()
   G4double bigBoxX = 50.8*mm;
   G4double bigBoxY = 50.8*mm;
   G4double bigBoxZ = 25.4*mm;
-  G4double rmTubR= 106.68*mm;
+  G4double rmTubR= 107.682*mm;
   G4double rmTubH = 25.4*mm;
   G4double angle0 = 0;
   G4double angle360 =  M_PI*2+1;
@@ -366,8 +453,8 @@ G4LogicalVolume* GetConstructionCornerLead()
   G4Transform3D rmTubTr = G4Transform3D(*rot0, rmTubVec);
 
   G4SubtractionSolid* cornerLeadFinal = new G4SubtractionSolid("CornerLeadFinal", bigBox, rmTub, rmTubTr);
-  G4Material* Copper = G4Material::GetMaterial("G4_Cu");
-  G4LogicalVolume * cornerLead = new G4LogicalVolume(cornerLeadFinal, Copper,"CornerLead");
+  G4Material* Lead = G4Material::GetMaterial("G4_Pb");
+  G4LogicalVolume * cornerLead = new G4LogicalVolume(cornerLeadFinal, Lead,"CornerLead");
 
   return cornerLead;
 

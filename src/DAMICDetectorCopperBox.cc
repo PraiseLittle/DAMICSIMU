@@ -1,4 +1,6 @@
 #include "DAMICDetectorCopperBox.hh"
+#include "DAMICDetectorModules.hh"
+#include "DAMICDetectorInnerLead.hh"
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 
@@ -28,70 +30,61 @@
 #include <cmath>
 
 
-
-
-G4LogicalVolume* GetConstructionCopperBox()
+G4LogicalVolume* GetConstructionCopperAndInner()
 {
-  G4double boxZ = 413.512*mm;
-  G4double boxY = 129.032*mm;
-  G4double boxX = 141.224*mm;
+  G4double prinCylR = 191.287/2*mm;
+  G4double prinCylH = 413.512*mm;
+  G4double zero = 0;
+  G4double a2pi = M_PI*2+1;
 
-  G4Box* CopperBox = new G4Box("CopperBox", boxX, boxY, boxZ);
-  G4Material* Air = G4Material::GetMaterial("G4_AIR");
-  G4LogicalVolume* CopperBoxLV = new G4LogicalVolume(CopperBox, Air,"CopperBoxLV");
+  G4Tubs* prinTubGeo = new G4Tubs("PrinTubGeo",zero, prinCylR, prinCylH/2, zero, a2pi);
+  G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
 
-  G4LogicalVolume* BottomPlateLV = GetConstructionBottomPlate();
+  G4LogicalVolume* PrinTubLV = new G4LogicalVolume(prinTubGeo, Galac, "PrinTubLV");
+
   G4LogicalVolume* ColdFingerLV = GetConstructionColdFinger();
-  G4LogicalVolume* ColdFingerSpacer1LV = GetConstructionColdFingerSpacer();
-  G4LogicalVolume* ColdFingerSpacer2LV = GetConstructionColdFingerSpacer();
-  G4LogicalVolume* EndCoverBar1LV = GetConstructionEndCoverBar();
-  G4LogicalVolume* EndCoverBar2LV = GetConstructionEndCoverBar();
-  G4LogicalVolume* EndCoverPlateLV = GetConstructionEndCoverPlate();
-  G4LogicalVolume* Insulator1LV = GetConstructionInsulator();
-  G4LogicalVolume* Insulator2LV = GetConstructionInsulator();
-  G4LogicalVolume* Insulator3LV = GetConstructionInsulator();
-  G4LogicalVolume* RearPlateLV = GetConstructionRearPlate();
-  G4LogicalVolume* UpperPlateLV = GetConstructionUpperPlate();
-  G4LogicalVolume* SidePlate1LV = GetConstructionSidePlate();
-  G4LogicalVolume* SidePlate2LV = GetConstructionSidePlate();
-  G4LogicalVolume* TopPlateLV = GetConstructionTopPlate();
-  /*---------ColdFingerPos------*/
-  G4double PosZColdFinger = 74.93*mm;
+  G4double PosZColdFinger = prinCylH/2-248.158/2*mm;
   G4ThreeVector VectColdFinger = G4ThreeVector(0,0,PosZColdFinger);
-  /*-------TopPlatePos-------*/
-  G4double PosZTopPlate = -66.4464*mm;
+
+
+  G4LogicalVolume* TopPlateLV = GetConstructionTopPlate();
+  G4double PosZTopPlate = PosZColdFinger-269.748/2*mm-9.652/2*mm;;
   G4ThreeVector VectTopPlate = G4ThreeVector(0,0,PosZTopPlate);
   G4RotationMatrix* rotTopPlate = new G4RotationMatrix;
   rotTopPlate->rotateZ(M_PI/2);
-  /*-------RearPlatePos-------*/
-  G4double PosZRearPlate = PosZTopPlate - 148.59/2;
-  G4double PosYRearPlate = 69.342*mm;
+
+  G4LogicalVolume* RearPlateLV = GetConstructionRearPlate();
+  G4double PosZRearPlate = PosZTopPlate - 148.59/2+9.652/2*mm;
+  G4double PosYRearPlate = 131.826/2+6.35/2*mm;
   G4double PosXRearPlate = 0;
   G4ThreeVector VectRearPlate = G4ThreeVector(PosXRearPlate,PosYRearPlate,PosZRearPlate);
   G4ThreeVector uRear = G4ThreeVector(0,1,0);
   G4ThreeVector vRear = G4ThreeVector(0,0,1);
   G4ThreeVector wRear = G4ThreeVector(1,0,0);
   G4RotationMatrix* rotRearPlate = new G4RotationMatrix(uRear,vRear,wRear);
-  /*-------EndCoverPos---------*/
+
+  G4LogicalVolume* EndCoverPlateLV = GetConstructionEndCoverPlate();
   G4double PosZEndCoverPlate = PosZRearPlate;
-  G4double PosYEndCoverPlate = -PosYRearPlate;
+  G4double PosYEndCoverPlate = -131.826/2-3.048/2*mm;
   G4double PosXEndCoverPlate = 0;
   G4ThreeVector VectEndPlate = G4ThreeVector(PosXEndCoverPlate, PosYEndCoverPlate, PosZEndCoverPlate );
   G4ThreeVector uEndP = G4ThreeVector(0,-1,0);
   G4ThreeVector vEndP = G4ThreeVector(0,0,-1);
   G4ThreeVector wEndP = G4ThreeVector(1,0,0);
   G4RotationMatrix* rotEndPlate = new G4RotationMatrix(uEndP,vEndP,wEndP);
-  /*--------SidePlate1Pos------*/
+
+
+  G4LogicalVolume* SidePlate1LV = GetConstructionSidePlate();
   G4double PosZSidePlate1 = PosZRearPlate;
-  G4double PosYSidePlate1 = 9.398*mm;
-  G4double PosXSidePlate1 = -57.15*mm;
+  G4double PosYSidePlate1 = PosYRearPlate-6.35/2*mm-113.03/2*mm;
+  G4double PosXSidePlate1 = -56.606*mm;
   G4ThreeVector VectSidePlate1 = G4ThreeVector(PosXSidePlate1, PosYSidePlate1, PosZSidePlate1);
   G4ThreeVector uSide1 = G4ThreeVector(0,0,1);
   G4ThreeVector vSide1 = G4ThreeVector(0,1,0);
   G4ThreeVector wSide1 = G4ThreeVector(-1,0,0);
   G4RotationMatrix* rotSidePlate1 = new G4RotationMatrix(uSide1, vSide1, wSide1);
 
-  /*--------SidePlate2Pos------*/
+  G4LogicalVolume* SidePlate2LV = GetConstructionSidePlate();
   G4double PosZSidePlate2 = PosZRearPlate;
   G4double PosYSidePlate2 = PosYSidePlate1;
   G4double PosXSidePlate2 = -PosXSidePlate1;
@@ -101,30 +94,28 @@ G4LogicalVolume* GetConstructionCopperBox()
   G4ThreeVector wSide2 = G4ThreeVector(1,0,0);
   G4RotationMatrix* rotSidePlate2 = new G4RotationMatrix(uSide2, vSide2, wSide2);
 
-  /*------------EndCoverBar1Pos--------*/
+  G4LogicalVolume* EndCoverBar1LV = GetConstructionEndCoverBar();
   G4double PosZEndCoverBar1 = PosZRearPlate;
   G4double PosYEndCoverBar1 = -56.7055*mm;
-  G4double PosXEndCoverBar1 = -62.103*mm;
+  G4double PosXEndCoverBar1 = -61.570*mm;
   G4ThreeVector VectEndCoverBar1 = G4ThreeVector(PosXEndCoverBar1, PosYEndCoverBar1, PosZEndCoverBar1);
   G4ThreeVector uBar1 = G4ThreeVector(0,1,0);
   G4ThreeVector vBar1 = G4ThreeVector(0,0,1);
   G4ThreeVector wBar1 = G4ThreeVector(1,0,0);
   G4RotationMatrix* rotEndCoverBar1 = new G4RotationMatrix(uBar1, vBar1, wBar1);
 
-  /*---------EndCoverBar2Pos---------*/
-
+  G4LogicalVolume* EndCoverBar2LV = GetConstructionEndCoverBar();
   G4double PosZEndCoverBar2 = PosZRearPlate;
-  G4double PosYEndCoverBar2 = -56.7055*mm;
-  G4double PosXEndCoverBar2 = 62.103*mm;
+  G4double PosYEndCoverBar2 = PosYEndCoverBar1;
+  G4double PosXEndCoverBar2 = -PosXEndCoverBar1;
   G4ThreeVector VectEndCoverBar2 = G4ThreeVector(PosXEndCoverBar2, PosYEndCoverBar2, PosZEndCoverBar2);
   G4ThreeVector uBar2 = G4ThreeVector(0,-1,0);
   G4ThreeVector vBar2 = G4ThreeVector(0,0,1);
   G4ThreeVector wBar2 = G4ThreeVector(-1,0,0);
   G4RotationMatrix* rotEndCoverBar2 = new G4RotationMatrix(uBar2, vBar2, wBar2);
 
-  /*---------BottomPlatePos-------*/
-
-  G4double PosZBottomPlate = PosZRearPlate-71.12*mm;
+  G4LogicalVolume* BottomPlateLV = GetConstructionBottomPlate();
+  G4double PosZBottomPlate = PosZRearPlate-148.59/2+6.35*mm;
   G4double PosYBottomPlate = 0;
   G4double PosXBottomPlate = 0;
   G4ThreeVector VectBottomPlate = G4ThreeVector(PosXBottomPlate, PosYBottomPlate, PosZBottomPlate);
@@ -133,8 +124,7 @@ G4LogicalVolume* GetConstructionCopperBox()
   G4ThreeVector wBottom = G4ThreeVector(0,0,1);
   G4RotationMatrix* rotBottomPlate = new G4RotationMatrix(uBottom, vBottom, wBottom);
 
-  /*--------Insulator1Pos---------*/
-
+  G4LogicalVolume* Insulator1LV = GetConstructionInsulator();
   G4double PosZInsulator1 = PosZSidePlate1 + 89.916*mm;
   G4double PosYInsulator1 = 72.517*mm;
   G4double PosXInsulator1 = 0;
@@ -144,20 +134,18 @@ G4LogicalVolume* GetConstructionCopperBox()
   G4ThreeVector wInsu1 = G4ThreeVector(0,-1,0);
   G4RotationMatrix* rotInsulator1 = new G4RotationMatrix(uInsu1, vInsu1, wInsu1);
 
-
-  /*--------Insulator2Pos--------*/
-
+  G4LogicalVolume* Insulator2LV = GetConstructionInsulator();
   G4double PosZInsulator2 = PosZInsulator1;
   G4double PosYInsulator2 = PosYSidePlate1-24.765*mm;
-  G4double PosXInsulator2 = -59.7916*mm;
+  G4double PosXInsulator2 = -60.734*mm;
   G4ThreeVector VectInsulator2 = G4ThreeVector(PosXInsulator2, PosYInsulator2, PosZInsulator2);
   G4ThreeVector uInsu2 = G4ThreeVector(0,0,-1);
   G4ThreeVector vInsu2 = G4ThreeVector(1,0,0);
   G4ThreeVector wInsu2 = G4ThreeVector(0,-1,0);
   G4RotationMatrix* rotInsulator2 = new G4RotationMatrix(uInsu2, vInsu2, wInsu2);
 
-  /*---------Insulator3Pos------*/
 
+  G4LogicalVolume* Insulator3LV = GetConstructionInsulator();
   G4double PosZInsulator3 = PosZInsulator1;
   G4double PosYInsulator3 = PosYInsulator2;
   G4double PosXInsulator3 = -PosXInsulator2;
@@ -167,10 +155,9 @@ G4LogicalVolume* GetConstructionCopperBox()
   G4ThreeVector wInsu3 = G4ThreeVector(0,-1,0);
   G4RotationMatrix* rotInsulator3 = new G4RotationMatrix(uInsu3, vInsu3, wInsu3);
 
-  /*---------UpperPlatePos----------*/
-
-  G4double PosZUpperPlate = PosZInsulator1 + 18.923*mm;
-  G4double PosYUpperPlate = 0 ;
+  G4LogicalVolume* UpperPlateLV = GetConstructionUpperPlate();
+  G4double PosZUpperPlate = PosZInsulator1 + 18.923*mm+ 0.127*mm;
+  G4double PosYUpperPlate = PosYInsulator1-0.508/2*mm-139.7/2*mm;
   G4double PosXUpperPlate = 0 ;
   G4ThreeVector VectUpperPlate = G4ThreeVector(PosXUpperPlate, PosYUpperPlate, PosZUpperPlate);
   G4ThreeVector uUpper = G4ThreeVector(0,1,0);
@@ -178,39 +165,144 @@ G4LogicalVolume* GetConstructionCopperBox()
   G4ThreeVector wUpper = G4ThreeVector(0,0,1);
   G4RotationMatrix* rotUpperPlate = new G4RotationMatrix(uUpper, vUpper, wUpper);
 
-  /*---------ColdFingerSpacer1Pos---------*/
-  G4double PosZColdFingerS1 = PosZColdFinger + 97.155;
+
+  G4LogicalVolume* ColdFingerSpacer1LV = GetConstructionColdFingerSpacer();
+  G4double PosZColdFingerS1 = PosZColdFinger + 177.8/2+1.016/2;
   G4double PosYColdFingerS1 = 0;
   G4double PosXColdFingerS1 = 0;
   G4ThreeVector VectColdFingerS1 = G4ThreeVector(PosXColdFingerS1, PosYColdFingerS1, PosZColdFingerS1);
 
-  /*---------ColdFingerSpacer2Pos---------*/
-  G4double PosZColdFingerS2 = PosZColdFinger - 97.155;
+  G4LogicalVolume* ColdFingerSpacer2LV = GetConstructionColdFingerSpacer();
+  G4double PosZColdFingerS2 = PosZColdFinger - (177.8/2+1.016/2);
   G4double PosYColdFingerS2 = 0;
   G4double PosXColdFingerS2 = 0;
   G4ThreeVector VectColdFingerS2 = G4ThreeVector(PosXColdFingerS2, PosYColdFingerS2, PosZColdFingerS2);
 
+  /*-------------------------------------------MODULES---------------------------------------*/
+  G4LogicalVolume* ModuleLV1 = GetConstructionModule44();
+  G4double PosZModule44 = PosZBottomPlate + 6.35/2*mm + 5.994/2*mm+3*mm;
+  G4double PosYModule44 = PosYRearPlate - 6.35/2*mm - 116.332/2*mm -1.800*mm;
+  G4ThreeVector Module44Vect = G4ThreeVector(0,PosYModule44,PosZModule44);
+  G4ThreeVector uModule44 = G4ThreeVector(0,-1,0);
+  G4ThreeVector vModule44 = G4ThreeVector(1,0,0);
+  G4ThreeVector wModule44 = G4ThreeVector(0,0,1);
+  G4RotationMatrix* Module44Rot = new G4RotationMatrix(uModule44, vModule44, wModule44);
+
+  /*-------------------------------------------INNERLEAD------------------------------------------*/
+
+  G4LogicalVolume* BoxMountingPlateLV = GetConstructionBoxMountingPlate();
+  G4double BoxMountingPlateZ = PosZUpperPlate + 6.35/2*mm +9.652*mm/2;
+  G4double BoxMountingPlateY = 0;
+  G4double BoxMountingPlateX = 0;
+  G4ThreeVector VectBoxMountingPlate = G4ThreeVector(BoxMountingPlateX, BoxMountingPlateY, BoxMountingPlateZ);
+  G4ThreeVector uPlate = G4ThreeVector(0,1,0);
+  G4ThreeVector vPlate = G4ThreeVector(-1,0,0);
+  G4ThreeVector wPlate = G4ThreeVector(0,0,1);
+  G4RotationMatrix* RotBoxMountingPlate = new G4RotationMatrix(uPlate,vPlate,wPlate);
+
+  G4LogicalVolume* AncientLead2LV = GetConstructionAncientLead2();
+  G4double AncientLead2Z = BoxMountingPlateZ+9.652*mm/2*mm+25.4/2*mm;
+  G4double AncientLead2Y = 0;
+  G4double AncientLead2X = 0;
+  G4double COSSIN3P4 = sqrt(2)/2;
+  G4ThreeVector VectAncientLead2 = G4ThreeVector(AncientLead2X, AncientLead2Y, AncientLead2Z);
+  G4ThreeVector uAncient2 = G4ThreeVector(-COSSIN3P4,COSSIN3P4,0);
+  G4ThreeVector vAncient2 = G4ThreeVector(-COSSIN3P4,-COSSIN3P4,0);
+  G4ThreeVector wAncient2 = G4ThreeVector(0,0,1);
+  G4RotationMatrix* RotAncientLead2 = new G4RotationMatrix(uAncient2,vAncient2,wAncient2);
+
+  G4LogicalVolume* AncientLead1LV = GetConstructionAncientLead1();
+  G4double AncientLead1Z = AncientLead2Z;
+  G4double AncientLead1Y = 0;
+  G4double AncientLead1X = 0;
+  G4ThreeVector VectAncientLead1 = G4ThreeVector(AncientLead1X, AncientLead1Y, AncientLead1Z);
+  G4ThreeVector uAncient1 = G4ThreeVector(COSSIN3P4,-COSSIN3P4,0);
+  G4ThreeVector vAncient1 = G4ThreeVector(COSSIN3P4,COSSIN3P4,0);
+  G4ThreeVector wAncient1 = G4ThreeVector(0,0,1);
+  G4RotationMatrix* RotAncientLead1 = new G4RotationMatrix(uAncient1,vAncient1,wAncient1);
+
+  G4LogicalVolume* GoodLead3LV = GetConstructionGoodLead();
+  G4double PosGoodLead3Z = AncientLead2Z+25.4/2*mm+50.8/2*mm;
+  G4double PosGoodLead3Y = 0;
+  G4double PosGoodLead3X = 0;
+  G4ThreeVector VectGoodLead3 = G4ThreeVector(PosGoodLead3X, PosGoodLead3Y, PosGoodLead3Z);
+  G4ThreeVector uGoodLead3 = G4ThreeVector(0,-1,0);
+  G4ThreeVector vGoodLead3 = G4ThreeVector(1,0,0);
+  G4ThreeVector wGoodLead3 = G4ThreeVector(0,0,1);
+  G4RotationMatrix* RotGoodLead3 = new G4RotationMatrix(uGoodLead3, vGoodLead3, wGoodLead3);
+
+  G4LogicalVolume* SpacerPlate2LV = GetConstructionSpacerPlate();
+  G4double PosSpacerPlate2Z = PosGoodLead3Z+3.048/2*mm+50.8/2*mm;
+  G4double PosSpacerPlate2Y = 0;
+  G4double PosSpacerPlate2X = 0;
+  G4ThreeVector VectSpacerPlate2 = G4ThreeVector(PosSpacerPlate2X, PosSpacerPlate2Y, PosSpacerPlate2Z);
+  G4ThreeVector uSpacerPlate2 = G4ThreeVector(0,-1,0);
+  G4ThreeVector vSpacerPlate2 = G4ThreeVector(1,0,0);
+  G4ThreeVector wSpacerPlate2 = G4ThreeVector(0,0,1);
+  G4RotationMatrix* RotSpacerPlate2 = new G4RotationMatrix(uSpacerPlate2, vSpacerPlate2, wSpacerPlate2);
+
+  G4LogicalVolume* GoodLead2LV = GetConstructionGoodLead();
+  G4double PosGoodLead2Z = PosSpacerPlate2Z+50.8/2*mm+3.048/2*mm;
+  G4double PosGoodLead2Y = 0;
+  G4double PosGoodLead2X = 0;
+  G4ThreeVector VectGoodLead2 = G4ThreeVector(PosGoodLead2X, PosGoodLead2Y, PosGoodLead2Z);
+  G4ThreeVector uGoodLead2 = G4ThreeVector(0,-1,0);
+  G4ThreeVector vGoodLead2 = G4ThreeVector(1,0,0);
+  G4ThreeVector wGoodLead2 = G4ThreeVector(0,0,1);
+  G4RotationMatrix* RotGoodLead2 = new G4RotationMatrix(uGoodLead2, vGoodLead2, wGoodLead2);
+
+  G4LogicalVolume* GoodLead1LV = GetConstructionGoodLead();
+  G4double PosGoodLead1Z = PosGoodLead2Z+50.8*mm;
+  G4double PosGoodLead1Y = 0;
+  G4double PosGoodLead1X = 0;
+  G4ThreeVector VectGoodLead1 = G4ThreeVector(PosGoodLead1X, PosGoodLead1Y, PosGoodLead1Z);
+  G4ThreeVector uGoodLead1 = G4ThreeVector(0,-1,0);
+  G4ThreeVector vGoodLead1 = G4ThreeVector(1,0,0);
+  G4ThreeVector wGoodLead1 = G4ThreeVector(0,0,1);
+  G4RotationMatrix* RotGoodLead1 = new G4RotationMatrix(uGoodLead1, vGoodLead1, wGoodLead1);
+
+  G4LogicalVolume* SpacerPlate1LV = GetConstructionSpacerPlate();
+  G4double PosSpacerPlate1Z = PosGoodLead1Z+50.8/2*mm+3.048/2*mm;
+  G4double PosSpacerPlate1Y = 0;
+  G4double PosSpacerPlate1X = 0;
+  G4ThreeVector VectSpacerPlate1 = G4ThreeVector(PosSpacerPlate1X, PosSpacerPlate1Y, PosSpacerPlate1Z);
+  G4ThreeVector uSpacerPlate1 = G4ThreeVector(0,-1,0);
+  G4ThreeVector vSpacerPlate1 = G4ThreeVector(1,0,0);
+  G4ThreeVector wSpacerPlate1 = G4ThreeVector(0,0,1);
+  G4RotationMatrix* RotSpacerPlate1 = new G4RotationMatrix(uSpacerPlate1, vSpacerPlate1, wSpacerPlate1);
 
 
-  G4PVPlacement* ColdFingerSpacer1PV = new G4PVPlacement(0, VectColdFingerS1, ColdFingerSpacer1LV, "ColdFingerSpacer1PV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* ColdFingerSpacer2PV = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), ColdFingerSpacer2LV, "ColdFingerSpacer2PV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* BottomPlatePV = new G4PVPlacement(rotBottomPlate, VectBottomPlate, BottomPlateLV, "BottomPlatePV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* ColdFingerPV = new G4PVPlacement(0, VectColdFinger, ColdFingerLV, "ColdFingerPV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* EndCoverBar1PV = new G4PVPlacement(rotEndCoverBar1, VectEndCoverBar1, EndCoverBar1LV, "EndCoverBar1PV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* EndCoverBar2PV = new G4PVPlacement(rotEndCoverBar2, VectEndCoverBar2, EndCoverBar2LV, "EndCoverBar2PV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* EndCoverPlatePV = new G4PVPlacement(rotEndPlate,VectEndPlate, EndCoverPlateLV, "EndCoverPlatePV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* Insulator1PV = new G4PVPlacement(rotInsulator1, VectInsulator1 , Insulator1LV, "Insulator1PV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* Insulator2PV = new G4PVPlacement(rotInsulator2, VectInsulator2, Insulator2LV, "Insulator2PV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* Insulator3PV = new G4PVPlacement(rotInsulator3, VectInsulator3, Insulator3LV, "Insulator3PV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* RearPlatePV = new G4PVPlacement(rotRearPlate, VectRearPlate, RearPlateLV, "RearPlatePV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* UpperPlatePV = new G4PVPlacement(rotUpperPlate, VectUpperPlate, UpperPlateLV, "UpperPlatePV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* SidePlate1PV = new G4PVPlacement(rotSidePlate1, VectSidePlate1, SidePlate1LV, "SidePlate1PV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* SidePlate2PV = new G4PVPlacement(rotSidePlate2, VectSidePlate2, SidePlate2LV, "SidePlate2PV", CopperBoxLV, false, 0, false);
-  G4PVPlacement* TopPlatePV = new G4PVPlacement(rotTopPlate, VectTopPlate, TopPlateLV, "TopPlatePV", CopperBoxLV, false, 0, false);
 
-  return CopperBoxLV;
+  G4PVPlacement* ColdFingerPV = new G4PVPlacement(0, VectColdFinger, ColdFingerLV, "ColdFingerPV", PrinTubLV, false, 0, false);
+  G4PVPlacement* TopPlatePV = new G4PVPlacement(rotTopPlate, VectTopPlate, TopPlateLV, "TopPlatePV", PrinTubLV, false, 0, false);
+  G4PVPlacement* RearPlatePV = new G4PVPlacement(rotRearPlate, VectRearPlate, RearPlateLV, "RearPlatePV",PrinTubLV, false, 0, false);
+  G4PVPlacement* EndCoverPlatePV = new G4PVPlacement(rotEndPlate,VectEndPlate, EndCoverPlateLV, "EndCoverPlatePV", PrinTubLV, false, 0, false);
+  G4PVPlacement* SidePlate1PV = new G4PVPlacement(rotSidePlate1, VectSidePlate1, SidePlate1LV, "SidePlate1PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* SidePlate2PV = new G4PVPlacement(rotSidePlate2, VectSidePlate2, SidePlate2LV, "SidePlate2PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* EndCoverBar1PV = new G4PVPlacement(rotEndCoverBar1, VectEndCoverBar1, EndCoverBar1LV, "EndCoverBar1PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* EndCoverBar2PV = new G4PVPlacement(rotEndCoverBar2, VectEndCoverBar2, EndCoverBar2LV, "EndCoverBar2PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* BottomPlatePV = new G4PVPlacement(rotBottomPlate, VectBottomPlate, BottomPlateLV, "BottomPlatePV", PrinTubLV, false, 0, false);
+  G4PVPlacement* Insulator1PV = new G4PVPlacement(rotInsulator1, VectInsulator1 , Insulator1LV, "Insulator1PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* Insulator2PV = new G4PVPlacement(rotInsulator2, VectInsulator2, Insulator2LV, "Insulator2PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* Insulator3PV = new G4PVPlacement(rotInsulator3, VectInsulator3, Insulator3LV, "Insulator3PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* UpperPlatePV = new G4PVPlacement(rotUpperPlate, VectUpperPlate, UpperPlateLV, "UpperPlatePV", PrinTubLV, false, 0, false);
+  G4PVPlacement* ColdFingerSpacer1PV = new G4PVPlacement(0, VectColdFingerS1, ColdFingerSpacer1LV, "ColdFingerSpacer1PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* ColdFingerSpacer2PV = new G4PVPlacement(0, VectColdFingerS2, ColdFingerSpacer2LV, "ColdFingerSpacer2PV", PrinTubLV, false, 0, false);
+
+
+  G4PVPlacement* ModulePV1 = new G4PVPlacement(Module44Rot, Module44Vect, ModuleLV1, "ModulePV1", PrinTubLV, false, 0, false);
+
+  G4PVPlacement* SpacerPlate1PV = new G4PVPlacement(RotSpacerPlate1, VectSpacerPlate1, SpacerPlate1LV, "SpacerPlate1PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* GoodLead1PV = new G4PVPlacement(RotGoodLead1, VectGoodLead1, GoodLead1LV, "GoodLead1PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* GoodLead2PV = new G4PVPlacement(RotGoodLead2, VectGoodLead2, GoodLead2LV, "GoodLead2PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* SpacerPlate2PV = new G4PVPlacement(RotSpacerPlate2, VectSpacerPlate2, SpacerPlate2LV, "SpacerPlate2PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* GoodLead3PV = new G4PVPlacement(RotGoodLead3, VectGoodLead3, GoodLead3LV, "GoodLead3PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* AncientLead1PV = new G4PVPlacement(RotAncientLead1, VectAncientLead1, AncientLead1LV, "AncientLead1PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* AncientLead2PV = new G4PVPlacement(RotAncientLead2, VectAncientLead2, AncientLead2LV, "AncientLead2PV", PrinTubLV, false, 0, false);
+  G4PVPlacement* BoxMountingPlatePV = new G4PVPlacement(RotBoxMountingPlate, VectBoxMountingPlate, BoxMountingPlateLV, "BoxMountingPlatePV", PrinTubLV, false, 0, false);
+
+  return PrinTubLV;
 }
-
 
 G4LogicalVolume* GetConstructionBottomPlate()
 {
@@ -466,8 +558,8 @@ G4LogicalVolume* GetConstructionInsulator()
   G4UnionSolid * insulator2 = new G4UnionSolid("Insulator2", insulator1, sideBox, sideBoxTr2);
   G4SubtractionSolid* insulatorFinal = new G4SubtractionSolid("InsulatorFinal", insulator2, holeBox, fullInsulatorTr);
 
-  G4Material* Copper = G4Material::GetMaterial("G4_Cu");
-  G4LogicalVolume * Insulator = new G4LogicalVolume(insulatorFinal, Copper,"Insulator");
+  G4Material* StainSteel = G4Material::GetMaterial("G4_STAINLESS-STEEL");
+  G4LogicalVolume * Insulator = new G4LogicalVolume(insulatorFinal, StainSteel,"Insulator");
 
   return Insulator;
 }

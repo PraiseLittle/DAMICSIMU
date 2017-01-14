@@ -8,7 +8,6 @@
 #include "DAMICPhysicsList.hh"
 #include "DAMICActionInitialization.hh"
 
-
 #ifdef G4VIS_USE
  #include "G4VisExecutive.hh"
 #endif
@@ -27,6 +26,7 @@ int main(int argc,char** argv) {
   runManager->SetUserInitialization(det);
 
   DAMICPhysicsList * pL = new DAMICPhysicsList;
+
   runManager->SetUserInitialization(pL);
 
   runManager->SetUserInitialization(new DAMICActionInitialization(det));
@@ -53,6 +53,10 @@ int main(int argc,char** argv) {
       ui->SessionStart();
       delete ui;
 #endif
+
+//Close-out analysis:
+// Save histograms
+
 
 #ifdef G4VIS_USE
      delete visManager;

@@ -45,6 +45,7 @@ target_link_libraries(DAMICG4 ${Geant4_LIBRARIES})
 #
 set(EXAMPLEB1_SCRIPTS
   vis.mac
+  macfDAM.mac
   )
 
 foreach(_script ${EXAMPLEB1_SCRIPTS})

@@ -4,6 +4,7 @@
 #include "DAMICRunAction.hh"
 #include "DAMICEventAction.hh"
 #include "DAMICSteppingAction.hh"
+#include "DAMICStackingAction.hh"
 
 
 DAMICActionInitialization::DAMICActionInitialization(DAMICDetectorConstruction* detector)
@@ -31,4 +32,6 @@ void DAMICActionInitialization::Build() const
   SetUserAction(eventAction);
   DAMICSteppingAction* steppingAction = new DAMICSteppingAction(eventAction);
   SetUserAction(steppingAction);
+  DAMICStackingAction* stackingAction = new DAMICStackingAction();
+  SetUserAction(stackingAction);
 }

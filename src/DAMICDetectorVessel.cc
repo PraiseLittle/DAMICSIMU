@@ -27,50 +27,6 @@
 #include "G4SystemOfUnits.hh"
 #include <cmath>
 
-
-G4LogicalVolume* GetConstructionVessel()
-{
-  G4double VesselH = 755.65*mm;
-  G4double VesselR = 196.977/2*mm;
-  G4double A0 = 0;
-  G4double A360 = M_PI*2+1;
-
-  G4Tubs* VesselTub = new G4Tubs("VesselTub",A0, VesselR*2, VesselH, A0, A360);
-  G4Material* Air = G4Material::GetMaterial("G4_AIR");
-  G4LogicalVolume* VesselLV = new G4LogicalVolume(VesselTub, Air,"VesselLV");
-
-  G4LogicalVolume* UpperFlangeLV = GetConstructionUpperFlange();
-  G4LogicalVolume* LowerEndLV = GetConstructionLowerEnd();
-  G4LogicalVolume* LowerTubeLV = GetConstructionLowerTube();
-  G4LogicalVolume* LowerFlangeLV = GetConstructionLowerFlange();
-
-
-  /*-----------LowerEndPos----------*/
-  G4double PosZLowerEnd = -385.7498;/*-387.35*mm;*/
-  G4double PosYLowerEnd = 0;
-  G4double PosXLowerEnd = 0;
-  G4ThreeVector VectLowerEnd = G4ThreeVector(PosXLowerEnd, PosYLowerEnd, PosZLowerEnd);
-
-  /*---------LowerFlangePos---------*/
-  G4double PosZLowerFlange = 395.224*mm;
-  G4double PosYLowerFlange = 0;
-  G4double PosXLowerFlange = 0;
-  G4ThreeVector VectLowerFlange = G4ThreeVector(PosXLowerFlange, PosYLowerFlange, PosZLowerFlange);
-
-  /*-------UpperFlangePos---------*/
-  G4double PosZUpperFlange = PosZLowerFlange + 28.448*mm;
-  G4double PosYUpperFlange = 0;
-  G4double PosXUpperFlange = 0;
-  G4ThreeVector VectUpperFlange = G4ThreeVector(PosXUpperFlange, PosYUpperFlange, PosZUpperFlange);
-
-  G4PVPlacement* LowerEndPV = new G4PVPlacement(0, VectLowerEnd, LowerEndLV, "LowerEndPV", VesselLV, false, 0, false);
-  G4PVPlacement* LowerTubePV = new G4PVPlacement(0, G4ThreeVector(0,0,0), LowerTubeLV, "LowerTubePV", VesselLV, false, 0, false);
-  G4PVPlacement* LowerFlangePV = new G4PVPlacement(0, VectLowerFlange, LowerFlangeLV, "LowerFlangePV", VesselLV, false, 0, false);
-  G4PVPlacement* UpperFlangePV = new G4PVPlacement(0, VectUpperFlange, UpperFlangeLV, "UpperFlangePV", VesselLV, false, 0, false);
-
-
-  return VesselLV;
-}
 G4LogicalVolume* GetConstructionLowerEnd()
 {
   G4double depthTot = 12.7*mm;

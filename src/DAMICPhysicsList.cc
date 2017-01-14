@@ -851,7 +851,7 @@ DAMICPhysicsList::~DAMICPhysicsList()
     }
 
     //special for low energy physics
-    G4double lowlimit=250*eV;
+    G4double lowlimit=1*eV;
     G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(lowlimit,100.*GeV);
 
     // set cut values for gamma at first and for e- second and next for e+,

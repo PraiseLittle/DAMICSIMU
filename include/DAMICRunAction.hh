@@ -6,6 +6,7 @@
 #include "globals.hh"
 
 class G4Run;
+class DAMICAnalysisManager;
 
 
 class DAMICRunAction : public G4UserRunAction
@@ -18,7 +19,7 @@ class DAMICRunAction : public G4UserRunAction
     virtual void   EndOfRunAction(const G4Run*);
 
     void AddEdep (G4double edep);
-
+    DAMICAnalysisManager* fAnalysisManager;
 };
 
 #endif
