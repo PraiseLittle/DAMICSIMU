@@ -41,6 +41,10 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     G4double energykin = aTrack->GetKineticEnergy();
     SetPartEnergyKin(energykin);
     SetPartEnergyTot(energy);
+    G4int IDpart = aTrack->GetParentID();
+    if (IDpart != 0){
+      return fKill;
+    }
     if (energykin<1*eV && Name!="neutron"){
         return fKill;
     }
