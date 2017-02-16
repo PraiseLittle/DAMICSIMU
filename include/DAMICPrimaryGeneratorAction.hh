@@ -7,7 +7,7 @@
 
 
 #include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4GeneralParticleSource.hh"
+#include "DAMICParticleSource.hh"
 #include "globals.hh"
 using namespace std;
 
@@ -22,7 +22,7 @@ public:
 public:
     void GeneratePrimaries(G4Event* anEvent);
 private:
-    G4GeneralParticleSource* particleGun;
+    DAMICParticleSource* particleGun;
 
 private:
     long seeds[2];

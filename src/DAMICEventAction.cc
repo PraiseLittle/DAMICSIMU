@@ -9,7 +9,13 @@
 DAMICEventAction::DAMICEventAction(DAMICRunAction* runAction)
 : G4UserEventAction(),
   fRunAction(runAction)
-{}
+{
+  ID = 0;
+  NamePrimary = "NULL";
+  EnergyPrimary = 0;
+  AtomicNumber = 0;
+  AtomicMass = 0;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -22,6 +28,8 @@ void DAMICEventAction::BeginOfEventAction(const G4Event* Event)
 {
   SetID(Event->GetEventID());
   SetNamePrimary(Event->GetPrimaryVertex()->GetPrimary()->GetParticleDefinition()->GetParticleName());
+  SetAtomicNumber( Event->GetPrimaryVertex()->GetPrimary()->GetParticleDefinition()->GetAtomicNumber());
+  SetAtomicMass (Event->GetPrimaryVertex()->GetPrimary()->GetParticleDefinition()->GetAtomicMass());
   SetEnergyPrimary(Event->GetPrimaryVertex()->GetPrimary()->GetTotalEnergy());
 }
 
@@ -43,4 +51,11 @@ void DAMICEventAction::SetNamePrimary(G4String name)
 
 void DAMICEventAction::SetEnergyPrimary(G4double nrj){
     EnergyPrimary = nrj;
+}
+void DAMICEventAction:: SetAtomicNumber ( G4int Z){
+  AtomicNumber = Z;
+}
+
+void DAMICEventAction::SetAtomicMass(G4int A){
+  AtomicMass = A;
 }

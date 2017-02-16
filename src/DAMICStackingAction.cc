@@ -43,9 +43,9 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     SetPartEnergyTot(energy);
     G4int IDpart = aTrack->GetParentID();
     if (IDpart != 0){
-      return fKill;
+      return fUrgent;
     }
-    if (energykin<1*eV && Name!="neutron"){
+    if (energykin<1*eV && Name=="e-"){ // Kill particles with less than 1 eV  kinetic energy
         return fKill;
     }
 

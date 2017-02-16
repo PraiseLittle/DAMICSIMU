@@ -292,7 +292,7 @@ G4LogicalVolume* GetConstructionAssembly1()
 
 
   G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
-  G4LogicalVolume* Assembly1 = new G4LogicalVolume(boxAssembly1, Galac, "OutterLead");
+  G4LogicalVolume* Assembly1 = new G4LogicalVolume(boxAssembly1, Galac, "Assembly1");
 
 
 
@@ -417,7 +417,7 @@ G4LogicalVolume* GetConstructionAssembly2()
 
 
   G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
-  G4LogicalVolume* Assembly2 = new G4LogicalVolume(boxAssembly2, Galac, "OutterLead");
+  G4LogicalVolume* Assembly2 = new G4LogicalVolume(boxAssembly2, Galac, "Assembly2");
 
 
   G4PVPlacement* RestraintSheetPV = new G4PVPlacement(0, G4ThreeVector(0,0,0), RestraintSheetLV, "RestraintSheetPV", Assembly2, false, 0, false);

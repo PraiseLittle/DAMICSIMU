@@ -31,7 +31,7 @@
 G4LogicalVolume* GetConstructionModule44(){
   G4double ModuleX = 116.332*mm;
   G4double ModuleY = 116.84*mm;
-  G4double ModuleZ = 5.994*mm;
+  G4double ModuleZ = 6.519*mm;
 
   G4double erasePartX = 111.252*mm;
   G4double erasePartY = (ModuleY-102.616)/2;
@@ -77,7 +77,7 @@ G4LogicalVolume* GetConstructionModule44(){
   G4ThreeVector VectCopperBasePlate = G4ThreeVector(PosXCopperBasePlate,PosYCopperBasePlate,PosZCopperBasePlate);
 
   /*---------PosSubAssy-----*/
-  G4double PosSubAssyZ = PosZCopperBasePlate + 1.206/2*mm+1.118*mm ;
+  G4double PosSubAssyZ = PosZCopperBasePlate + 1.631/2*mm+1.118*mm ;
   G4double PosSubAssyY =0;
   G4double PosSubAssyX = PosXCopperBasePlate + 12.891*mm - 9.505*mm;
   G4ThreeVector VectSubAssy = G4ThreeVector(PosSubAssyX,PosSubAssyY,PosSubAssyZ);
@@ -87,7 +87,7 @@ G4LogicalVolume* GetConstructionModule44(){
   G4RotationMatrix* RotSubAssy = new G4RotationMatrix(uAssy, vAssy, wAssy);
 
   /*-------PosCopperTopPlate-----*/
-  G4double PosZTop = PosSubAssyZ + 1.206/2*mm+2.006/2*mm;
+  G4double PosZTop = PosSubAssyZ + 1.631/2*mm+2.006/2*mm;
   G4double PosYTop = 0;
   G4double PosXTop = PosXCopperBasePlate+ 111.252/2*mm-85.852/2*mm;
   G4ThreeVector VectTopPlate = G4ThreeVector(PosXTop,PosYTop,PosZTop);
@@ -112,7 +112,7 @@ G4LogicalVolume* GetConstructionCCDSubAssy44()
 {
   G4double SubX = 95.21*mm;
   G4double SubY = 101.6*mm;
-  G4double SubZ = 1.206*mm;
+  G4double SubZ = 1.631*mm;
   G4Box* SubBox = new G4Box("SubBox", SubX/2, SubY/2, SubZ/2);
 
   G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
@@ -126,12 +126,12 @@ G4LogicalVolume* GetConstructionCCDSubAssy44()
 
   G4double CopyNeeded = (SubX-90.358)/2-0.02;
   /*---------SensorPos----------*/
-  G4double PosZSensor = -SubZ/2+0.25/2;
+  G4double PosZSensor = -SubZ/2+0.675/2;
   G4double PosYSensor = 0;
   G4double PosXSensor = -SubX/2+76.2/2*mm;
   G4ThreeVector VectSensor = G4ThreeVector(PosXSensor, PosYSensor, PosZSensor);
   /*----------FlexCablePos-----------*/
-  G4double PosZFlexCable = PosZSensor+ 0.25/2*mm+0.305/2*mm;
+  G4double PosZFlexCable = PosZSensor+ 0.675/2*mm+0.305/2*mm;
   G4double PosYFlexCable = 0;
   G4double PosXFlexCable = CopyNeeded;
   G4ThreeVector VectFlexCable = G4ThreeVector(PosXFlexCable,PosYFlexCable , PosZFlexCable);
@@ -285,7 +285,7 @@ G4LogicalVolume* GetConstructionCCDSensor44(){
 
   G4double mainBoxX = 63.99*mm;
   G4double mainBoxY = 64.36*mm;
-  G4double mainBoxZ = 0.25*mm;
+  G4double mainBoxZ = 0.675*mm;
 
   G4Box* mainBox  = new G4Box("mainBox", mainBoxX/2, mainBoxY/2, mainBoxZ/2);
 

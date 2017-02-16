@@ -1,13 +1,20 @@
 #include "DAMICPrimaryGeneratorAction.hh"
+#include "DAMICDetectorConstruction.hh"
 
 #include "G4Event.hh"
-#include "G4GeneralParticleSource.hh"
+#include "DAMICParticleSource.hh"
+#include "G4PhysicalVolumeStore.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 #include "globals.hh"
+#include "G4LogicalVolume.hh"
+#include "G4TransportationManager.hh"
+#include "G4Material.hh"
+#include "DAMICAnalysisManager.hh"
+#include "G4IonTable.hh"
 #include <iostream>
 
 #include <string>
@@ -19,7 +26,7 @@ using namespace std;
 DAMICPrimaryGeneratorAction::DAMICPrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
 {
 
-  particleGun = new G4GeneralParticleSource();
+  particleGun = new DAMICParticleSource();
   energyPri=0;
   seeds[0] =-1;
   seeds[1] =-1;
@@ -34,13 +41,16 @@ DAMICPrimaryGeneratorAction::~DAMICPrimaryGeneratorAction()
 void DAMICPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
 
-  energyPri = 0.;
-
   // seeds
   seeds[0] = *G4Random::getTheSeeds();
   seeds[1] = *(G4Random::getTheSeeds()+1);
-
+  G4ParticleTable* tablePart = G4ParticleTable::GetParticleTable();
+  G4ParticleDefinition* particleInject = tablePart->FindParticle("e-");
+  G4ParticleDefinition* IonInject = G4IonTable::GetIonTable()->GetIon(27,60);
+  G4AnalysisManager* man = G4AnalysisManager::Instance();
+  particleGun->DoMaterial();
+  particleGun->SetMaterialSource("G4_Cu");
+  particleGun->SetParticleDefinition(IonInject);
   particleGun->GeneratePrimaryVertex(anEvent);
 
-  energyPri = particleGun->GetParticleEnergy();
 }

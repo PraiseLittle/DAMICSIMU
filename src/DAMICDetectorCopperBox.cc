@@ -48,7 +48,7 @@ G4LogicalVolume* GetConstructionCopperAndInner()
 
 
   G4LogicalVolume* TopPlateLV = GetConstructionTopPlate();
-  G4double PosZTopPlate = PosZColdFinger-269.748/2*mm-9.652/2*mm;;
+  G4double PosZTopPlate = PosZColdFinger-269.748/2*mm-9.652/2*mm;
   G4ThreeVector VectTopPlate = G4ThreeVector(0,0,PosZTopPlate);
   G4RotationMatrix* rotTopPlate = new G4RotationMatrix;
   rotTopPlate->rotateZ(M_PI/2);
@@ -188,6 +188,22 @@ G4LogicalVolume* GetConstructionCopperAndInner()
   G4ThreeVector wModule44 = G4ThreeVector(0,0,1);
   G4RotationMatrix* Module44Rot = new G4RotationMatrix(uModule44, vModule44, wModule44);
 
+  G4LogicalVolume* ModuleLV2 = GetConstructionModule44();
+  G4double PosZModule442 = PosZModule44 + 20*mm;
+  G4ThreeVector Module442Vect = G4ThreeVector(0,PosYModule44,PosZModule442);
+  G4LogicalVolume* ModuleLV3 = GetConstructionModule44();
+  G4double PosZModule443 = PosZModule442 + 20*mm;
+  G4ThreeVector Module443Vect = G4ThreeVector(0,PosYModule44,PosZModule443);
+  G4LogicalVolume* ModuleLV4 = GetConstructionModule44();
+  G4double PosZModule444 = PosZModule443 + 20*mm;
+  G4ThreeVector Module444Vect = G4ThreeVector(0,PosYModule44,PosZModule444);
+  G4LogicalVolume* ModuleLV5 = GetConstructionModule44();
+  G4double PosZModule445 = PosZModule444 + 20*mm;
+  G4ThreeVector Module445Vect = G4ThreeVector(0,PosYModule44,PosZModule445);
+  G4LogicalVolume* ModuleLV6 = GetConstructionModule44();
+  G4double PosZModule446 = PosZModule445 + 20*mm;
+  G4ThreeVector Module446Vect = G4ThreeVector(0,PosYModule44,PosZModule446);
+
   /*-------------------------------------------INNERLEAD------------------------------------------*/
 
   G4LogicalVolume* BoxMountingPlateLV = GetConstructionBoxMountingPlate();
@@ -291,6 +307,11 @@ G4LogicalVolume* GetConstructionCopperAndInner()
 
 
   G4PVPlacement* ModulePV1 = new G4PVPlacement(Module44Rot, Module44Vect, ModuleLV1, "ModulePV1", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV2 = new G4PVPlacement(Module44Rot, Module442Vect, ModuleLV2, "ModulePV2", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV3 = new G4PVPlacement(Module44Rot, Module443Vect, ModuleLV3, "ModulePV3", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV4 = new G4PVPlacement(Module44Rot, Module444Vect, ModuleLV4, "ModulePV4", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV5 = new G4PVPlacement(Module44Rot, Module445Vect, ModuleLV5, "ModulePV5", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV6 = new G4PVPlacement(Module44Rot, Module446Vect, ModuleLV6, "ModulePV6", PrinTubLV, false, 0, false);
 
   G4PVPlacement* SpacerPlate1PV = new G4PVPlacement(RotSpacerPlate1, VectSpacerPlate1, SpacerPlate1LV, "SpacerPlate1PV", PrinTubLV, false, 0, false);
   G4PVPlacement* GoodLead1PV = new G4PVPlacement(RotGoodLead1, VectGoodLead1, GoodLead1LV, "GoodLead1PV", PrinTubLV, false, 0, false);
