@@ -23,7 +23,7 @@ DAMICSteppingAction::~DAMICSteppingAction()
 
 void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
 {
-  G4LogicalVolume* volume
+  /*G4LogicalVolume* volume
     = step->GetPreStepPoint()->GetTouchableHandle()
       ->GetVolume()->GetLogicalVolume();
   G4AnalysisManager* man = G4AnalysisManager::Instance();
@@ -36,7 +36,7 @@ void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
   /*G4String PartName = step->GetTrack()->GetDefinition()->GetParticleName();
   G4String Material = step->GetTrack()->GetMaterial()->GetName();
   G4int IDpart = step->GetTrack()->GetParentID();*/
-
+/*
   G4TouchableHandle theTouchable = endPoint->GetTouchableHandle();
   G4int copyNo = theTouchable->GetCopyNumber();
   G4ThreeVector preWorldPostion = begPoint->GetPosition();
@@ -53,7 +53,7 @@ void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
 
   G4String NamePrimary =  fEventAction->GetNamePrimary();
   G4double EnergyPrimary = fEventAction->GetEnergyPrimary();*/
-  G4int IDEvent = fEventAction->GetID();
+  /*G4int IDEvent = fEventAction->GetID();
 
   G4double XCoord = 0;
   G4double YCoord = 0;
@@ -74,15 +74,15 @@ void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
   G4int ZPrimary = 0;
   G4int IDPrimary = 0;
 
-  if (IDEvent % 1000 == 0)
+  /*if (IDEvent % 1000 == 0)
   {
     G4cout << " on est à l'event " <<  IDEvent <<G4endl;
-  }
-  G4String ProcessName = process->GetProcessName();
+  }*/
+/*  G4String ProcessName = process->GetProcessName();
   if (NameVol == "CCDSensor" && ProcessName != "Transportation"){
-    G4cout << step->GetTrack()->GetDefinition()->GetParticleName() << G4endl;
+    //G4cout << step->GetTrack()->GetDefinition()->GetParticleName() << G4endl;
 
-    G4double valueTopBot = worldPosition.getZ() - preWorldPostion.getZ();
+  /*  G4double valueTopBot = worldPosition.getZ() - preWorldPostion.getZ();
 
     YCoord = localPosition.getY();
     ZCoord = localPosition.getZ();
@@ -125,7 +125,7 @@ void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
     man->FillNtupleIColumn(0,16,ZPrimary);
     man->FillNtupleIColumn(0,17,IDPrimary);
     man->AddNtupleRow(0);
-  }
+  }*/
 
 
 }

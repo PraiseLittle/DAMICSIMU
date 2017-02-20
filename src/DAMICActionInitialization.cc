@@ -5,7 +5,7 @@
 #include "DAMICEventAction.hh"
 #include "DAMICSteppingAction.hh"
 #include "DAMICStackingAction.hh"
-
+#include "DAMICTrackingAction.hh"
 
 DAMICActionInitialization::DAMICActionInitialization(DAMICDetectorConstruction* detector)
 : G4VUserActionInitialization(),
@@ -25,7 +25,7 @@ void DAMICActionInitialization::Build() const
 
   DAMICPrimaryGeneratorAction* primary = new DAMICPrimaryGeneratorAction();
   SetUserAction(primary);
-  DAMICRunAction* runAction = new DAMICRunAction;
+  DAMICRunAction* runAction = new DAMICRunAction();
   SetUserAction(runAction);
 
   DAMICEventAction* eventAction = new DAMICEventAction(runAction);
@@ -34,4 +34,6 @@ void DAMICActionInitialization::Build() const
   SetUserAction(steppingAction);
   DAMICStackingAction* stackingAction = new DAMICStackingAction();
   SetUserAction(stackingAction);
+  DAMICTrackingAction* trackingAction = new DAMICTrackingAction();
+  SetUserAction(trackingAction);
 }

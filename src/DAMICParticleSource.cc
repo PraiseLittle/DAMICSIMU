@@ -21,10 +21,10 @@
 
 DAMICParticleSource::DAMICParticleSource(){
 
-      ParticleEnergy= 2.0* MeV;
+      ParticleEnergy= 0.0* MeV;
       ParticleCharge = 0.0;
       ParticleMomentumDirection = G4ParticleMomentum(1.,0.,0.);
-      ParticleTime = 1.0;
+      ParticleTime = 0.0;
       ParticleDefinition = NULL;
       ParticlePosition = G4ThreeVector(0.,0.,0.0);
 
@@ -37,6 +37,11 @@ DAMICParticleSource::DAMICParticleSource(){
       MotherVolume = "MotherVolume";
       Material = "Material";
       MaterialSource = "MaterialSource";
+      VolumesUse = {};
+      VolumesUseMass = {};
+      VolumesConcentration = {};
+      Proba = {};
+      changes = false;
 
       //Navigator for Geometry
       gNavigator = G4TransportationManager::GetTransportationManager()
@@ -138,6 +143,104 @@ void DAMICParticleSource::DoSource(){
   SetVolume(false);
 }
 
+void DAMICParticleSource::AddVolume(G4String Volume, G4double Concentration){
+
+
+  G4PhysicalVolumeStore* PVStore = G4PhysicalVolumeStore::GetInstance();
+  G4int i = 0;
+  G4bool found = false;
+  G4double Mass;
+  G4double Dens;
+  G4VPhysicalVolume* tempPV;
+  //G4cout << " je suis addvol" << G4endl;
+  while (!found && i<(G4int)PVStore->size())
+    {
+      tempPV = (*PVStore)[i];
+      found  = tempPV->GetName() == Volume;
+
+      if (!found){i++;}
+    }
+    //G4cout << found << G4endl;
+
+
+  if(found == true) {
+    Mass = tempPV->GetLogicalVolume()->GetMass();
+  }
+  else {
+    G4cout << " **** Error: Volume does not exist **** " << G4endl;
+    G4cout << " Ignoring confine condition" << G4endl;
+
+    Mass = 0;
+  }
+  G4int sizeV= VolumesUse.size();
+  G4bool same = false;
+  //G4cout << sizeV << G4endl;
+  if ( sizeV != 0){
+    for (G4int j = 0;j<sizeV;j++){
+      if (VolumesUse[j]==Volume)
+      {
+        //G4cout << " ca change " << G4endl;
+        same = true;
+      }
+    }
+  }
+  //G4cout << same << G4endl;
+  if (!same){
+    VolumesUse.push_back(Volume);
+    VolumesUseMass.push_back(Mass);
+    VolumesConcentration.push_back(Concentration);
+    changes = true;
+  }
+
+
+  VolumesConcentration.push_back(Concentration);
+}
+
+void DAMICParticleSource::CalculProba()
+{
+  G4cout << " je suis calcProba" << G4endl;
+  if (changes){
+    //G4cout << "changes" << G4endl;
+    Proba={};
+    G4double total = 0;
+    G4int sizevols = VolumesUse.size();
+    G4cout << sizevols << G4endl;
+    for (G4int i = 0; i <sizevols; i++){
+      G4double temp = VolumesConcentration[i]*VolumesUseMass[i];
+      total += temp;
+      Proba.push_back(temp);
+    }
+
+    for (G4int i =0; i <sizevols; i++){
+      Proba[i] = Proba[i]/total;
+      //G4cout << Proba[i] << G4endl;
+    }
+    changes = false;
+    for (G4int i =1; i <sizevols;i++){
+      Proba[i] += Proba[i-1];
+      //G4cout << Proba[i] << G4endl;
+    }
+  }
+}
+
+void DAMICParticleSource::ChooseVolume()
+{
+  G4cout << " je suis chovol" << G4endl;
+  G4double tryVol = 1*G4UniformRand();
+  G4bool found = false;
+  G4int i = 0;
+  while(!found){
+    if (tryVol <= Proba[i]){
+      G4cout << VolumesUse[i] << G4endl;
+
+      found = true;
+      VolumeSource = VolumesUse[i];
+    }
+    i++;
+  }
+  G4cout << VolumeSource << G4endl;
+}
+
 void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUse, G4String VolumeUse){
 
   G4double posx = 0;
@@ -161,8 +264,9 @@ void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUs
       posz = 2.0*m*G4UniformRand()-1*m;
     }
     else if (MotherUse == "PrinTubLV"){
+      //G4cout << "ici" << G4endl;
 
-      G4double RadiusRan = 191.287/2*mm * (G4UniformRand()-0.5);
+      G4double RadiusRan = 191.287/2*mm * G4UniformRand();
       G4double AngleRan = M_PI*2*G4UniformRand();
       G4double HeightRan = 413.512*mm *(G4UniformRand()-0.5);
       posx = RadiusRan* cos(AngleRan);
@@ -247,6 +351,8 @@ void DAMICParticleSource::GeneratePrimaryVertex(G4Event* evt){
     MaterialCoordinates();
   }
   if (IsVolume()){
+    CalculProba();
+    ChooseVolume();
     VolumeCoordinates();
   }
 

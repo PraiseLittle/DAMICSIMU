@@ -42,13 +42,16 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     SetPartEnergyKin(energykin);
     SetPartEnergyTot(energy);
     G4int IDpart = aTrack->GetParentID();
+    G4String ProcessCreatorName;
     if (IDpart != 0){
-      return fUrgent;
+      ProcessCreatorName = aTrack->GetCreatorProcess()->GetProcessName();
     }
     if (energykin<1*eV && Name=="e-"){ // Kill particles with less than 1 eV  kinetic energy
         return fKill;
     }
-
-
+    if (ProcessCreatorName == "eIoni" || ProcessCreatorName == "ionIoni")
+    {
+      return fKill;
+    }
     return fUrgent;
 }

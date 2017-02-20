@@ -34,6 +34,10 @@ class DAMICParticleSource: public G4VPrimaryGenerator{
 
     //bools
 
+    void AddVolume(G4String, G4double);
+    void CalculProba();
+    void ChooseVolume();
+
     G4bool IsSurface();
     G4bool IsVolume();
     G4bool IsMaterial();
@@ -75,6 +79,11 @@ class DAMICParticleSource: public G4VPrimaryGenerator{
     G4String MotherVolume;
     G4String Material;
 
+    std::vector<G4String> VolumesUse;
+    std::vector<G4double> VolumesUseMass;
+    std::vector<G4double> VolumesConcentration;
+    std::vector<G4double> Proba;
+    G4bool changes;
     //Navigator for Geometry
     G4Navigator* gNavigator;
     // Messenger

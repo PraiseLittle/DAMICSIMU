@@ -4,6 +4,7 @@
 #include "DAMICDetectorVessel.hh"
 #include "DAMICDetectorOutterLead.hh"
 #include "DAMICDetectorModules.hh"
+#include "DAMICCCDSD.hh"
 
 #include "G4Material.hh"
 #include "G4NistManager.hh"
@@ -21,6 +22,8 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
 #include "G4RunManager.hh"
+#include "G4SDManager.hh"
+#include "G4VSensitiveDetector.hh"
 
 #include "G4UnionSolid.hh"
 #include "G4SubtractionSolid.hh"
@@ -34,7 +37,7 @@
 #include <cmath>
 
 
-DAMICDetectorConstruction::DAMICDetectorConstruction():G4VUserDetectorConstruction(),fCheckOverlaps(true)
+DAMICDetectorConstruction::DAMICDetectorConstruction():G4VUserDetectorConstruction(),fCheckOverlaps(true), fCCDSensor(0)
 {
   G4NistManager* nist = G4NistManager::Instance();
 
@@ -73,9 +76,20 @@ G4VPhysicalVolume* DAMICDetectorConstruction::Construct()
 
   G4LogicalVolume* VesselLV = GetConstructionVesselandOutter();
 
-
   G4PVPlacement* VesselPV = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), VesselLV, "VesselPV", WorldLV, false, 0, fCheckOverlaps);
-
+  fCCDSensor = G4LogicalVolumeStore::GetInstance()->GetVolume("CCDSensor");
   return WorldPV;
+
+}
+
+void DAMICDetectorConstruction::ConstructSDandField(){
+
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+  G4String SDname;
+
+  G4VSensitiveDetector* CCD = new DAMICCCDSD(SDname = "/DAMIC/CCD");
+  SDman->AddNewDetector(CCD);
+  fCCDSensor->SetSensitiveDetector(CCD);
+
 
 }
