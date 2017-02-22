@@ -3,6 +3,7 @@
 
 #include "G4VSensitiveDetector.hh"
 #include "DAMICCCDHit.hh"
+#include <vector>
 
 class G4Step;
 class G4HCofThisEvent;
@@ -17,9 +18,14 @@ public:
     virtual void Initialize(G4HCofThisEvent*HCE);
     virtual G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);
 
+    G4int GetCCDNumber(G4double globZ);
+
 private:
     DAMICCCDHitsCollection* fHitsCollection;
     G4int fHitID;
+    std::vector<G4double> fPositionCCD;
+    G4double fThickCCD;
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

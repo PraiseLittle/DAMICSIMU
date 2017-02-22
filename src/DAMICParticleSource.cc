@@ -198,7 +198,7 @@ void DAMICParticleSource::AddVolume(G4String Volume, G4double Concentration){
 
 void DAMICParticleSource::CalculProba()
 {
-  G4cout << " je suis calcProba" << G4endl;
+  //G4cout << " je suis calcProba" << G4endl;
   if (changes){
     //G4cout << "changes" << G4endl;
     Proba={};
@@ -225,20 +225,20 @@ void DAMICParticleSource::CalculProba()
 
 void DAMICParticleSource::ChooseVolume()
 {
-  G4cout << " je suis chovol" << G4endl;
+  //G4cout << " je suis chovol" << G4endl;
   G4double tryVol = 1*G4UniformRand();
   G4bool found = false;
   G4int i = 0;
   while(!found){
     if (tryVol <= Proba[i]){
-      G4cout << VolumesUse[i] << G4endl;
+      //G4cout << VolumesUse[i] << G4endl;
 
       found = true;
       VolumeSource = VolumesUse[i];
     }
     i++;
   }
-  G4cout << VolumeSource << G4endl;
+  //G4cout << VolumeSource << G4endl;
 }
 
 void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUse, G4String VolumeUse){

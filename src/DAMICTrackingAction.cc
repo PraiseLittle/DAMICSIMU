@@ -56,7 +56,7 @@ void DAMICTrackingAction::PostUserTrackingAction(const G4Track* aTrack){
             G4double Energy = (*secondaries)[i]->GetKineticEnergy();
             G4String VolumeName = (*secondaries)[i]->GetVolume()->GetName();
             //G4cout << ProcessCreator << G4endl;
-
+            
             DAMICTrackInformation* infoNew = new DAMICTrackInformation(info, ParticlePDG, Energy, IDTrack, VolumeName);
 
             (*secondaries)[i]->SetUserInformation(infoNew);

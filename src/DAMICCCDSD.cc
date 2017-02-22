@@ -13,15 +13,18 @@
 #include "G4VProcess.hh"
 #include "G4EventManager.hh"
 #include "G4Event.hh"
+#include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
+#include <cmath>
 
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 DAMICCCDSD::DAMICCCDSD(G4String name)
 : G4VSensitiveDetector(name), fHitsCollection(0), fHitID(-1)
 {
     G4String HCname = "CCDColl";
     collectionName.insert(HCname);
+    fPositionCCD = {-305.405, -285.405, -265.405, -245.405, -225.405, -205.405};
+    fThickCCD = 0.675*mm;
 }
 
 
@@ -44,18 +47,39 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
 
     G4AnalysisManager* man = G4AnalysisManager::Instance();
     G4String nameProcess =step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
-
+    G4TouchableHandle theTouchablePre = step->GetPreStepPoint()->GetTouchableHandle();
     G4TouchableHandle theTouchable = step->GetPostStepPoint()->GetTouchableHandle();
+    G4String volumeNname = theTouchable->GetVolume()->GetLogicalVolume()->GetName();
+    G4String volumeNnname = theTouchablePre->GetVolume()->GetLogicalVolume()->GetName();
+    //G4cout << nameProcess << G4endl;
+    //G4cout << volumeNname << G4endl;
+    //G4cout << volumeNnname << G4endl;
     G4ThreeVector preWorldPostion = step->GetPreStepPoint()->GetPosition();
     G4ThreeVector worldPosition = step->GetPostStepPoint()->GetPosition();
     G4ThreeVector localPosition = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
-
+    //G4cout << " c'est la position world  " << worldPosition << G4endl;
+    //G4cout << " c'est la position locale  " << localPosition << G4endl;
     G4TouchableHistory* touchable
       = (G4TouchableHistory*)(step->GetPreStepPoint()->GetTouchable());
-    G4int copyNo = touchable->GetVolume()->GetCopyNo();
-
-    G4ThreeVector Position = localPosition;
+    G4int copyNo = GetCCDNumber(worldPosition.getZ());
+    //G4cout << " c la copie" << G4endl;
+    //G4cout << copyNo << G4endl;
+    G4ThreeVector tesVector = G4ThreeVector(worldPosition.getX(), worldPosition.getY(), fPositionCCD[copyNo-1]);
+    G4ThreeVector localTest = theTouchable->GetHistory()->GetTopTransform().TransformPoint(tesVector);
+    //G4cout << "tesVector" << tesVector << G4endl;
+    //G4cout << " local test" << localTest << G4endl;;
     G4int TopBot = 0;
+    G4ThreeVector Position = localPosition;
+    if (worldPosition.getZ()>preWorldPostion.getZ()){
+      TopBot = 0;
+    }
+    else if(worldPosition.getZ()<preWorldPostion.getZ()){
+      TopBot = 1;
+    }
+    else{
+      TopBot = 2;
+    }
+
     G4double EnergyDep = 0;
     G4int PartIDElec = step->GetTrack()->GetParentID();;
     G4String Process = "NULL";
@@ -107,7 +131,7 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
         }
       }
       PDGSecondaryNuc = Particles[PosSecondNuc];
-
+      //G4cout<< PDGSecondaryNuc << G4endl;
       PDGPartASecond = Particles[PosSecondNuc+1];
       EnergyPartASecond = info->GetEnergyParticle()[PosSecondNuc+1];
 
@@ -179,4 +203,21 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
 
 
     return true;
+}
+
+G4int DAMICCCDSD::GetCCDNumber(G4double globZ)
+{
+  G4int numberCCD = fPositionCCD.size();
+  G4int CCDnum = 0;
+  for (G4int i = 0;i <=numberCCD;i++){
+    G4double space = fabs(globZ) - fabs(fPositionCCD[i]);
+    //G4cout << globZ << "     " << fPositionCCD[i] << G4endl;
+    //G4cout<< " try " << space << G4endl;
+    if (fabs(space) <= fThickCCD/2){
+      CCDnum = i+1;
+      //G4cout << CCDnum << G4endl;
+      break;
+    }
+  }
+  return CCDnum;
 }

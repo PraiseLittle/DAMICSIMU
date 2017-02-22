@@ -30,15 +30,6 @@ DAMICPrimaryGeneratorAction::DAMICPrimaryGeneratorAction():G4VUserPrimaryGenerat
   energyPri=0;
   seeds[0] =-1;
   seeds[1] =-1;
-  G4ParticleTable* tablePart = G4ParticleTable::GetParticleTable();
-  G4ParticleDefinition* particleInject = tablePart->FindParticle("e-");
-  G4ParticleDefinition* IonInject = G4IonTable::GetIonTable()->GetIon(95,241);
-  particleGun->DoVolume();
-  particleGun->AddVolume("BottomPlatePV",1);
-  particleGun->AddVolume("RearPlatePV",1);
-  particleGun->AddVolume("TopPlatePV",1);
-  particleGun->AddVolume("EndCoverPlatePV",1);
-  particleGun->SetParticleDefinition(IonInject);
 
 }
 
@@ -53,7 +44,16 @@ void DAMICPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // seeds
   seeds[0] = *G4Random::getTheSeeds();
   seeds[1] = *(G4Random::getTheSeeds()+1);
-
+  G4ParticleTable* tablePart = G4ParticleTable::GetParticleTable();
+  G4ParticleDefinition* particleInject = tablePart->FindParticle("e-");
+  G4ParticleDefinition* IonInject = G4IonTable::GetIonTable()->GetIon(27,60);
+  particleGun->DoVolume();
+  //particleGun->AddVolume("BottomPlatePV",1);
+  particleGun->AddVolume("RearPlatePV",1);
+  //particleGun->AddVolume("TopPlatePV",1);
+  //particleGun->AddVolume("EndCoverPlatePV",1);
+  particleGun->AddVolume("SidePlate1PV",3);
+  particleGun->SetParticleDefinition(IonInject);
   particleGun->GeneratePrimaryVertex(anEvent);
 
 }
