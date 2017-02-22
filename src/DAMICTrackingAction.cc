@@ -17,6 +17,7 @@ DAMICTrackingAction::~DAMICTrackingAction()
 }
 
 void DAMICTrackingAction::PreUserTrackingAction(const G4Track* aTrack){
+  //G4cout << "je rentre dans le trackpre" << G4endl;
   G4int IDTrack = aTrack->GetParentID();
   G4int ParticlePDG = aTrack->GetParticleDefinition()->GetPDGEncoding();
   G4double Energy = aTrack->GetKineticEnergy();
@@ -29,11 +30,12 @@ void DAMICTrackingAction::PreUserTrackingAction(const G4Track* aTrack){
 
 
 void DAMICTrackingAction::PostUserTrackingAction(const G4Track* aTrack){
-
+  //G4cout << "je rentre dans le trackpost" << G4endl;
   //VTrackingManager = G4TrackingManager->GetTrackingManager();
-  G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
+  /*G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
   if(secondaries)
     {
+      //G4cout << "opop1" << G4endl;
       DAMICTrackInformation* info = (DAMICTrackInformation*)(aTrack->GetUserInformation());
       size_t nSeco = secondaries->size();
       if(nSeco>0)
@@ -46,9 +48,9 @@ void DAMICTrackingAction::PostUserTrackingAction(const G4Track* aTrack){
             ProcessCreator = (*secondaries)[i]->GetCreatorProcess()->GetProcessName();
           }
           //ssG4cout << ProcessCreator << G4endl;
-
-          if (ProcessCreator != "eIoni" && ProcessCreator != "ionIoni"){
-
+          //G4cout << "opop3" << G4endl;
+          if (ProcessCreator != "eIoni" && ProcessCreator != "ionIoni" && ProcessCreator != "muIoni"){
+            //G4cout << "opop2" << G4endl;
 
             //G4cout << i << G4endl;
             G4int ParticlePDG = (*secondaries)[i]->GetParticleDefinition()->GetPDGEncoding();
@@ -56,13 +58,14 @@ void DAMICTrackingAction::PostUserTrackingAction(const G4Track* aTrack){
             G4double Energy = (*secondaries)[i]->GetKineticEnergy();
             G4String VolumeName = (*secondaries)[i]->GetVolume()->GetName();
             //G4cout << ProcessCreator << G4endl;
-            
+
             DAMICTrackInformation* infoNew = new DAMICTrackInformation(info, ParticlePDG, Energy, IDTrack, VolumeName);
 
             (*secondaries)[i]->SetUserInformation(infoNew);
           }
         }
       }
+      //G4cout << "je sort dans le trackpost" << G4endl;
       //G4cout << nSeco << G4endl;
-    }
+    }*/
 }

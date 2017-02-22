@@ -33,25 +33,30 @@ void DAMICStackingAction::SetPartEnergyTot(G4double nrj)
 
 G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* aTrack)
 {
-    G4String Name = aTrack->GetDefinition()->GetParticleName();
+    /*G4String Name = aTrack->GetDefinition()->GetParticleName();
     SetPartName(Name);
-
-
+    //G4cout << "je rentre dans le stack" << G4endl;
+    //G4cout << "bimbimoup" << G4endl;
     G4double energy = aTrack->GetTotalEnergy();
     G4double energykin = aTrack->GetKineticEnergy();
     SetPartEnergyKin(energykin);
-    SetPartEnergyTot(energy);
+    SetPartEnergyTot(energy);*/
     G4int IDpart = aTrack->GetParentID();
     G4String ProcessCreatorName;
     if (IDpart != 0){
+
+      return fKill;
       ProcessCreatorName = aTrack->GetCreatorProcess()->GetProcessName();
     }
-    if (energykin<1*eV && Name=="e-"){ // Kill particles with less than 1 eV  kinetic energy
+    /*if (energykin<1*eV && Name=="e-"){ // Kill particles with less than 1 eV  kinetic energy
         return fKill;
     }
-    if (ProcessCreatorName == "eIoni" || ProcessCreatorName == "ionIoni")
+    if (ProcessCreatorName == "eIoni" || ProcessCreatorName == "ionIoni" || ProcessCreatorName == "muIoni")
     {
+      //G4cout << Name << G4endl;
       return fKill;
     }
+    //G4cout << ProcessCreatorName << G4endl;
+    //G4cout <<" je sors du stack "<< G4endl;*/
     return fUrgent;
 }

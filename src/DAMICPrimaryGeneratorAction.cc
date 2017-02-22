@@ -42,18 +42,22 @@ void DAMICPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
 
   // seeds
+  //G4cout << "je rentre dans prim" << G4endl;
   seeds[0] = *G4Random::getTheSeeds();
   seeds[1] = *(G4Random::getTheSeeds()+1);
   G4ParticleTable* tablePart = G4ParticleTable::GetParticleTable();
-  G4ParticleDefinition* particleInject = tablePart->FindParticle("e-");
-  G4ParticleDefinition* IonInject = G4IonTable::GetIonTable()->GetIon(27,60);
+  G4ParticleDefinition* particleInject = tablePart->FindParticle("mu-");
+  //G4ParticleDefinition* IonInject = G4IonTable::GetIonTable()->GetIon(27,60);
   particleGun->DoVolume();
+  particleGun->SetParticleEnergy(4*GeV);
+  particleGun->SetParticleMomentumDirection(G4ParticleMomentum(0.,0.,-1));
   //particleGun->AddVolume("BottomPlatePV",1);
-  particleGun->AddVolume("RearPlatePV",1);
+  //particleGun->AddVolume("RearPlatePV",1);
   //particleGun->AddVolume("TopPlatePV",1);
   //particleGun->AddVolume("EndCoverPlatePV",1);
-  particleGun->AddVolume("SidePlate1PV",3);
-  particleGun->SetParticleDefinition(IonInject);
+  particleGun->AddVolume("muonsPV",1);
+  particleGun->SetParticleDefinition(particleInject);
   particleGun->GeneratePrimaryVertex(anEvent);
+  //G4cout << "je sors du prim" << G4endl;
 
 }

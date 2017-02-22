@@ -23,6 +23,8 @@ DAMICSteppingAction::~DAMICSteppingAction()
 
 void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
 {
+  //G4cout << "je rentre dans le step" << G4endl;
+  //G4cout << "bimbimoup" << G4endl;
   /*G4LogicalVolume* volume
     = step->GetPreStepPoint()->GetTouchableHandle()
       ->GetVolume()->GetLogicalVolume();
@@ -36,6 +38,13 @@ void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
   /*G4String PartName = step->GetTrack()->GetDefinition()->GetParticleName();
   G4String Material = step->GetTrack()->GetMaterial()->GetName();
   G4int IDpart = step->GetTrack()->GetParentID();*/
+
+  /*G4LogicalVolume* volume
+    = step->GetPreStepPoint()->GetTouchableHandle()
+      ->GetVolume()->GetLogicalVolume();
+  G4String NameVol = volume->GetName();
+
+  G4cout << NameVol << G4endl;*/
 /*
   G4TouchableHandle theTouchable = endPoint->GetTouchableHandle();
   G4int copyNo = theTouchable->GetCopyNumber();

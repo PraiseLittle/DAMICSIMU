@@ -254,9 +254,10 @@ void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUs
   G4bool VolumeFit;
   while(!found){
     if (MotherUse == "WorldLV" ){
-      posx = 2.0*m*G4UniformRand()-1*m;
-      posy = 2.0*m*G4UniformRand()-1*m;
-      posz = 2.0*m*G4UniformRand()-1*m;
+      posx = 2.15*m*G4UniformRand()-1.075*m;
+      posy = 2.2*m*G4UniformRand()-1.1*m;
+      posz = 2.2*m*G4UniformRand()-1.1*m;
+      //G4cout << "bimbim ici" << G4endl;
     }
     else if (MotherUse == "VesselLV" || MotherUse =="Assembly1"|| MotherUse =="Assembly2"){
       posx = 2.0*m*G4UniformRand()-1*m;
@@ -302,6 +303,7 @@ void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUs
 
 void DAMICParticleSource::MaterialCoordinates(){
   CalculPosition(MotherVolume, Material, "NULL");
+  //G4cout << "bimbimbap" << G4endl;
 }
 
 void DAMICParticleSource::VolumeCoordinates(){
@@ -353,6 +355,7 @@ void DAMICParticleSource::GeneratePrimaryVertex(G4Event* evt){
   if (IsVolume()){
     CalculProba();
     ChooseVolume();
+    //G4cout << "bimbimoup" << G4endl;
     VolumeCoordinates();
   }
 
@@ -367,10 +370,12 @@ void DAMICParticleSource::GeneratePrimaryVertex(G4Event* evt){
   G4double px = pmom*ParticleMomentumDirection.x();
   G4double py = pmom*ParticleMomentumDirection.y();
   G4double pz = pmom*ParticleMomentumDirection.z();
-
+  //G4cout << "bimbimoup" << G4endl;
   G4PrimaryParticle* particle = new G4PrimaryParticle(ParticleDefinition, px, py, pz);
   particle->SetMass( mass );
   particle->SetCharge( ParticleCharge );
   vertex->SetPrimary( particle );
+
   evt->AddPrimaryVertex(vertex);
+  //G4cout << "bimbimoup" << G4endl;
 }

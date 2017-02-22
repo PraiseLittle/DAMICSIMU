@@ -44,7 +44,7 @@ void DAMICCCDSD::Initialize(G4HCofThisEvent* hce)
 
 G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
 {
-
+    //G4cout << " je rentre dans le SD" << G4endl;
     G4AnalysisManager* man = G4AnalysisManager::Instance();
     G4String nameProcess =step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
     G4TouchableHandle theTouchablePre = step->GetPreStepPoint()->GetTouchableHandle();
@@ -101,19 +101,23 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
     G4int CCDNum = copyNo;
     G4String ProcessCreatorName = "NULL";
 
+    if (PartIDElec != 0){
+      ProcessCreatorName = step->GetTrack()->GetCreatorProcess()->GetProcessName();
+    }
+    else{
+      ProcessCreatorName ="Prim";
+    }
 
-    ProcessCreatorName = step->GetTrack()->GetCreatorProcess()->GetProcessName();
-
-
-
+    //G4cout << "bimbimoup" << G4endl;
     DAMICTrackInformation* info = (DAMICTrackInformation*)(step->GetTrack()->GetUserInformation());
-
+    //G4cout << "bimbimoup" << G4endl;
     const std::vector<const G4Track*>*  SecondariesB =step->GetSecondaryInCurrentStep() ;
     const std::vector<const G4Track*> Secondaries = *SecondariesB ;
-    if (nameProcess == "eIoni" || nameProcess == "ionIoni")
+    //G4cout << "bimbimoup" << G4endl;
+    if (nameProcess == "eIoni" || nameProcess == "ionIoni" || nameProcess == "muIoni" )
     {
       //G4cout << " Original Track ID " << info->GetPDGParticle()[1] << G4endl;
-
+      //G4cout << "bimbimoup" << G4endl;
       std::vector<G4int> Particles = info->GetPDGParticle();
       G4int Lenght = Particles.size();
       Process = ProcessCreatorName;
@@ -134,7 +138,7 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
       //G4cout<< PDGSecondaryNuc << G4endl;
       PDGPartASecond = Particles[PosSecondNuc+1];
       EnergyPartASecond = info->GetEnergyParticle()[PosSecondNuc+1];
-
+      //G4cout << "bimbimoup" << G4endl;
 
 
 
@@ -187,7 +191,7 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
       man->FillNtupleIColumn(0,8,PartID);
       man->FillNtupleSColumn(0,9,ProdVolume);
       man->FillNtupleDColumn(0,10,Energy);
-      // Primary
+    /*  // Primary
       man->FillNtupleDColumn(0,11,Time);
       man->FillNtupleIColumn(0,12,PDGPrimaryNuc);
       man->FillNtupleIColumn(0,13,EventID);
@@ -196,6 +200,18 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
       //Part after Secodary
       man->FillNtupleIColumn(0,15,PDGPartASecond);
       man->FillNtupleDColumn(0,16,EnergyPartASecond);
+      // CCD Num
+      man->FillNtupleIColumn(0,17,CCDNum);
+      man->AddNtupleRow(0);*/
+
+      man->FillNtupleDColumn(0,11,Time);
+      man->FillNtupleIColumn(0,12,PDGPrimaryNuc);
+      man->FillNtupleIColumn(0,13,EventID);
+      //Secondary Nucleus
+      man->FillNtupleIColumn(0,14,0);
+      //Part after Secodary
+      man->FillNtupleIColumn(0,15,0);
+      man->FillNtupleDColumn(0,16,0);
       // CCD Num
       man->FillNtupleIColumn(0,17,CCDNum);
       man->AddNtupleRow(0);

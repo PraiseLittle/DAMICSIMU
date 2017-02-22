@@ -310,11 +310,11 @@ G4LogicalVolume* GetConstructionCopperAndInner()
 
 
   G4PVPlacement* ModulePV1 = new G4PVPlacement(Module44Rot, Module44Vect, ModuleLV1, "ModulePV1", PrinTubLV, false, 0, false);
-  G4PVPlacement* ModulePV2 = new G4PVPlacement(Module44Rot, Module442Vect, ModuleLV2, "ModulePV2", PrinTubLV, false, 0, false);
-  G4PVPlacement* ModulePV3 = new G4PVPlacement(Module44Rot, Module443Vect, ModuleLV3, "ModulePV3", PrinTubLV, false, 0, false);
-  G4PVPlacement* ModulePV4 = new G4PVPlacement(Module44Rot, Module444Vect, ModuleLV4, "ModulePV4", PrinTubLV, false, 0, false);
-  G4PVPlacement* ModulePV5 = new G4PVPlacement(Module44Rot, Module445Vect, ModuleLV5, "ModulePV5", PrinTubLV, false, 0, false);
-  G4PVPlacement* ModulePV6 = new G4PVPlacement(Module44Rot, Module446Vect, ModuleLV6, "ModulePV6", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV2 = new G4PVPlacement(Module44Rot, Module442Vect, ModuleLV1, "ModulePV2", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV3 = new G4PVPlacement(Module44Rot, Module443Vect, ModuleLV1, "ModulePV3", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV4 = new G4PVPlacement(Module44Rot, Module444Vect, ModuleLV1, "ModulePV4", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV5 = new G4PVPlacement(Module44Rot, Module445Vect, ModuleLV1, "ModulePV5", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV6 = new G4PVPlacement(Module44Rot, Module446Vect, ModuleLV1, "ModulePV6", PrinTubLV, false, 0, false);
 
   G4PVPlacement* SpacerPlate1PV = new G4PVPlacement(RotSpacerPlate1, VectSpacerPlate1, SpacerPlate1LV, "SpacerPlate1PV", PrinTubLV, false, 0, false);
   G4PVPlacement* GoodLead1PV = new G4PVPlacement(RotGoodLead1, VectGoodLead1, GoodLead1LV, "GoodLead1PV", PrinTubLV, false, 0, false);
