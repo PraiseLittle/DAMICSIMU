@@ -18,21 +18,27 @@ DAMICTrackingAction::~DAMICTrackingAction()
 
 void DAMICTrackingAction::PreUserTrackingAction(const G4Track* aTrack){
   //G4cout << "je rentre dans le trackpre" << G4endl;
+
   G4int IDTrack = aTrack->GetParentID();
+  if (IDTrack == 0){
   G4int ParticlePDG = aTrack->GetParticleDefinition()->GetPDGEncoding();
   G4double Energy = aTrack->GetKineticEnergy();
   G4String VolumeName = aTrack->GetVolume()->GetName();
+  G4ThreeVector Position = aTrack->GetPosition();
+  G4double vTime = aTrack->GetGlobalTime()/s;
   fpTrackingManager->SetStoreTrajectory(true);
-  if (IDTrack == 0){
-    fpTrackingManager->SetUserTrackInformation(new DAMICTrackInformation(ParticlePDG, Energy, IDTrack, VolumeName));
+
+
+  fpTrackingManager->SetUserTrackInformation(new DAMICTrackInformation(ParticlePDG, Energy, IDTrack, VolumeName, Position, vTime));
   }
+
 }
 
 
 void DAMICTrackingAction::PostUserTrackingAction(const G4Track* aTrack){
   //G4cout << "je rentre dans le trackpost" << G4endl;
   //VTrackingManager = G4TrackingManager->GetTrackingManager();
-  /*G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
+  G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
   if(secondaries)
     {
       //G4cout << "opop1" << G4endl;
@@ -57,9 +63,12 @@ void DAMICTrackingAction::PostUserTrackingAction(const G4Track* aTrack){
             //G4cout << ParticlePDG << G4endl;
             G4double Energy = (*secondaries)[i]->GetKineticEnergy();
             G4String VolumeName = (*secondaries)[i]->GetVolume()->GetName();
-            //G4cout << ProcessCreator << G4endl;
-
-            DAMICTrackInformation* infoNew = new DAMICTrackInformation(info, ParticlePDG, Energy, IDTrack, VolumeName);
+            G4ThreeVector Position = (*secondaries)[i]->GetPosition();
+            G4double vTime = (*secondaries)[i]->GetGlobalTime()/s;
+            //G4cout << "the particle pdg is : " << ParticlePDG << G4endl;
+            //G4cout << "the creator process " << ProcessCreator << G4endl;
+            //G4cout << "the time is " << vTime;
+            DAMICTrackInformation* infoNew = new DAMICTrackInformation(info, ParticlePDG, Energy, IDTrack, VolumeName, Position, vTime);
 
             (*secondaries)[i]->SetUserInformation(infoNew);
           }
@@ -67,5 +76,5 @@ void DAMICTrackingAction::PostUserTrackingAction(const G4Track* aTrack){
       }
       //G4cout << "je sort dans le trackpost" << G4endl;
       //G4cout << nSeco << G4endl;
-    }*/
+    }
 }

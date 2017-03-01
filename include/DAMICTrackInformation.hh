@@ -4,13 +4,14 @@
 #include "globals.hh"
 #include "G4VUserTrackInformation.hh"
 #include <vector>
+#include "G4ThreeVector.hh"
 
 class DAMICTrackInformation: public G4VUserTrackInformation
 {
   public:
-    DAMICTrackInformation(G4int VPDGParticle, G4double VEnergyParticle, G4int VParticleID, G4String VMaterialProd);
+    DAMICTrackInformation(G4int VPDGParticle, G4double VEnergyParticle, G4int VParticleID, G4String VMaterialProd, G4ThreeVector VPosition, G4double  VTime);
     DAMICTrackInformation(const DAMICTrackInformation* InfoTrack);
-    DAMICTrackInformation(const DAMICTrackInformation* InfoTrack, G4int VPDGParticle, G4double VEnergyParticle, G4int VParticleID, G4String VMaterialProd);
+    DAMICTrackInformation(const DAMICTrackInformation* InfoTrack, G4int VPDGParticle, G4double VEnergyParticle, G4int VParticleID, G4String VMaterialProd, G4ThreeVector VPosition, G4double  VTime);
     ~DAMICTrackInformation();
 
     virtual void Print() const {};
@@ -27,6 +28,11 @@ class DAMICTrackInformation: public G4VUserTrackInformation
     void AddMaterialProd(G4String val) { MaterialProd.push_back(val) ; }
     std::vector<G4String> GetMaterialProd() const { return MaterialProd; }
 
+    void AddStartPosition(G4ThreeVector val) {StartPosition.push_back(val);}
+    std::vector<G4ThreeVector> GetStartPosition() const {return StartPosition;}
+
+    void AddTime(G4double val){ Time.push_back(val);}
+    std::vector<G4double> GetTime() const {return Time;}
 
 
 
@@ -35,7 +41,8 @@ class DAMICTrackInformation: public G4VUserTrackInformation
     std::vector<G4double> EnergyParticle;
     std::vector<G4int> ParticleID;
     std::vector<G4String> MaterialProd;
-
+    std::vector<G4ThreeVector> StartPosition;
+    std::vector<G4double> Time;
 
 };
 

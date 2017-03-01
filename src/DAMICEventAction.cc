@@ -1,10 +1,12 @@
 #include "DAMICEventAction.hh"
 #include "DAMICRunAction.hh"
+#include "DAMICAnalysisManager.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 DAMICEventAction::DAMICEventAction(DAMICRunAction* runAction)
 : G4UserEventAction(),
@@ -17,12 +19,12 @@ DAMICEventAction::DAMICEventAction(DAMICRunAction* runAction)
   AtomicMass = 0;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 
 DAMICEventAction::~DAMICEventAction()
 {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 
 void DAMICEventAction::BeginOfEventAction(const G4Event* Event)
 {

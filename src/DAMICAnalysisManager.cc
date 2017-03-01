@@ -38,11 +38,14 @@ void DAMICAnalysisManager::Book()
     man->CreateNtupleIColumn(OutPutFile,"PartID");
     man->CreateNtupleSColumn(OutPutFile,"ProdVolume");
     man->CreateNtupleDColumn(OutPutFile,"Energy");
-
-    // Primary
+    // Time ionIoni
     man->CreateNtupleDColumn(OutPutFile,"Time");
+    //Primary Nucleus
     man->CreateNtupleIColumn(OutPutFile,"PDGPrimaryNuc");
     man->CreateNtupleIColumn(OutPutFile,"IDEvent");
+    man->CreateNtupleDColumn(OutPutFile,"X");
+    man->CreateNtupleDColumn(OutPutFile,"Y");
+    man->CreateNtupleDColumn(OutPutFile,"Z");
 
     //Secondary Nucleus
     man->CreateNtupleIColumn(OutPutFile,"PDGSecondaryNuc");
@@ -53,6 +56,12 @@ void DAMICAnalysisManager::Book()
     man->CreateNtupleIColumn(OutPutFile,"CCDNum");
 
     man->FinishNtuple(OutPutFile);
+
+    G4int RANDOM = man->CreateNtuple("RANDOM", "RANDOM");
+    man->CreateNtupleDColumn(RANDOM,"X");
+    man->CreateNtupleDColumn(RANDOM,"Y");
+    man->CreateNtupleDColumn(RANDOM,"Z");
+    man->FinishNtuple(RANDOM);
 
 
 

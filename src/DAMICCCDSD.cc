@@ -15,6 +15,8 @@
 #include "G4Event.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4RunManager.hh"
+#include "Randomize.hh"
 #include <cmath>
 
 
@@ -64,17 +66,16 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
     G4int copyNo = GetCCDNumber(worldPosition.getZ());
     //G4cout << " c la copie" << G4endl;
     //G4cout << copyNo << G4endl;
-    G4ThreeVector tesVector = G4ThreeVector(worldPosition.getX(), worldPosition.getY(), fPositionCCD[copyNo-1]);
+    G4ThreeVector tesVector = G4ThreeVector(3,-38.667+60.045+1, fPositionCCD[copyNo-1]);
     G4ThreeVector localTest = theTouchable->GetHistory()->GetTopTransform().TransformPoint(tesVector);
-    //G4cout << "tesVector" << tesVector << G4endl;
-    //G4cout << " local test" << localTest << G4endl;;
+    //G4cout << "localTest" << tesVector << G4endl;
     G4int TopBot = 0;
     G4ThreeVector Position = localPosition;
     if (worldPosition.getZ()>preWorldPostion.getZ()){
-      TopBot = 0;
+      TopBot = 1;
     }
     else if(worldPosition.getZ()<preWorldPostion.getZ()){
-      TopBot = 1;
+      TopBot = 0;
     }
     else{
       TopBot = 2;
@@ -88,10 +89,12 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
     G4int PartID = 0;
     G4String ProdVolume = "NULL";
     G4double Energy = 0;
-    //Primary Nuc
+    // Time Ioni
     G4double Time = 0;
+    //Primary Nuc
     G4int PDGPrimaryNuc = 0;
     G4int EventID = 0;
+    G4ThreeVector PositionPrim;
     //Secondary Nuc
     G4int PDGSecondaryNuc = 0;
     //Part after Second
@@ -116,17 +119,21 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
     //G4cout << "bimbimoup" << G4endl;
     if (nameProcess == "eIoni" || nameProcess == "ionIoni" || nameProcess == "muIoni" )
     {
+      G4RunManager::GetRunManager()->rndmSaveThisEvent();
       //G4cout << " Original Track ID " << info->GetPDGParticle()[1] << G4endl;
       //G4cout << "bimbimoup" << G4endl;
+      Time = step->GetPostStepPoint()->GetGlobalTime()/s;
       std::vector<G4int> Particles = info->GetPDGParticle();
       G4int Lenght = Particles.size();
       Process = ProcessCreatorName;
-      PDGNumber = Particles[Lenght-1];
-      PartID = info->GetParticleID()[Lenght-1];
-      ProdVolume = info->GetMaterialProd()[Lenght-1];
-      Energy = info->GetEnergyParticle()[Lenght-1];
+      PDGNumber = Particles[Lenght-2];
+      PartID = info->GetParticleID()[Lenght-2];
+      ProdVolume = info->GetMaterialProd()[Lenght-2];
+      Energy = info->GetEnergyParticle()[Lenght-2];
       G4int PosSecondNuc = 0;
       PDGPrimaryNuc = Particles[0];
+      PositionPrim = info->GetStartPosition()[0];
+
       EventID = G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();
       for (G4int i = 0; i <Lenght; i++){
         G4int result = Particles[i] - 1000000000;
@@ -191,20 +198,23 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
       man->FillNtupleIColumn(0,8,PartID);
       man->FillNtupleSColumn(0,9,ProdVolume);
       man->FillNtupleDColumn(0,10,Energy);
-    /*  // Primary
+      // Primary
       man->FillNtupleDColumn(0,11,Time);
       man->FillNtupleIColumn(0,12,PDGPrimaryNuc);
       man->FillNtupleIColumn(0,13,EventID);
+      man->FillNtupleDColumn(0,14,PositionPrim.getX());
+      man->FillNtupleDColumn(0,15,PositionPrim.getY());
+      man->FillNtupleDColumn(0,16,PositionPrim.getZ());
       //Secondary Nucleus
-      man->FillNtupleIColumn(0,14,PDGSecondaryNuc);
+      man->FillNtupleIColumn(0,17,PDGSecondaryNuc);
       //Part after Secodary
-      man->FillNtupleIColumn(0,15,PDGPartASecond);
-      man->FillNtupleDColumn(0,16,EnergyPartASecond);
+      man->FillNtupleIColumn(0,18,PDGPartASecond);
+      man->FillNtupleDColumn(0,19,EnergyPartASecond);
       // CCD Num
-      man->FillNtupleIColumn(0,17,CCDNum);
-      man->AddNtupleRow(0);*/
+      man->FillNtupleIColumn(0,20,CCDNum);
+      man->AddNtupleRow(0);
 
-      man->FillNtupleDColumn(0,11,Time);
+      /*man->FillNtupleDColumn(0,11,Time);
       man->FillNtupleIColumn(0,12,PDGPrimaryNuc);
       man->FillNtupleIColumn(0,13,EventID);
       //Secondary Nucleus
@@ -214,7 +224,7 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
       man->FillNtupleDColumn(0,16,0);
       // CCD Num
       man->FillNtupleIColumn(0,17,CCDNum);
-      man->AddNtupleRow(0);
+      man->AddNtupleRow(0);*/
     }
 
 

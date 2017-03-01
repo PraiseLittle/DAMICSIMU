@@ -20,7 +20,7 @@ DAMICRunAction::~DAMICRunAction()
 void DAMICRunAction::BeginOfRunAction(const G4Run*)
 {
 
-  G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+  G4RunManager::GetRunManager()->SetRandomNumberStore(true);
   G4AnalysisManager* man = G4AnalysisManager::Instance();
   man->OpenFile();
 

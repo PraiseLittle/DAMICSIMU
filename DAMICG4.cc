@@ -19,6 +19,8 @@
 
 int main(int argc,char** argv) {
 
+  G4Random::setTheEngine(new CLHEP::HepJamesRandom);
+
   G4RunManager* runManager = new G4RunManager;
 
 

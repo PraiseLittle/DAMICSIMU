@@ -20,7 +20,7 @@
 #include <string>
 
 #include <fstream>
-#include <math.h>
+#include <cmath>
 using namespace std;
 
 DAMICPrimaryGeneratorAction::DAMICPrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
@@ -43,20 +43,21 @@ void DAMICPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   // seeds
   //G4cout << "je rentre dans prim" << G4endl;
-  seeds[0] = *G4Random::getTheSeeds();
-  seeds[1] = *(G4Random::getTheSeeds()+1);
+  //seeds[0] = *G4Random::getTheSeeds();
+  //seeds[1] = *(G4Random::getTheSeeds()+1);
   G4ParticleTable* tablePart = G4ParticleTable::GetParticleTable();
-  G4ParticleDefinition* particleInject = tablePart->FindParticle("mu-");
-  //G4ParticleDefinition* IonInject = G4IonTable::GetIonTable()->GetIon(27,60);
-  particleGun->DoVolume();
-  particleGun->SetParticleEnergy(4*GeV);
-  particleGun->SetParticleMomentumDirection(G4ParticleMomentum(0.,0.,-1));
-  //particleGun->AddVolume("BottomPlatePV",1);
-  //particleGun->AddVolume("RearPlatePV",1);
-  //particleGun->AddVolume("TopPlatePV",1);
-  //particleGun->AddVolume("EndCoverPlatePV",1);
-  particleGun->AddVolume("muonsPV",1);
-  particleGun->SetParticleDefinition(particleInject);
+  //G4ParticleDefinition* particleInject = tablePart->FindParticle("mu-");
+  G4ParticleDefinition* IonInject = G4IonTable::GetIonTable()->GetIon(27,60);
+  particleGun->DoMaterial();
+  particleGun->SetMaterialSource("G4_Cu");
+  particleGun->SetMotherVolume("WorldLV");
+  //particleGun->SetParticleEnergy(4*GeV);
+  //particleGun->SetParticleMomentumDirection(G4ParticleMomentum(-sqrt(3)/2,0.,sqrt(1)/2));
+  /*particleGun->AddVolume("BottomPlatePV",1);
+  particleGun->AddVolume("RearPlatePV",1);
+  particleGun->AddVolume("TopPlatePV",1);
+  particleGun->AddVolume("EndCoverPlatePV",1);*/
+  particleGun->SetParticleDefinition(IonInject);
   particleGun->GeneratePrimaryVertex(anEvent);
   //G4cout << "je sors du prim" << G4endl;
 

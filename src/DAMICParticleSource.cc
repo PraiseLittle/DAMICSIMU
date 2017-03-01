@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "DAMICParticleSource.hh"
+#include "DAMICAnalysisManager.hh"
 
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
@@ -204,7 +205,7 @@ void DAMICParticleSource::CalculProba()
     Proba={};
     G4double total = 0;
     G4int sizevols = VolumesUse.size();
-    G4cout << sizevols << G4endl;
+    //G4cout << sizevols << G4endl;
     for (G4int i = 0; i <sizevols; i++){
       G4double temp = VolumesConcentration[i]*VolumesUseMass[i];
       total += temp;
@@ -297,7 +298,11 @@ void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUs
     }
   }
   SourcePosition = G4ThreeVector(posx, posy, posz);
-
+  G4AnalysisManager* man = G4AnalysisManager::Instance();
+  man->FillNtupleDColumn(1,0,posx);
+  man->FillNtupleDColumn(1,1,posy);
+  man->FillNtupleDColumn(1,2,posz);
+  man->AddNtupleRow(1);
 }
 
 
