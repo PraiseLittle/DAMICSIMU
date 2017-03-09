@@ -48,7 +48,7 @@ void DAMICPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ParticleTable* tablePart = G4ParticleTable::GetParticleTable();
   //G4ParticleDefinition* particleInject = tablePart->FindParticle("mu-");
   G4ParticleDefinition* IonInject = G4IonTable::GetIonTable()->GetIon(27,60);
-  particleGun->DoMaterial();
+  /*particleGun->DoMaterial();
   particleGun->SetMaterialSource("G4_Cu");
   particleGun->SetMotherVolume("WorldLV");
   //particleGun->SetParticleEnergy(4*GeV);
@@ -57,6 +57,7 @@ void DAMICPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   particleGun->AddVolume("RearPlatePV",1);
   particleGun->AddVolume("TopPlatePV",1);
   particleGun->AddVolume("EndCoverPlatePV",1);*/
+
   particleGun->SetParticleDefinition(IonInject);
   particleGun->GeneratePrimaryVertex(anEvent);
   //G4cout << "je sors du prim" << G4endl;

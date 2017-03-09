@@ -130,6 +130,10 @@ G4LogicalVolume* GetConstructionCCDSubAssy44()
   G4double PosYSensor = 0;
   G4double PosXSensor = -SubX/2+76.2/2*mm;
   G4ThreeVector VectSensor = G4ThreeVector(PosXSensor, PosYSensor, PosZSensor);
+  G4ThreeVector uSensor = G4ThreeVector(0,1,0);
+  G4ThreeVector vSensor = G4ThreeVector(-1,0,0);
+  G4ThreeVector wSensor = G4ThreeVector(0,0,1);
+  G4RotationMatrix* rotSensor = new G4RotationMatrix(uSensor, vSensor, wSensor);
   /*----------FlexCablePos-----------*/
   G4double PosZFlexCable = PosZSensor+ 0.675/2*mm+0.305/2*mm;
   G4double PosYFlexCable = 0;
@@ -143,7 +147,7 @@ G4LogicalVolume* GetConstructionCCDSubAssy44()
   G4ThreeVector VectSiliconSubstrate = G4ThreeVector(PosXSiliconSubstrate, PosYSiliconSubstrate, PosZSiliconSubstrate);
 
 
-  G4PVPlacement* CCDSensor44PV = new G4PVPlacement(0, VectSensor, CCDSensor44LV, "CCDSensor44PV", SubLV, false, 0, false);
+  G4PVPlacement* CCDSensor44PV = new G4PVPlacement(rotSensor, VectSensor, CCDSensor44LV, "CCDSensor44PV", SubLV, false, 0, false);
   G4PVPlacement* SiliconSubstrate44PV = new G4PVPlacement(0, VectSiliconSubstrate, SiliconSubstrate44LV, "SiliconSubstrate44PV", SubLV, false, 0, false);
   G4PVPlacement* FlexCable44PV = new G4PVPlacement(0, VectFlexCable, FlexCable44LV, "FlexCable44PV", SubLV, false, 0, false);
 
@@ -283,8 +287,8 @@ G4LogicalVolume* GetConstructionProtectiveCover()
 
 G4LogicalVolume* GetConstructionCCDSensor44(){
 
-  G4double mainBoxX = 63.99*mm;
-  G4double mainBoxY = 64.36*mm;
+  G4double mainBoxX = 61.74*mm;
+  G4double mainBoxY = 62.22*mm;
   G4double mainBoxZ = 0.675*mm;
 
   G4Box* mainBox  = new G4Box("mainBox", mainBoxX/2, mainBoxY/2, mainBoxZ/2);

@@ -26,6 +26,10 @@ void DAMICRunAction::BeginOfRunAction(const G4Run*)
 
   G4ParameterManager* parameterManager = G4ParameterManager::Instance();
   parameterManager->Reset();
+  man->FillNtupleDColumn(0,0,0.0675);
+  man->FillNtupleDColumn(0,1,6.174);
+  man->FillNtupleDColumn(0,2,6.222);
+  man->AddNtupleRow(0);
 }
 
 

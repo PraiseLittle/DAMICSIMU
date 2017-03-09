@@ -23,36 +23,102 @@ class DAMICParticleSource: public G4VPrimaryGenerator{
     void SetParticlePosition(G4ThreeVector);
 
     //Position Sets
-    void SetSourcePosition(G4ThreeVector);
     void SetMaterial(G4String);
     void SetVolumeSource(G4String);
     void SetMaterialSource(G4String);
     void SetMotherVolume(G4String);
+    void SetSourceShape(G4String);
     void SetSurface(G4bool);
     void SetVolume(G4bool);
     void SetMaterial(G4bool);
+    void SetSource(G4bool);
+    void SetShape(G4bool);
 
-    //bools
+    void SetPositionNumSize(G4int);
+    void SetPositionNumValue(G4double, G4int);
 
+    // Position Reset
+
+    void ResetPositionNum();
+
+
+    //Energy Sets
+
+    void SetDistriNRJ(G4bool, G4String);
+    void SetMonoNRJ(G4bool);
+    void SetEnergyNumSize(G4int);
+    void SetEnergyNumValue(G4double, G4int);
+
+    //Energy Reset
+
+    void ResetEnergyNum();
+
+    // Direction Sets
+
+    void SetDistriD(G4bool, G4String);
+    void SetOneD(G4bool);
+    void SetDirectionNumSize(G4int);
+    void SetDirectionNumValue(G4double, G4int);
+
+    // Direction Reset
+
+    void ResetDirectionNum();
+
+
+    // VOLUME
     void AddVolume(G4String, G4double);
     void CalculProba();
     void ChooseVolume();
 
+    //Energy
+
+    void EnergyValue();
+
+    // Direction
+
+    void DirectionValue();
+
+    //bools Position
     G4bool IsSurface();
     G4bool IsVolume();
     G4bool IsMaterial();
+    G4bool IsShape();
+    G4bool IsSource();
 
-    //changes bools
+    // bools Energy
+
+    G4bool IsDistriNRJ();
+    G4bool IsMonoNRJ();
+
+    // bools Direction
+
+    G4bool IsDistriD();
+    G4bool IsOneD();
+
+    //changes bools Position
 
     void DoVolume();
     void DoMaterial();
     void DoSource();
+    void DoShape(G4String);
+
+    //Changes bools Energy
+
+    void DoMonoNRJ();
+    void DoDistriNRJ(G4String);
+
+    // Changes bools Momentum
+
+    void DoOneD();
+    void DoDistriD(G4String);
+
 
     //coordinatesCreation
 
     void MaterialCoordinates();
     void VolumeCoordinates();
     void SourceCoordinates();
+    void ShapeCoordinates();
     void CalculPosition(G4String, G4String, G4String);
 
     //Mother Volume Hit and Miss
@@ -73,16 +139,36 @@ class DAMICParticleSource: public G4VPrimaryGenerator{
     G4bool bSurface; //True on surface
     G4bool bVolume; //True if Volume
     G4bool bMaterial;
-    G4ThreeVector SourcePosition; // IF SOURCE MODE
+    G4bool bShape;
+    G4bool bSource;
     G4String VolumeSource; // IF VOLUME MODE
     G4String MaterialSource; // IF MATERIAL MODE
     G4String MotherVolume;
     G4String Material;
+    G4String Shape;
+
+
+    // Energy
+
+    G4bool bDistriNRJ;
+    G4bool bMonoNRJ;
+    G4String DistriNRJ;
+
+    //Direction
+
+    G4bool bOneD;
+    G4bool bDistriD;
+    G4String DistriD;
+
+    std::vector <G4double> PositionNum;
+    std::vector <G4double> EnergyNum;
+    std::vector <G4double> DirectionNum;
 
     std::vector<G4String> VolumesUse;
     std::vector<G4double> VolumesUseMass;
     std::vector<G4double> VolumesConcentration;
     std::vector<G4double> Proba;
+    // for volumes
     G4bool changes;
     //Navigator for Geometry
     G4Navigator* gNavigator;

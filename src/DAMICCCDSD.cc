@@ -182,37 +182,42 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
       hit->SetCCDNum(CCDNum);
       fHitsCollection->insert(hit);
 
-      G4double XCoord = Position.getX();
-      G4double YCoord = Position.getY();
-      G4double ZCoord = Position.getZ();
+      G4double XCoord = Position.getX() + 61.74/2;
+      G4double YCoord = Position.getY() + 62.22/2;
+      G4double ZCoord = -(Position.getZ()-0.675/2);
       // Elec deposit
-      man->FillNtupleDColumn(0,0,XCoord);
-      man->FillNtupleDColumn(0,1,YCoord);
-      man->FillNtupleDColumn(0,2,ZCoord);
-      man->FillNtupleIColumn(0,3,TopBot);
-      man->FillNtupleDColumn(0,4,EnergyDep);
-      man->FillNtupleIColumn(0,5,PartIDElec);
-      man->FillNtupleSColumn(0,6,Process);
+      man->FillNtupleDColumn(1,0,XCoord/10);
+      man->FillNtupleDColumn(1,1,YCoord/10);
+      man->FillNtupleDColumn(1,2,ZCoord/10);
+      man->FillNtupleIColumn(1,3,TopBot);
+      man->FillNtupleDColumn(1,4,EnergyDep*1000);
+      man->FillNtupleIColumn(1,5,PartIDElec);
+      man->FillNtupleIColumn(1,6,EventID);
+      man->FillNtupleSColumn(1,7,Process);
+      man->FillNtupleIColumn(1,8,CCDNum);
+      man->AddNtupleRow(1);
+
       //Particle that created Elec
-      man->FillNtupleIColumn(0,7,PDGNumber);
-      man->FillNtupleIColumn(0,8,PartID);
-      man->FillNtupleSColumn(0,9,ProdVolume);
-      man->FillNtupleDColumn(0,10,Energy);
+
+      man->FillNtupleIColumn(2,0,PDGNumber);
+      man->FillNtupleIColumn(2,1,PartID);
+      man->FillNtupleSColumn(2,2,ProdVolume);
+      man->FillNtupleDColumn(2,3,Energy);
       // Primary
-      man->FillNtupleDColumn(0,11,Time);
-      man->FillNtupleIColumn(0,12,PDGPrimaryNuc);
-      man->FillNtupleIColumn(0,13,EventID);
-      man->FillNtupleDColumn(0,14,PositionPrim.getX());
-      man->FillNtupleDColumn(0,15,PositionPrim.getY());
-      man->FillNtupleDColumn(0,16,PositionPrim.getZ());
+      man->FillNtupleDColumn(2,4,Time);
+      man->FillNtupleIColumn(2,5,PDGPrimaryNuc);
+
+      man->FillNtupleDColumn(2,6,PositionPrim.getX());
+      man->FillNtupleDColumn(2,7,PositionPrim.getY());
+      man->FillNtupleDColumn(2,8,PositionPrim.getZ());
       //Secondary Nucleus
-      man->FillNtupleIColumn(0,17,PDGSecondaryNuc);
+      man->FillNtupleIColumn(2,9,PDGSecondaryNuc);
       //Part after Secodary
-      man->FillNtupleIColumn(0,18,PDGPartASecond);
-      man->FillNtupleDColumn(0,19,EnergyPartASecond);
+      man->FillNtupleIColumn(2,10,PDGPartASecond);
+      man->FillNtupleDColumn(2,11,EnergyPartASecond);
       // CCD Num
-      man->FillNtupleIColumn(0,20,CCDNum);
-      man->AddNtupleRow(0);
+
+      man->AddNtupleRow(2);
 
       /*man->FillNtupleDColumn(0,11,Time);
       man->FillNtupleIColumn(0,12,PDGPrimaryNuc);

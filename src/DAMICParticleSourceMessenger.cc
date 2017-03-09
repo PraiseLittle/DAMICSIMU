@@ -20,31 +20,217 @@
 #include "G4UIcmdWithABool.hh"
 #include "G4ios.hh"
 #include "G4Tokenizer.hh"
-
+#include <cmath>
 
 DAMICParticleSourceMessenger::DAMICParticleSourceMessenger(DAMICParticleSource* fPartSource): fParticleGun(fPartSource), fShootIon(false){
 
   particleTable = G4ParticleTable::GetParticleTable();
 
-  gunDirectory = new G4UIdirectory("damic/gun/");
+  gunDirectory = new G4UIdirectory("/damic/gun/");
   gunDirectory->SetGuidance("Particle Source control commands.");
-
-  DoVolumeCmd = new G4UIcmdWithoutParameter("/damic/gun/doVolume",this);
-  DoVolumeCmd->SetGuidance("Set to only use volumes source");
-
-  DoSourceCmd = new G4UIcmdWithoutParameter("/damic/gun/doSource",this);
-  DoSourceCmd->SetGuidance("Set to only use point source");
-
-  DoMaterialCmd = new G4UIcmdWithoutParameter("/damic/gun/doMaterial",this);
-  DoMaterialCmd->SetGuidance("Set to only use material source");
 
   ListCmd = new G4UIcmdWithoutParameter("/damic/gun/list", this);
   ListCmd->SetGuidance("List available particles.");
   ListCmd->SetGuidance(" Invoke G4ParticleTable.");
 
-  ParticleCmd = new G4UIcmdWithAString("/damic/gun/particle", this);
-  ParticleCmd->SetGuidance("Set particle to be generated. ");
-  ParticleCmd->SetGuidance(" (geantino is default) ");
+  EnergyDirectory = new G4UIdirectory("/damic/gun/energy/");
+  EnergyDirectory->SetGuidance("Energy control commands.");
+
+  DirectionDirectory = new G4UIdirectory("/damic/gun/direction/");
+  DirectionDirectory->SetGuidance("Direction control commands.");
+
+  PositionDirectory = new G4UIdirectory("/damic/gun/position/");
+  PositionDirectory->SetGuidance("Position control commands.");
+
+  // ENERGY
+
+  DoMonoNRJCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/energy/mono", this);
+  DoMonoNRJCmd->SetGuidance("Set a monoenergetic beam.");
+  DoMonoNRJCmd->SetParameterName("Energy", true, true);
+  DoMonoNRJCmd->SetDefaultUnit("keV");
+  DoMonoNRJCmd->SetUnitCategory("Energy");
+  DoMonoNRJCmd->SetUnitCandidates("eV keV MeV GeV TeV");
+
+  DoDistriNRJCmd = new G4UIcmdWithAString("/damic/gun/energy/distri", this);
+  DoDistriNRJCmd->SetGuidance("Set a distribution energy.");
+  DoDistriNRJCmd->SetParameterName("DisType", true, true);
+  DoDistriNRJCmd->SetDefaultValue("Uniform");
+  DoDistriNRJCmd->SetCandidates("Uniform");
+
+  UniformBotCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/energy/bot", this);
+  UniformBotCmd->SetGuidance("Bottom energy value for uniform.");
+  UniformBotCmd->SetParameterName("Energy", true, true);
+  UniformBotCmd->SetDefaultUnit("keV");
+  UniformBotCmd->SetUnitCategory("Energy");
+  UniformBotCmd->SetUnitCandidates("eV keV MeV GeV TeV");
+
+
+  UniformBotCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/energy/top", this);
+  UniformBotCmd->SetGuidance("Top energy value for uniform.");
+  UniformBotCmd->SetParameterName("Energy", true, true);
+  UniformBotCmd->SetDefaultUnit("keV");
+  UniformBotCmd->SetUnitCategory("Energy");
+  UniformBotCmd->SetUnitCandidates("eV keV MeV GeV TeV");
+
+  // DIRECTION
+
+  DoOneDCmd = new G4UIcmdWithoutParameter("/damic/gun/direction/oned", this);
+  DoOneDCmd->SetGuidance("Set Direction to one direction.");
+
+  DoOneDXCmd = new G4UIcmdWithADouble("/damic/gun/direction/onedX", this );
+  DoOneDXCmd->SetGuidance("Set X of the direction.");
+  DoOneDXCmd->SetParameterName("X",true,true);
+
+  DoOneDYCmd = new G4UIcmdWithADouble("/damic/gun/direction/onedY", this);
+  DoOneDYCmd->SetGuidance("Set Y of the direction.");
+  DoOneDYCmd->SetParameterName("Y",true,true);
+
+  DoOneDZCmd = new G4UIcmdWithADouble("/damic/gun/direction/onedZ", this);
+  DoOneDZCmd->SetGuidance("Set Z of the direction.");
+  DoOneDZCmd->SetParameterName("Z",true,true);
+
+
+  DoDistriDCmd = new G4UIcmdWithAString("/damic/gun/direction/distri", this);
+  DoDistriDCmd->SetGuidance("Set Direction to a distribution.");
+  DoDistriDCmd->SetParameterName("DisType", true, true);
+  DoDistriDCmd->SetDefaultValue("Isotropic");
+  DoDistriDCmd->SetCandidates("Isotropic");
+
+  IsoThetaMinCmd = new G4UIcmdWithADouble("/damic/gun/direction/thetamin", this);
+  IsoThetaMinCmd->SetGuidance("Theta minimal value.");
+  IsoThetaMinCmd->SetParameterName("Angle", true, true);
+  IsoThetaMinCmd->SetRange("Angle <= 180 && Angle>= 0");
+
+  IsoThetaMaxCmd = new G4UIcmdWithADouble("/damic/gun/direction/thetamax", this);
+  IsoThetaMaxCmd->SetGuidance("Theta maximal value.");
+  IsoThetaMaxCmd->SetParameterName("Angle", true, true);
+  IsoThetaMaxCmd->SetRange("Angle <= 180 && Angle>= 0");
+
+  IsoPhiMinCmd = new G4UIcmdWithADouble("/damic/gun/direction/phimin", this);
+  IsoPhiMinCmd->SetGuidance("Phi minimal value.");
+  IsoPhiMinCmd->SetParameterName("Angle", true, true);
+  IsoPhiMinCmd->SetRange("Angle <= 360 && Angle>= -180");
+
+  IsoPhiMaxCmd = new G4UIcmdWithADouble("/damic/gun/direction/phimax", this);
+  IsoPhiMaxCmd->SetGuidance("Phi maximal value.");
+  IsoPhiMaxCmd->SetParameterName("Angle", true, true);
+  IsoPhiMaxCmd->SetRange("Angle <= 180 && Angle>= -180");
+
+
+  // Position
+
+  DoMaterialCmd = new G4UIcmdWithAString("/damic/gun/position/domaterial", this);
+  DoMaterialCmd->SetGuidance(" Set position to material defined.");
+  DoMaterialCmd->SetParameterName("Material", true, true);
+  DoMaterialCmd->SetDefaultValue("G4_Cu");
+
+  MotherVolumeCmd = new G4UIcmdWithAString("/damic/gun/position/mother", this);
+  MotherVolumeCmd->SetGuidance("Set Mother Volume of the Material.");
+  MotherVolumeCmd->SetParameterName("Mother", true, true);
+  MotherVolumeCmd->SetDefaultValue("WorldLV");
+
+  DoVolumeCmd = new G4UIcmdWithoutParameter("/damic/gun/position/dovolume", this);
+  DoVolumeCmd->SetGuidance("Set position to volume defined.");
+
+  AddVolumeCmd = new G4UIcommand("/damic/gun/position/addvolume", this);
+  AddVolumeCmd->SetGuidance("Add Volume with concentration of the radioactive element.");
+
+  G4UIparameter* param;
+  param = new G4UIparameter("Volume", 's', false);
+  param->SetDefaultValue("NULL");
+  AddVolumeCmd->SetParameter(param);
+  param = new G4UIparameter("Concentration", 'd', false);
+  param->SetDefaultValue("1");
+  AddVolumeCmd->SetParameter(param);
+
+
+  /*EraseVolumeCmd = new G4UIcmdWithAString("/damic/gun/position/resetvolume", this);
+  EraseVolumeCmd->SetGuidance("Erase volume from the sources volumes.");
+  EraseVolumeCmd->SetParameterName("Volume", true, true);*/
+
+  DoSourceCmd = new G4UIcmdWithoutParameter("/damic/gun/position/dosource", this);
+  DoSourceCmd->SetGuidance("Set position to source. ");
+
+  DoShapeCmd = new G4UIcmdWithAString("/damic/gun/position/doshape", this);
+  DoShapeCmd->SetGuidance("Set position to shape");
+  DoShapeCmd->SetParameterName("Shape", true, true);
+  DoShapeCmd->SetDefaultValue("Para");
+  DoShapeCmd->SetCandidates("Para Sphere Cyl");
+
+  CenterXCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/centerx", this);
+  CenterXCmd->SetGuidance(" Set center coordinate x of the shape or the source");
+  CenterXCmd->SetParameterName("X", true, true);
+  CenterXCmd->SetUnitCategory("Lenght");
+  CenterXCmd->SetDefaultUnit("mm");
+  CenterXCmd->SetUnitCandidates("nm um mm cm m");
+
+  CenterYCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/centery", this);
+  CenterYCmd->SetGuidance(" Set center coordinate y of the shape or the source");
+  CenterYCmd->SetParameterName("Y", true, true);
+  CenterYCmd->SetUnitCategory("Lenght");
+  CenterYCmd->SetDefaultUnit("mm");
+  CenterYCmd->SetUnitCandidates("nm um mm cm m");
+
+  CenterZCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/centerz", this);
+  CenterZCmd->SetGuidance(" Set center coordinate z of the shape or the source");
+  CenterZCmd->SetParameterName("Z", true, true);
+  CenterZCmd->SetUnitCategory("Lenght");
+  CenterZCmd->SetDefaultUnit("mm");
+  CenterZCmd->SetUnitCandidates("nm um mm cm m");
+  // Para
+
+  ParaXCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/parax", this);
+  ParaXCmd->SetGuidance(" Set the lenght of the X Side of the Parallelepiped Rectangle");
+  ParaXCmd->SetParameterName("X", true, true);
+  ParaXCmd->SetUnitCategory("Lenght");
+  ParaXCmd->SetDefaultUnit("mm");
+  ParaXCmd->SetUnitCandidates("nm um mm cm m");
+
+  ParaYCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/paray", this);
+  ParaYCmd->SetGuidance(" Set the lenght of the Y Side of the Parallelepiped Rectangle");
+  ParaYCmd->SetParameterName("Y", true, true);
+  ParaYCmd->SetUnitCategory("Lenght");
+  ParaYCmd->SetDefaultUnit("mm");
+  ParaYCmd->SetUnitCandidates("nm um mm cm m");
+
+  ParaZCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/paraz", this);
+  ParaZCmd->SetGuidance(" Set the lenght of the Z Side of the Parallelepiped Rectangle");
+  ParaZCmd->SetParameterName("Z", true, true);
+  ParaYCmd->SetUnitCategory("Lenght");
+  ParaZCmd->SetDefaultUnit("mm");
+  ParaZCmd->SetUnitCandidates("nm um mm cm m");
+  // Sphere
+
+  SphereRCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/spherer", this);
+  SphereRCmd->SetGuidance(" Set the radius of the sphere");
+  SphereRCmd->SetParameterName("R", true, true);
+  SphereRCmd->SetUnitCategory("Lenght");
+  SphereRCmd->SetDefaultUnit("mm");
+  SphereRCmd->SetUnitCandidates("nm um mm cm m");
+  SphereRCmd->SetRange(" R >= 0");
+
+  //Cyl
+  CylRCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/cylr", this);
+  CylRCmd->SetGuidance(" Set the radius of the cylinder");
+  CylRCmd->SetParameterName("R", true, true);
+  CylRCmd->SetUnitCategory("Lenght");
+  CylRCmd->SetDefaultUnit("mm");
+  CylRCmd->SetUnitCandidates("nm um mm cm m");
+  CylRCmd->SetRange(" R >= 0");
+
+
+  CylHCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/cylh", this);
+  CylHCmd->SetGuidance(" Set the height of the cylinder");
+  CylHCmd->SetParameterName("H", true, true);
+  CylHCmd->SetUnitCategory("Lenght");
+  CylHCmd->SetDefaultUnit("mm");
+  CylHCmd->SetUnitCandidates("nm um mm cm m");
+
+  // PArticle Specs
+
+  ParticleCmd = new G4UIcmdWithAString("/dmx/gun/particle",this);
+  ParticleCmd->SetGuidance("Set particle to be generated.");
+  ParticleCmd->SetGuidance(" (geantino is default)");
   ParticleCmd->SetGuidance(" (ion can be specified for shooting ions)");
   ParticleCmd->SetParameterName("particleName",true);
   ParticleCmd->SetDefaultValue("geantino");
@@ -58,23 +244,15 @@ DAMICParticleSourceMessenger::DAMICParticleSourceMessenger(DAMICParticleSource* 
   candidateList += "ion ";
   ParticleCmd->SetCandidates(candidateList);
 
-  MomentumCmd = new G4UIcmdWith3Vector("/damic/gun/momentum", this);
-  MomentumCmd->SetGuidance("Set momentum direction.");
-  MomentumCmd->SetGuidance("Direction needs not to be a unit vector.");
-  MomentumCmd->SetParameterName("Px","Py","Pz",true,true);
-  MomentumCmd->SetRange("Px != 0 || Py != 0 || Pz != 0");
 
-  EnergyCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/energy", this);
-  EnergyCmd->SetGuidance("Set Kinetic Energy.");
-  EnergyCmd->SetParameterName("Energy", true, true);
-  EnergyCmd->SetDefaultUnit("MeV");
 
-  PositionSourceCmd = new G4UIcmdWith3VectorAndUnit("/damic/gun/position",this);
-  PositionSourceCmd->SetGuidance("Set starting position of the particle.");
-  PositionSourceCmd->SetParameterName("X","Y","Z",true,true);
-  PositionSourceCmd->SetDefaultUnit("mm");
+  ChargeCmd= new G4UIcmdWithADouble("/damic/gun/charge", this);
+  ChargeCmd->SetGuidance("Set charge of the particle.");
+  ChargeCmd->SetParameterName("Charge", true);
 
-  //ION
+
+
+
   IonCmd = new G4UIcommand("/damic/gun/ion",this);
   IonCmd->SetGuidance("Set properties of ion to be generated.");
   IonCmd->SetGuidance("[usage] /gun/ion Z A Q E");
@@ -84,64 +262,85 @@ DAMICParticleSourceMessenger::DAMICParticleSourceMessenger(DAMICParticleSource* 
   IonCmd->SetGuidance("        E:(double) Excitation energy (in keV)");
 
 
-  G4UIparameter* param;
-  param = new G4UIparameter("Z",'i',false);
-  param->SetDefaultValue("1");
+  G4UIparameter* parami;
+  parami = new G4UIparameter("Z",'i',false);
+  parami->SetDefaultValue("1");
   IonCmd->SetParameter(param);
-  param = new G4UIparameter("A",'i',false);
-  param->SetDefaultValue("1");
+  parami = new G4UIparameter("A",'i',false);
+  parami->SetDefaultValue("1");
   IonCmd->SetParameter(param);
-  param = new G4UIparameter("Q",'i',true);
-  param->SetDefaultValue("0");
+  parami = new G4UIparameter("Q",'i',true);
+  parami->SetDefaultValue("0");
   IonCmd->SetParameter(param);
-  param = new G4UIparameter("E",'d',true);
-  param->SetDefaultValue("0.0");
+  parami = new G4UIparameter("E",'d',true);
+  parami->SetDefaultValue("0.0");
   IonCmd->SetParameter(param);
-
-  ChargeCmd= new G4UIcmdWithADouble("/damic/gun/charge", this);
-  ChargeCmd->SetGuidance("Set charge of the particle.");
-  ChargeCmd->SetParameterName("Charge", true);
-
-  VolumeSourceCmd = new G4UIcmdWithAString("/damic/gun/volume", this);
-  VolumeSourceCmd->SetGuidance("Set Volume of the source");
-  VolumeSourceCmd->SetParameterName("Volume", true);
-
-  MaterialSourceCmd = new G4UIcmdWithAString("/damic/gun/material", this);
-  MaterialSourceCmd->SetGuidance("Set Material of the source");
-  MaterialSourceCmd->SetParameterName("Material", true);
-
-  MotherSourceCmd = new G4UIcmdWithAString("/damic/gun/mother", this);
-  MotherSourceCmd->SetGuidance("Set Mother of the source");
-  MotherSourceCmd->SetParameterName("Mother", true);
 
 
 }
 
+
 DAMICParticleSourceMessenger::~DAMICParticleSourceMessenger(){
 
-  delete EnergyCmd;
   delete ChargeCmd;
-  delete MomentumCmd;
   delete ParticleCmd;
-  delete PositionSourceCmd;
-  delete VolumeSourceCmd;
-  delete MaterialSourceCmd;
-  delete MotherSourceCmd;
-  delete DoVolumeCmd;
-  delete DoMaterialCmd;
+
+  delete CylHCmd;
+  delete CylRCmd;
+
+  delete SphereRCmd;
+  delete ParaZCmd;
+  delete ParaYCmd;
+  delete ParaXCmd;
+  //delete IonCmd;
+
+
+  delete CenterZCmd;
+  delete CenterYCmd;
+  delete CenterXCmd;
+
+  delete DoShapeCmd;
   delete DoSourceCmd;
-  delete IonCmd;
+
+  //delete EraseVolumeCmd;
+  delete AddVolumeCmd;
+  delete DoVolumeCmd;
+
+  delete DoMaterialCmd;
+  delete MotherVolumeCmd;
+
+  delete DoOneDCmd;
+  delete DoOneDXCmd;
+  delete DoOneDYCmd;
+  delete DoOneDZCmd;
+
+  delete DoDistriDCmd;
+  delete IsoThetaMinCmd;
+  delete IsoThetaMaxCmd;
+  delete IsoPhiMinCmd;
+  delete IsoPhiMaxCmd;
+
+  delete DoMonoNRJCmd;
+  delete DoDistriNRJCmd;
+  delete UniformBotCmd;
+  delete UniformTopCmd;
+
+
   delete ListCmd;
+
+  delete EnergyDirectory;
+  delete DirectionDirectory;
+  delete PositionDirectory;
 
   delete gunDirectory;
 
 }
 
 void DAMICParticleSourceMessenger::SetNewValue(G4UIcommand *command, G4String newValues){
-
+  //LIST
   if (command == ListCmd){
     particleTable->DumpTable();
-  }
+  }// SPECS
   else if(command == IonCmd){
 
     if (fShootIon) {
@@ -180,27 +379,6 @@ void DAMICParticleSourceMessenger::SetNewValue(G4UIcommand *command, G4String ne
         G4cout<<G4endl;
       }
     }
-    else if(command == DoSourceCmd){
-      fParticleGun->DoSource();
-    }
-    else if(command == DoVolumeCmd){
-      fParticleGun->DoVolume();
-    }
-    else if(command == DoMaterialCmd){
-      fParticleGun->DoMaterial();
-    }
-    else if(command == MotherSourceCmd){
-      fParticleGun->SetMotherVolume(newValues);
-    }
-    else if(command == VolumeSourceCmd){
-      fParticleGun->SetVolumeSource(newValues);
-    }
-    else if (command == MaterialSourceCmd){
-      fParticleGun->SetMaterialSource(newValues);
-    }
-    else if (command == PositionSourceCmd){
-      fParticleGun->SetSourcePosition(PositionSourceCmd->GetNew3VectorValue(newValues));
-    }
     else if(command == ParticleCmd){
       if (newValues == "ion"){
         fShootIon = true;
@@ -213,15 +391,107 @@ void DAMICParticleSourceMessenger::SetNewValue(G4UIcommand *command, G4String ne
         }
       }
     }
-    else if (command == MomentumCmd){
-      fParticleGun->SetParticleMomentumDirection(MomentumCmd->GetNew3VectorValue(newValues));
-    }
     else if (command == ChargeCmd){
       fParticleGun->SetParticleCharge(ChargeCmd->GetNewDoubleValue(newValues));
+    }// ENERGY
+    else if (command == DoMonoNRJCmd){
+      fParticleGun->DoMonoNRJ();
+      fParticleGun->ResetEnergyNum();
+      fParticleGun->SetEnergyNumSize(1);
+      fParticleGun->SetEnergyNumValue(DoMonoNRJCmd->GetNewDoubleValue(newValues),0);
     }
-    else if (command == EnergyCmd){
-      fParticleGun->SetParticleEnergy(EnergyCmd->GetNewDoubleValue(newValues));
+    else if (command == DoDistriNRJCmd){
+      fParticleGun->DoDistriNRJ(newValues);
+      fParticleGun->ResetEnergyNum();
+      fParticleGun->SetEnergyNumSize(2);
     }
-
+    else if (command == UniformBotCmd){
+      fParticleGun->SetEnergyNumValue(UniformBotCmd->GetNewDoubleValue(newValues),0);
+    }
+    else if (command == UniformTopCmd){
+      fParticleGun->SetEnergyNumValue(UniformTopCmd->GetNewDoubleValue(newValues),1);
+    }
+    else if (command == DoOneDCmd){
+      fParticleGun->DoOneD();
+      fParticleGun->ResetDirectionNum();
+      fParticleGun->SetDirectionNumSize(3);
+    }
+    else if (command == DoOneDXCmd){
+      fParticleGun->SetPositionNumValue(DoOneDXCmd->GetNewDoubleValue(newValues),0);
+    }
+    else if (command == DoOneDYCmd){
+      fParticleGun->SetPositionNumValue(DoOneDYCmd->GetNewDoubleValue(newValues),1);
+    }
+    else if (command == DoOneDZCmd){
+      fParticleGun->SetPositionNumValue(DoOneDZCmd->GetNewDoubleValue(newValues),2);
+    }
+    else if (command == DoDistriDCmd){
+      fParticleGun->DoDistriD(newValues);
+      fParticleGun->ResetDirectionNum();
+      fParticleGun->SetDirectionNumSize(4);
+    }
+    else if (command == IsoThetaMinCmd){
+      fParticleGun->SetDirectionNumValue(IsoThetaMinCmd->GetNewDoubleValue(newValues)*M_PI/180,0);
+    }
+    else if (command == IsoThetaMaxCmd){
+      fParticleGun->SetDirectionNumValue(IsoThetaMaxCmd->GetNewDoubleValue(newValues)*M_PI/180,0);
+    }
+    else if (command == IsoPhiMinCmd){
+      fParticleGun->SetDirectionNumValue(IsoPhiMinCmd->GetNewDoubleValue(newValues)*M_PI/180,0);
+    }
+    else if (command == IsoPhiMaxCmd){
+      fParticleGun->SetDirectionNumValue(IsoPhiMaxCmd->GetNewDoubleValue(newValues)*M_PI/180,0);
+    }
+    else if (command == DoMaterialCmd){
+      fParticleGun->DoMaterial();
+      fParticleGun->SetMaterial(newValues);
+    }
+    else if (command == MotherVolumeCmd){
+      fParticleGun->SetMotherVolume(newValues);
+    }
+    else if (command ==  DoVolumeCmd){
+      fParticleGun->DoVolume();
+    }
+    else if (command == AddVolumeCmd){
+      G4Tokenizer next(newValues);
+      fParticleGun->AddVolume(next(), StoD(next()));
+    }
+    else if (command == DoShapeCmd){
+      fParticleGun->DoShape(newValues);
+      fParticleGun->ResetPositionNum();
+      fParticleGun->SetPositionNumSize(6);
+    }
+    else if (command == DoSourceCmd){
+      fParticleGun->DoSource();
+      fParticleGun->ResetPositionNum();
+      fParticleGun->SetPositionNumSize(3);
+    }
+    else if (command == CenterXCmd){
+      fParticleGun->SetPositionNumValue(CenterXCmd->GetNewDoubleValue(newValues), 0);
+    }
+    else if (command == CenterYCmd){
+      fParticleGun->SetPositionNumValue(CenterYCmd->GetNewDoubleValue(newValues), 1);
+    }
+    else if (command == CenterZCmd){
+      fParticleGun->SetPositionNumValue(CenterZCmd->GetNewDoubleValue(newValues), 2);
+    }
+    else if (command == ParaXCmd){
+      fParticleGun->SetPositionNumValue(ParaXCmd->GetNewDoubleValue(newValues), 3);
+    }
+    else if (command == ParaYCmd){
+      fParticleGun->SetPositionNumValue(ParaYCmd->GetNewDoubleValue(newValues), 4);
+    }
+    else if (command == ParaZCmd){
+      fParticleGun->SetPositionNumValue(ParaZCmd->GetNewDoubleValue(newValues), 5);
+    }
+    else if (command == SphereRCmd){
+      fParticleGun->SetPositionNumValue(SphereRCmd->GetNewDoubleValue(newValues), 3);
+    }
+    else if (command == CylRCmd){
+      fParticleGun->SetPositionNumValue(CylRCmd->GetNewDoubleValue(newValues), 3);
+    }
+    else if (command == CylHCmd){
+      fParticleGun->SetPositionNumValue(CylHCmd->GetNewDoubleValue(newValues), 4);
+    }
 
 }

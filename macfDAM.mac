@@ -3,4 +3,16 @@
 /run/initialize
 /tracking/verbose 0
 /event/verbose 0
-/run/beamOn 147181
+
+/damic/gun/direction/distri Isotropic
+/damic/gun/direction/thetamin 0
+/damic/gun/direction/thetamax 180
+/damic/gun/direction/phimin -180
+/damic/gun/direction/phimax 180
+/damic/gun/position/domaterial G4_Cu
+/damic/gun/position/mother VesselLV
+/damic/gun/energy/distri Uniform
+/damic/gun/energy/bot 0 GeV
+/damic/gun/energy/top 0 GeV
+/analysis/setFileName Test
+/run/beamOn 50000

@@ -33,16 +33,32 @@ DAMICParticleSource::DAMICParticleSource(){
       bSurface = false; //True on surface
       bVolume = false; //True if Volume
       bMaterial = false;
-      SourcePosition = G4ThreeVector(0.0,0.0,0.0);
+      bSource = true;
+      bShape = false;
       VolumeSource = "Volume"; // choose between Volume and Material
       MotherVolume = "MotherVolume";
       Material = "Material";
       MaterialSource = "MaterialSource";
+      Shape = "Para";
       VolumesUse = {};
       VolumesUseMass = {};
       VolumesConcentration = {};
       Proba = {};
+      PositionNum = {};
+      EnergyNum = {};
+      DirectionNum = {};
       changes = false;
+
+      //Energy
+      DistriNRJ = "Uniform";
+      bMonoNRJ = true;
+      bDistriNRJ = false;
+
+      // Direction
+
+      DistriD = "Isotropic";
+      bDistriD = false;
+      bOneD = true;
 
       //Navigator for Geometry
       gNavigator = G4TransportationManager::GetTransportationManager()
@@ -82,11 +98,11 @@ void DAMICParticleSource::SetParticlePosition(G4ThreeVector Pos){
   ParticlePosition = Pos;
 }
 
-//POSITION SETS
 
-void DAMICParticleSource::SetSourcePosition(G4ThreeVector Source){
-  SourcePosition = Source;
-}
+
+//SETS POSITIONS STRING VECTORS AND RESET --- -- --- --- --
+
+
 
 void DAMICParticleSource::SetMaterial(G4String Mat){
   Material = Mat;
@@ -103,7 +119,27 @@ void DAMICParticleSource::SetMaterialSource(G4String MatSource){
 void DAMICParticleSource::SetMotherVolume(G4String MotherVol){
   MotherVolume = MotherVol;
 }
-//Position Sets
+
+void DAMICParticleSource::SetSourceShape(G4String ShapeSrc){
+  Shape = ShapeSrc;
+}
+
+void DAMICParticleSource:: SetPositionNumSize(G4int size){
+  PositionNum = std::vector<G4double> (size,0);
+}
+
+void DAMICParticleSource:: SetPositionNumValue(G4double val, G4int id){
+  PositionNum[id] = val;
+}
+
+void DAMICParticleSource:: ResetPositionNum(){
+  PositionNum = {};
+}
+
+
+
+
+//SETS POSITION FUNCTION BOOL ----------------------------
 
 void DAMICParticleSource::SetSurface(G4bool Sur){
   bSurface = Sur;
@@ -117,6 +153,66 @@ void DAMICParticleSource::SetMaterial(G4bool Mat){
   bMaterial = Mat;
 }
 
+void DAMICParticleSource::SetSource(G4bool Sour){
+  bSource = Sour;
+}
+
+void DAMICParticleSource::SetShape(G4bool Shap){
+  bShape = Shap;
+}
+
+//Energy Sets and Reset
+
+void DAMICParticleSource::SetDistriNRJ(G4bool bDistri, G4String Distri ){
+  bDistriNRJ = bDistri;
+  DistriNRJ = Distri;
+}
+
+void DAMICParticleSource::SetMonoNRJ(G4bool Mono){
+  bMonoNRJ = Mono;
+}
+
+void DAMICParticleSource::SetEnergyNumSize(G4int size){
+  EnergyNum = std::vector<G4double> (size,0);
+}
+
+void DAMICParticleSource::SetEnergyNumValue(G4double val, G4int id){
+  EnergyNum[id] = val;
+}
+
+void DAMICParticleSource::ResetEnergyNum(){
+  EnergyNum = {};
+}
+
+// Direction Sets and Reset
+
+void DAMICParticleSource::SetDistriD(G4bool bDistri, G4String Distri){
+  bDistriD = bDistri;
+  DistriD = Distri;
+}
+
+void DAMICParticleSource::SetOneD(G4bool one){
+  bOneD = one;
+}
+
+void DAMICParticleSource::SetDirectionNumSize(G4int size){
+  DirectionNum = std::vector<G4double>  (size,0);
+    G4cout << DirectionNum.size() << G4endl;
+}
+
+void DAMICParticleSource::SetDirectionNumValue(G4double val, G4int id){
+  DirectionNum[id] = val;
+}
+
+void DAMICParticleSource::ResetDirectionNum(){
+  DirectionNum = {};
+}
+
+
+
+//IS FUNCTIONS Position --------------------------
+
+
 G4bool DAMICParticleSource::IsSurface(){
   return bSurface;
 }
@@ -129,20 +225,93 @@ G4bool DAMICParticleSource::IsMaterial(){
   return bMaterial;
 }
 
+G4bool DAMICParticleSource::IsSource(){
+  return bSource;
+}
+
+G4bool DAMICParticleSource::IsShape(){
+  return bShape;
+}
+
+// Is Functions NRJ --------------------------
+
+G4bool DAMICParticleSource::IsMonoNRJ(){
+  return bMonoNRJ;
+}
+
+G4bool DAMICParticleSource::IsDistriNRJ(){
+  return bDistriNRJ;
+}
+
+// Is Function Distri
+G4bool DAMICParticleSource::IsOneD(){
+  return bOneD;
+}
+
+G4bool DAMICParticleSource:: IsDistriD(){
+  return bDistriD;
+}
+
+
+// DO FUNCTIONS Position --------------------
+
 void DAMICParticleSource::DoVolume(){
   SetMaterial(false);
   SetVolume(true);
+  SetSource(false);
+  SetShape(false);
 }
 
 void DAMICParticleSource::DoMaterial(){
   SetMaterial(true);
   SetVolume(false);
+  SetSource(false);
+  SetShape(false);
 }
 
 void DAMICParticleSource::DoSource(){
   SetMaterial(false);
   SetVolume(false);
+  SetSource(true);
+  SetShape(false);
 }
+
+void DAMICParticleSource::DoShape(G4String sha){
+  SetMaterial(false);
+  SetVolume(false);
+  SetSource(false);
+  SetShape(true);
+  SetSourceShape(sha);
+}
+
+// ENERGY DO  ----------------------------
+
+void DAMICParticleSource::DoMonoNRJ(){
+  SetMonoNRJ(true);
+  SetDistriNRJ(false, "");
+
+}
+
+void DAMICParticleSource::DoDistriNRJ(G4String Distri){
+  SetMonoNRJ(false);
+  SetDistriNRJ(true, Distri);
+}
+
+//Direction DO --------------------------------
+
+void DAMICParticleSource::DoOneD(){
+  SetOneD(true);
+  SetDistriD(false, "");
+}
+
+void DAMICParticleSource::DoDistriD(G4String distri){
+  SetOneD(false);
+  SetDistriD(true, distri);
+}
+
+// ADD VOLUME FOR TON OF VOLUMES ------------------
+
+
 
 void DAMICParticleSource::AddVolume(G4String Volume, G4double Concentration){
 
@@ -153,7 +322,6 @@ void DAMICParticleSource::AddVolume(G4String Volume, G4double Concentration){
   G4double Mass;
   G4double Dens;
   G4VPhysicalVolume* tempPV;
-  //G4cout << " je suis addvol" << G4endl;
   while (!found && i<(G4int)PVStore->size())
     {
       tempPV = (*PVStore)[i];
@@ -161,7 +329,6 @@ void DAMICParticleSource::AddVolume(G4String Volume, G4double Concentration){
 
       if (!found){i++;}
     }
-    //G4cout << found << G4endl;
 
 
   if(found == true) {
@@ -175,17 +342,13 @@ void DAMICParticleSource::AddVolume(G4String Volume, G4double Concentration){
   }
   G4int sizeV= VolumesUse.size();
   G4bool same = false;
-  //G4cout << sizeV << G4endl;
-  if ( sizeV != 0){
-    for (G4int j = 0;j<sizeV;j++){
-      if (VolumesUse[j]==Volume)
-      {
-        //G4cout << " ca change " << G4endl;
-        same = true;
-      }
+  for (G4int j = 0;j<sizeV;j++){
+    if (VolumesUse[j]==Volume)
+    {
+      same = true;
     }
   }
-  //G4cout << same << G4endl;
+
   if (!same){
     VolumesUse.push_back(Volume);
     VolumesUseMass.push_back(Mass);
@@ -239,77 +402,17 @@ void DAMICParticleSource::ChooseVolume()
     }
     i++;
   }
-  //G4cout << VolumeSource << G4endl;
-}
-
-void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUse, G4String VolumeUse){
-
-  G4double posx = 0;
-  G4double posy = 0;
-  G4double posz = 0;
-  G4bool found = false;
-  G4VPhysicalVolume* theVolume;
-  G4String theVolName;
-  G4String theMaterialName;
-  G4bool MaterialFit;
-  G4bool VolumeFit;
-  while(!found){
-    if (MotherUse == "WorldLV" ){
-      posx = 2.15*m*G4UniformRand()-1.075*m;
-      posy = 2.2*m*G4UniformRand()-1.1*m;
-      posz = 2.2*m*G4UniformRand()-1.1*m;
-      //G4cout << "bimbim ici" << G4endl;
-    }
-    else if (MotherUse == "VesselLV" || MotherUse =="Assembly1"|| MotherUse =="Assembly2"){
-      posx = 2.0*m*G4UniformRand()-1*m;
-      posy = 2.0*m*G4UniformRand()-1*m;
-      posz = 2.0*m*G4UniformRand()-1*m;
-    }
-    else if (MotherUse == "PrinTubLV"){
-      //G4cout << "ici" << G4endl;
-
-      G4double RadiusRan = 191.287/2*mm * G4UniformRand();
-      G4double AngleRan = M_PI*2*G4UniformRand();
-      G4double HeightRan = 413.512*mm *(G4UniformRand()-0.5);
-      posx = RadiusRan* cos(AngleRan);
-      posy = RadiusRan* sin(AngleRan);
-      posz = -120*mm+ HeightRan;
-    }
-    else {
-      G4double tempX = 120*mm*(G4UniformRand()-0.5);
-      G4double tempY = 120*mm*(G4UniformRand()-0.5);
-      G4double tempZ = 160*mm*(G4UniformRand()-0.5);
-      posx = tempX;
-      posy = tempY;
-      posz = tempZ -120*mm - 121.5*mm;
-    }
-    G4ThreeVector *ptr;
-    theVolume=gNavigator->LocateGlobalPointAndSetup(G4ThreeVector(posx,posy, posz),ptr,true);
-    theVolName = theVolume->GetName();
-    theMaterialName = theVolume->GetLogicalVolume()->GetMaterial()->GetName();
-
-    MaterialFit = theMaterialName == MaterialUse;
-    VolumeFit = theVolName == VolumeUse;
-    if (MaterialFit && IsMaterial()){
-      found = true;
-    }
-    if (VolumeFit && IsVolume()){
-      found = true;
-    }
-  }
-  SourcePosition = G4ThreeVector(posx, posy, posz);
-  G4AnalysisManager* man = G4AnalysisManager::Instance();
-  man->FillNtupleDColumn(1,0,posx);
-  man->FillNtupleDColumn(1,1,posy);
-  man->FillNtupleDColumn(1,2,posz);
-  man->AddNtupleRow(1);
 }
 
 
+//MATERIAL COORDINATES----------------
 void DAMICParticleSource::MaterialCoordinates(){
   CalculPosition(MotherVolume, Material, "NULL");
-  //G4cout << "bimbimbap" << G4endl;
+
 }
+
+
+//VOLUME COORDINATES FUNCTION CHECK
 
 void DAMICParticleSource::VolumeCoordinates(){
   G4VPhysicalVolume *tempPV      = NULL;
@@ -341,10 +444,196 @@ void DAMICParticleSource::VolumeCoordinates(){
   }
 }
 
+
+
+// SOURCE POSITION FUNCTION -------------
+
+
 void DAMICParticleSource::SourceCoordinates(){
-  SetSourcePosition(ParticlePosition);
+  G4ThreeVector Pos = G4ThreeVector(PositionNum[0], PositionNum[1], PositionNum[2]);
+  SetParticlePosition(Pos);
 }
 
+
+
+//HIT AND MISS FOR VOLUME MATERIAL -----------
+
+
+
+void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUse, G4String VolumeUse){
+
+  G4double posx = 0;
+  G4double posy = 0;
+  G4double posz = 0;
+  G4bool found = false;
+  G4VPhysicalVolume* theVolume;
+  G4String theVolName;
+  G4String theMaterialName;
+  G4bool MaterialFit;
+  G4bool VolumeFit;
+  while(!found){
+    if (MotherUse == "WorldLV" ){
+      posx = 2.15*m*G4UniformRand()-1.075*m;
+      posy = 2.2*m*G4UniformRand()-1.1*m;
+      posz = 2.2*m*G4UniformRand()-1.1*m;
+      //G4cout << "bimbim ici" << G4endl;
+    }
+
+    else if (MotherUse == "VesselLV" || MotherUse =="Assembly1"|| MotherUse =="Assembly2"){
+
+      posx = 2.0*m*G4UniformRand()-1*m;
+      posy = 2.0*m*G4UniformRand()-1*m;
+      posz = 2.0*m*G4UniformRand()-1*m;
+
+    }
+    else if (MotherUse == "PrinTubLV"){
+      //G4cout << "ici" << G4endl;
+
+      G4double RadiusRan = 191.287/2*mm * G4UniformRand();
+      G4double AngleRan = M_PI*2*G4UniformRand();
+      G4double HeightRan = 413.512*mm *(G4UniformRand()-0.5);
+      posx = RadiusRan* cos(AngleRan);
+      posy = RadiusRan* sin(AngleRan);
+      posz = -120*mm+ HeightRan;
+    }
+    else {
+      G4double tempX = 120*mm*(G4UniformRand()-0.5);
+      G4double tempY = 120*mm*(G4UniformRand()-0.5);
+      G4double tempZ = 160*mm*(G4UniformRand()-0.5);
+      posx = tempX;
+      posy = tempY;
+      posz = tempZ -120*mm - 121.5*mm;
+    }
+    G4ThreeVector *ptr;
+    theVolume=gNavigator->LocateGlobalPointAndSetup(G4ThreeVector(posx,posy, posz),ptr,true);
+    theVolName = theVolume->GetName();
+    theMaterialName = theVolume->GetLogicalVolume()->GetMaterial()->GetName();
+    MaterialFit = theMaterialName == MaterialUse;
+    VolumeFit = theVolName == VolumeUse;
+    if (MaterialFit && IsMaterial()){
+      found = true;
+    }
+    if (VolumeFit && IsVolume()){
+      found = true;
+    }
+  }
+  SetParticlePosition(G4ThreeVector(posx, posy, posz));
+  G4AnalysisManager* man = G4AnalysisManager::Instance();
+  man->FillNtupleDColumn(3,0,posx);
+  man->FillNtupleDColumn(3,1,posy);
+  man->FillNtupleDColumn(3,2,posz);
+  man->AddNtupleRow(3);
+}
+
+
+
+
+// SHAPE COORDINATES ------------------
+
+
+
+void DAMICParticleSource::ShapeCoordinates(){
+  G4double X;
+  G4double Y;
+  G4double Z;
+  if (Shape == "Para"){
+    G4ThreeVector Center = G4ThreeVector(PositionNum[0], PositionNum[1], PositionNum[2]);
+    G4ThreeVector Sides = G4ThreeVector(PositionNum[3], PositionNum[4], PositionNum[5]);
+    X = Center.getX()+ Sides.getX()*(G4UniformRand()-0.5);
+    Y = Center.getY()+ Sides.getY()*(G4UniformRand()-0.5);
+    Z = Center.getZ()+ Sides.getZ()*(G4UniformRand()-0.5);
+  }
+  else if (Shape == "Sphere"){
+    G4ThreeVector Center = G4ThreeVector(PositionNum[0], PositionNum[1], PositionNum[2]);
+    G4double Radius = PositionNum[3];
+    G4double cosTeta = 2*(G4UniformRand()-0.5);
+    G4double sinTeta = sqrt(1-cosTeta*cosTeta);
+    G4double AnglePhi = M_PI*2*G4UniformRand();
+    G4double Rad = Radius*G4UniformRand();
+    X = Rad*sin(AnglePhi)*cosTeta+ Center.getX();
+    Y = Rad*sin(AnglePhi)*sinTeta+ Center.getY();
+    Z = Rad*cos(AnglePhi)+ Center.getZ();
+
+  }
+  else if (Shape == "Cyl"){
+    G4ThreeVector Center = G4ThreeVector(PositionNum[0], PositionNum[1], PositionNum[2]);
+    G4double Radius = PositionNum[3];
+    G4double Height = PositionNum[4];
+    G4double Rad = Radius*G4UniformRand();
+    G4double AngleTeta = M_PI*2*G4UniformRand();
+    X = Center.getX() + Rad*cos(AngleTeta);
+    Y = Center.getY()+ Rad * sin(AngleTeta);
+    Z =Center.getZ() + Height *(G4UniformRand()-0.5);
+  }
+  else{
+    G4cout << " *****This Shape is not defined***** " << G4endl;
+    X = 0;
+    Y = 0;
+    Z = 0;
+  }
+
+  SetParticlePosition(G4ThreeVector(X,Y,Z));
+}
+
+
+
+// ENERGY VALUES
+
+void DAMICParticleSource::EnergyValue(){
+//G4cout << "test 2 Energy" << G4endl;
+  if (IsMonoNRJ()){
+    //G4cout << "test 2 Ezzzzznergy" << G4endl;
+    SetParticleEnergy(EnergyNum[0]);
+  }
+  if (IsDistriNRJ()){
+    //G4cout << "test 2 Energy" << G4endl;
+    G4double EnergyRand = 0;
+    if (DistriNRJ == "Uniform"){
+      EnergyRand = G4UniformRand() * (EnergyNum[1]-EnergyNum[0]) + EnergyNum[0];
+    }
+    SetParticleEnergy(EnergyRand);
+  }
+
+}
+
+// DIRECTION VALUE
+
+void DAMICParticleSource::DirectionValue(){
+  if (IsOneD()){
+    SetParticleMomentumDirection(G4ParticleMomentum(DirectionNum[0],DirectionNum[1],DirectionNum[2]));
+  }
+  if (IsDistriD()){
+    if (DistriD == "Isotropic"){
+
+      G4double thetaMin = DirectionNum[0];
+      G4double thetaMax = DirectionNum[1];
+      G4double phiMin = DirectionNum[2];
+      G4double phiMax = DirectionNum[3];
+
+      G4double cosTheta = cos(thetaMin) - G4UniformRand()*(cos(thetaMin)-cos(thetaMax));
+      G4double sinTheta = sqrt(1-cosTheta*cosTheta);
+
+      G4double Phi = phiMin + (phiMax - phiMin) * G4UniformRand();
+      G4double cosPhi = cos(Phi);
+      G4double sinPhi = sin(Phi);
+
+      G4double px = -sinTheta * cosPhi;
+      G4double py = -sinTheta * sinPhi;
+      G4double pz = -cosTheta;
+
+      G4double ResMag = sqrt((px*px)+ (py*py)+(pz*pz));
+      px = px/ResMag;
+      py = py/ResMag;
+      pz = pz/ResMag;
+
+      SetParticleMomentumDirection(G4ParticleMomentum(px, py, pz));
+
+    }
+  }
+}
+
+
+//MAIN-----------------
 
 void DAMICParticleSource::GeneratePrimaryVertex(G4Event* evt){
 
@@ -353,7 +642,9 @@ void DAMICParticleSource::GeneratePrimaryVertex(G4Event* evt){
     return;
   }
 
+  // POSITION
   // Look for the coordinates
+
   if (IsMaterial()){
     MaterialCoordinates();
   }
@@ -364,11 +655,22 @@ void DAMICParticleSource::GeneratePrimaryVertex(G4Event* evt){
     VolumeCoordinates();
   }
 
-  if (!(IsVolume() || IsMaterial())){
+  if (IsSource()){
     SourceCoordinates();
   }
 
-  G4PrimaryVertex* vertex = new G4PrimaryVertex(SourcePosition, ParticleTime);
+  if (IsShape()){
+    ShapeCoordinates();
+  }
+
+  // ENERGY
+  //G4cout << "energy" << G4endl;
+  EnergyValue();
+
+  // DIRECTION
+  //G4cout << "direction" << G4endl;
+  DirectionValue();
+  G4PrimaryVertex* vertex = new G4PrimaryVertex(ParticlePosition, ParticleTime);
   G4double mass = ParticleDefinition->GetPDGMass();
   G4double Energy = ParticleEnergy + mass;
   G4double pmom = std::sqrt(Energy*Energy-mass*mass);
