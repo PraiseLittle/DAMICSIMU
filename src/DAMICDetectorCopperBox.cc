@@ -179,7 +179,7 @@ G4LogicalVolume* GetConstructionCopperAndInner()
 
   /*-------------------------------------------MODULES---------------------------------------*/
   G4LogicalVolume* ModuleLV1 = GetConstructionModule44();
-  G4double PosZModule44 = PosZBottomPlate + 6.35/2*mm + 5.994/2*mm+3*mm;
+  G4double PosZModule44 = PosZBottomPlate + 6.35/2*mm + 5.994/2*mm+3*mm+6.519*mm;
   G4double PosYModule44 = PosYRearPlate - 6.35/2*mm - 116.332/2*mm -1.800*mm;
   G4ThreeVector Module44Vect = G4ThreeVector(0,PosYModule44,PosZModule44);
   G4ThreeVector uModule44 = G4ThreeVector(0,-1,0);
@@ -188,24 +188,54 @@ G4LogicalVolume* GetConstructionCopperAndInner()
   G4RotationMatrix* Module44Rot = new G4RotationMatrix(uModule44, vModule44, wModule44);
 
   G4LogicalVolume* ModuleLV2 = GetConstructionModule44();
-  G4double PosZModule442 = PosZModule44 + 20*mm;
+  G4double PosZModule442 = PosZModule44 + 6.519*mm;
   G4ThreeVector Module442Vect = G4ThreeVector(0,PosYModule44,PosZModule442);
 
   G4LogicalVolume* ModuleLV3 = GetConstructionModule44();
-  G4double PosZModule443 = PosZModule442 + 20*mm;
+  G4double PosZModule443 = PosZModule442 + 6.519*mm;
   G4ThreeVector Module443Vect = G4ThreeVector(0,PosYModule44,PosZModule443);
 
   G4LogicalVolume* ModuleLV4 = GetConstructionModule44();
-  G4double PosZModule444 = PosZModule443 + 20*mm;
+  G4double PosZModule444 = PosZModule443 + 6.519*mm;
   G4ThreeVector Module444Vect = G4ThreeVector(0,PosYModule44,PosZModule444);
 
   G4LogicalVolume* ModuleLV5 = GetConstructionModule44();
-  G4double PosZModule445 = PosZModule444 + 20*mm;
+  G4double PosZModule445 = PosZModule444 + 6.519*mm;
   G4ThreeVector Module445Vect = G4ThreeVector(0,PosYModule44,PosZModule445);
 
   G4LogicalVolume* ModuleLV6 = GetConstructionModule44();
-  G4double PosZModule446 = PosZModule445 + 20*mm;
+  G4double PosZModule446 = PosZModule445 + 6.519*mm;
   G4ThreeVector Module446Vect = G4ThreeVector(0,PosYModule44,PosZModule446);
+
+  G4LogicalVolume* ModuleLV7 = GetConstructionModule44();
+  G4double PosZModule447 = PosZModule446 + 6.519*mm;
+  G4ThreeVector Module447Vect = G4ThreeVector(0,PosYModule44,PosZModule447);
+
+  G4LogicalVolume* BlockBotSupportLV = GetConstructionBlockSupport();
+  G4double PosZBlockBotSupport = PosZModule447 + 6.519*2*mm;
+  G4ThreeVector BlockBotSupportVect = G4ThreeVector(0,PosYModule44,PosZBlockBotSupport);
+
+  G4LogicalVolume* BlockBotLV = GetConstructionLeadBlockInBox();
+  G4double PosZBlockBot= PosZBlockBotSupport+ 22.5/2*mm;
+  G4double PosYBlockBot = 3.01*mm + PosYModule44;
+  G4ThreeVector BlockBotVect = G4ThreeVector(0, PosYBlockBot, PosZBlockBot);
+
+  G4LogicalVolume* ModuleLV8 = GetConstructionModule44();
+  G4double PosZModule448 = PosZBlockBot + 22.5/2*mm+ 3.2595*mm;
+  G4ThreeVector Module448Vect = G4ThreeVector(0,PosYModule44,PosZModule448);
+
+  G4LogicalVolume* ModuleWSiLV = GetConstructionModule44WSi();
+  G4double PosZModuleWSi = PosZModule448 + 6.519*mm;
+  G4ThreeVector ModuleWSiVect = G4ThreeVector(0,PosYModule44,PosZModuleWSi);
+
+  G4LogicalVolume* BlockTopLV = GetConstructionLeadBlockInBox();
+  G4double PosZBlockTop= PosZModuleWSi+ 22.5/2*mm + 0.678*mm + 1.3975* mm  + 2.795*mm + 929 *um ;
+  G4double PosYBlockTop = PosYBlockBot;
+  G4ThreeVector BlockTopVect = G4ThreeVector(0, PosYBlockTop, PosZBlockTop);
+  G4ThreeVector uBlockTop = G4ThreeVector(1,0,0);
+  G4ThreeVector vBlockTop = G4ThreeVector(0,1,0);
+  G4ThreeVector wBlockTop = G4ThreeVector(0,0,-1);
+  G4RotationMatrix* BlockTopRot = new G4RotationMatrix(uBlockTop, vBlockTop, wBlockTop);
 
   /*-------------------------------------------INNERLEAD------------------------------------------*/
 
@@ -315,6 +345,12 @@ G4LogicalVolume* GetConstructionCopperAndInner()
   G4PVPlacement* ModulePV4 = new G4PVPlacement(Module44Rot, Module444Vect, ModuleLV1, "ModulePV4", PrinTubLV, false, 0, false);
   G4PVPlacement* ModulePV5 = new G4PVPlacement(Module44Rot, Module445Vect, ModuleLV1, "ModulePV5", PrinTubLV, false, 0, false);
   G4PVPlacement* ModulePV6 = new G4PVPlacement(Module44Rot, Module446Vect, ModuleLV1, "ModulePV6", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV7 = new G4PVPlacement(Module44Rot, Module447Vect, ModuleLV1, "ModulePV7", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModulePV8 = new G4PVPlacement(Module44Rot, Module448Vect, ModuleLV1, "ModulePV8", PrinTubLV, false, 0, false);
+  G4PVPlacement* ModuleWSiPV = new G4PVPlacement(Module44Rot, ModuleWSiVect, ModuleWSiLV, "ModuleWSiPV", PrinTubLV, false, 0, false);
+  G4PVPlacement* BlockBotPV = new G4PVPlacement(Module44Rot, BlockBotVect, BlockBotLV, "BlockBotPV", PrinTubLV, false, 0, false);
+  G4PVPlacement* BlockTopPV = new G4PVPlacement(BlockTopRot, BlockTopVect, BlockTopLV, "BlockTopPV", PrinTubLV, false, 0, false);
+  G4PVPlacement* BlockBotSupportPV = new G4PVPlacement(0, BlockBotSupportVect, BlockBotSupportLV, "BlockBotSupportPV", PrinTubLV, false, 0, false);
 
   G4PVPlacement* SpacerPlate1PV = new G4PVPlacement(RotSpacerPlate1, VectSpacerPlate1, SpacerPlate1LV, "SpacerPlate1PV", PrinTubLV, false, 0, false);
   G4PVPlacement* GoodLead1PV = new G4PVPlacement(RotGoodLead1, VectGoodLead1, GoodLead1LV, "GoodLead1PV", PrinTubLV, false, 0, false);
@@ -711,4 +747,64 @@ G4LogicalVolume* GetConstructionTopPlate()
 
   return topPlate;
 
+}
+
+G4LogicalVolume* GetConstructionLeadBlockInBox(){
+  G4double blockX = 97.5*mm;
+  G4double blockY = 100*mm;
+  G4double blockZ = 22.5*mm;
+  G4double rmX = blockX - 10*mm;
+  G4double rmY = blockY - 10*mm;
+  G4double rmZ = blockZ+2.54*mm;
+
+  G4Box* box1 = new G4Box("Box1", blockX/2, blockY/2, blockZ/2 );
+  G4Box* box2 = new G4Box("Box2", rmX/2, rmY/2, rmZ/2);
+
+  G4RotationMatrix* rot0 = new G4RotationMatrix;
+  G4double TrZ = -(rmZ/2 - blockZ/2);
+  G4ThreeVector TrV = G4ThreeVector(0,0,TrZ);
+  G4Transform3D TrTr = G4Transform3D(*rot0, TrV);
+
+  G4UnionSolid* Box = new G4UnionSolid("Box", box1, box2, TrTr);
+  G4Material* Lead = G4Material::GetMaterial("G4_Pb");
+
+  G4LogicalVolume* LeadBlockInBox = new G4LogicalVolume(Box, Lead, "LeadBlockInBox");
+
+  return LeadBlockInBox;
+
+}
+
+G4LogicalVolume* GetConstructionBlockSupport(){
+  G4double mainBoxX = 101.6*mm;
+  G4double mainBoxY = 113.03*mm;
+  G4double mainBoxZ = 2.54*mm;
+
+  G4double RMBox1X = 100*mm;//97.5*mm;
+  G4double RMBox1Y = 100*mm;
+  G4double RMBox1Z = 2.54-0.5*mm;
+
+  G4double RMBox2X = 90*mm;//87.5*mm;
+  G4double RMBox2Y = 90*mm;//90*mm;
+  G4double RMBox2Z =  2.54*mm;
+
+  G4Box * mainBox = new G4Box("MainBox", mainBoxX/2, mainBoxY/2, mainBoxZ/2);
+  G4Box * rmBox1 = new G4Box("RMBox1", RMBox1X/2, RMBox1Y/2, RMBox1Z);
+  G4Box * rmBox2 = new G4Box("RMBox2", RMBox2X/2, RMBox2Y/2, RMBox2Z);
+
+  G4RotationMatrix* rot0 = new G4RotationMatrix;
+  G4double TrYrm = 3.01*mm;
+  G4double TrZrm = mainBoxZ/2;
+  G4ThreeVector TrVrm = G4ThreeVector(0,TrYrm,TrZrm);
+  G4Transform3D TrTrrm = G4Transform3D(*rot0, TrVrm);
+
+  G4ThreeVector TrVrm2 = G4ThreeVector(0,TrYrm,0);
+  G4Transform3D TrTrrm2 = G4Transform3D(*rot0, TrVrm2);
+
+  G4SubtractionSolid* subs1 = new G4SubtractionSolid("subs1", mainBox, rmBox1, TrTrrm);
+  G4SubtractionSolid* subs2 = new G4SubtractionSolid("subs2", subs1, rmBox2, TrTrrm2);
+
+  G4Material* Copper = G4Material::GetMaterial("G4_Cu");
+  G4LogicalVolume* BlockSupport = new G4LogicalVolume(subs2, Copper, "BlockSupport");
+
+  return BlockSupport;
 }

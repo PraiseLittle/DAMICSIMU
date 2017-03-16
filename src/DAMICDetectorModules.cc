@@ -154,6 +154,53 @@ G4LogicalVolume* GetConstructionCCDSubAssy44()
   return SubLV;
 }
 
+G4LogicalVolume* GetConstructionCCDSubAssy44WSi()
+{
+  G4double SubX = 95.21*mm;
+  G4double SubY = 101.6*mm;
+  G4double SubZ = 1.631*mm;
+  G4Box* SubBox = new G4Box("SubBox", SubX/2, SubY/2, SubZ/2);
+
+  G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
+  G4LogicalVolume* SubLVWSi = new G4LogicalVolume(SubBox, Galac,"Sub44LVWSi");
+
+
+  //G4LogicalVolume* CCDSensor44LV = GetConstructionCCDSensor44();
+  //G4LogicalVolume* SiliconSubstrate44LV = GetConstructionSiliconSubstrate44();
+  G4LogicalVolume* FlexCable44LV = GetConstructionFlexCable44();
+
+
+  G4double CopyNeeded = (SubX-90.358)/2-0.02;
+  /*---------SensorPos----------*/
+  G4double PosZSensor = -SubZ/2+0.675/2;
+  G4double PosYSensor = 0;
+  G4double PosXSensor = -SubX/2+76.2/2*mm;
+  G4ThreeVector VectSensor = G4ThreeVector(PosXSensor, PosYSensor, PosZSensor);
+  G4ThreeVector uSensor = G4ThreeVector(0,1,0);
+  G4ThreeVector vSensor = G4ThreeVector(-1,0,0);
+  G4ThreeVector wSensor = G4ThreeVector(0,0,1);
+  G4RotationMatrix* rotSensor = new G4RotationMatrix(uSensor, vSensor, wSensor);
+  /*----------FlexCablePos-----------*/
+  G4double PosZFlexCable = PosZSensor+ 0.675/2*mm+0.305/2*mm;
+  G4double PosYFlexCable = 0;
+  G4double PosXFlexCable = CopyNeeded;
+  G4ThreeVector VectFlexCable = G4ThreeVector(PosXFlexCable,PosYFlexCable , PosZFlexCable);
+
+  /*-----------SiliconSubstratePos----------*/
+  G4double PosZSiliconSubstrate = PosZFlexCable+0.305/2*mm+0.65/2*mm;
+  G4double PosYSiliconSubstrate = 0;
+  G4double PosXSiliconSubstrate = -SubX/2+76.2/2*mm;
+  G4ThreeVector VectSiliconSubstrate = G4ThreeVector(PosXSiliconSubstrate, PosYSiliconSubstrate, PosZSiliconSubstrate);
+
+
+  //G4PVPlacement* CCDSensor44PV = new G4PVPlacement(rotSensor, VectSensor, CCDSensor44LV, "CCDSensor44PV", SubLV, false, 0, false);
+  //G4PVPlacement* SiliconSubstrate44PV = new G4PVPlacement(0, VectSiliconSubstrate, SiliconSubstrate44LV, "SiliconSubstrate44PV", SubLV, false, 0, false);
+  G4PVPlacement* FlexCable44PV = new G4PVPlacement(0, VectFlexCable, FlexCable44LV, "FlexCable44PV", SubLVWSi, false, 0, false);
+
+  return SubLVWSi;
+}
+
+
 G4LogicalVolume* GetConstructionCopperBasePlate()
 {
   G4double boxXBase = 111.252*mm;
@@ -406,4 +453,85 @@ G4LogicalVolume* GetConstructionFlexCable44()
   G4LogicalVolume* flexCable = new G4LogicalVolume(flex2, Copper, "FlexCable");
 
   return flexCable;
+}
+
+
+G4LogicalVolume* GetConstructionModule44WSi(){
+  G4double ModuleX = 116.332*mm;
+  G4double ModuleY = 116.84*mm;
+  G4double ModuleZ = 6.519*mm;
+
+  G4double erasePartX = 111.252*mm;
+  G4double erasePartY = (ModuleY-102.616)/2;
+  G4double erasePartZ = ModuleZ;
+
+  G4Box* ModuleBox = new G4Box("ModuleBox", ModuleX/2, ModuleY/2, ModuleZ/2);
+  G4Box* Box1 = new G4Box("Box1", erasePartX/2, erasePartY/2, erasePartZ);
+
+  G4RotationMatrix* rot0Erase = new G4RotationMatrix;
+  G4double posYErase = 102.616/2+erasePartY/2;
+  G4double posXErase = ModuleX/2 - erasePartX/2+0.005;
+  G4ThreeVector vectErase1 = G4ThreeVector(posXErase,posYErase,0);
+  G4ThreeVector vectErase2 = G4ThreeVector(posXErase,-posYErase,0);
+  G4Transform3D TrErase1 = G4Transform3D(*rot0Erase, vectErase1);
+  G4Transform3D TrErase2 = G4Transform3D(*rot0Erase, vectErase2);
+
+  G4SubtractionSolid* sub1 = new G4SubtractionSolid("Sub1",ModuleBox, Box1, TrErase1);
+  G4SubtractionSolid* sub2 = new G4SubtractionSolid("Sub2",sub1, Box1, TrErase2);
+
+  G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
+  G4LogicalVolume* Module44WSiLV = new G4LogicalVolume(sub2, Galac,"Module44WSiLV");
+
+  G4LogicalVolume* CopperBasePlateLV = GetConstructionCopperBasePlate();
+  G4LogicalVolume* CopperMountBarLV = GetConstructionCopperMountBar();
+  //G4LogicalVolume* ProtectiveCoverLV = GetConstructionProtectiveCover();
+  G4LogicalVolume* SubAssyLVWSi = GetConstructionCCDSubAssy44WSi();
+  G4LogicalVolume* CopperTopPlate44LV = GetConstructionCopperTopPlate44();
+
+
+  /*--------PosCopperMountBar-----*/
+  G4double PosBarZ = -ModuleZ/2+5.334/2;
+  G4double PosBarY = 0;
+  G4double PosBarX = -ModuleX/2+11.43/2*mm;
+  G4ThreeVector VectPosBar = G4ThreeVector(PosBarX, PosBarY, PosBarZ);
+  G4ThreeVector uPosBar = G4ThreeVector(0,0,1);
+  G4ThreeVector vPosBar = G4ThreeVector(1,0,0);
+  G4ThreeVector wPosBar = G4ThreeVector(0,1,0);
+  G4RotationMatrix* RotPosBar = new G4RotationMatrix(uPosBar, vPosBar, wPosBar);
+   /*-----------PosCopperBasePlate-------*/
+  G4double PosZCopperBasePlate = PosBarZ-2.006/2;
+  G4double PosYCopperBasePlate = 0;
+  G4double PosXCopperBasePlate = PosBarX - 0.635*mm +111.252/2*mm;
+  G4ThreeVector VectCopperBasePlate = G4ThreeVector(PosXCopperBasePlate,PosYCopperBasePlate,PosZCopperBasePlate);
+
+  /*---------PosSubAssy-----*/
+  G4double PosSubAssyZ = PosZCopperBasePlate + 1.631/2*mm+1.118*mm ;
+  G4double PosSubAssyY =0;
+  G4double PosSubAssyX = PosXCopperBasePlate + 12.891*mm - 9.505*mm;
+  G4ThreeVector VectSubAssy = G4ThreeVector(PosSubAssyX,PosSubAssyY,PosSubAssyZ);
+  G4ThreeVector uAssy = G4ThreeVector(-1,0,0);
+  G4ThreeVector vAssy = G4ThreeVector(0,-1,0);
+  G4ThreeVector wAssy = G4ThreeVector(0,0,1);
+  G4RotationMatrix* RotSubAssy = new G4RotationMatrix(uAssy, vAssy, wAssy);
+
+  /*-------PosCopperTopPlate-----*/
+  G4double PosZTop = PosSubAssyZ + 1.631/2*mm+2.006/2*mm;
+  G4double PosYTop = 0;
+  G4double PosXTop = PosXCopperBasePlate+ 111.252/2*mm-85.852/2*mm;
+  G4ThreeVector VectTopPlate = G4ThreeVector(PosXTop,PosYTop,PosZTop);
+  /*------PosProtectiveCover-----*/
+  G4double PosProtectiveZ = PosSubAssyZ + 0.6*mm + 0.25/2*mm+1*mm;
+  G4double PosProtectiveY = 0;
+  G4double PosProtectiveX = 11.1125*mm;
+  G4ThreeVector VectProtective = G4ThreeVector(PosProtectiveX,PosProtectiveY,PosProtectiveZ);
+
+  G4PVPlacement* CopperBasePlatePV = new G4PVPlacement(0, VectCopperBasePlate, CopperBasePlateLV, "CopperBasePlatePV", Module44WSiLV, false, 0, false);
+  G4PVPlacement* CopperMountBarPV = new G4PVPlacement(RotPosBar, VectPosBar, CopperMountBarLV, "CopperMountBarPV", Module44WSiLV, false, 0, false);
+  //G4PVPlacement* ProtectiveCoverPV = new G4PVPlacement(0, VectProtective, ProtectiveCoverLV, "ProtectiveCoverPV", Module44LV, false, 0, false);
+  G4PVPlacement* SubAssyPVWSi = new G4PVPlacement(RotSubAssy, VectSubAssy, SubAssyLVWSi, "SubAssyPVWSi", Module44WSiLV, false, 0, false);
+  G4PVPlacement* CopperTopPlate44PV = new G4PVPlacement(0, VectTopPlate, CopperTopPlate44LV, "CopperTopPlate44PV", Module44WSiLV, false, 0, false);
+
+
+
+  return Module44WSiLV;
 }

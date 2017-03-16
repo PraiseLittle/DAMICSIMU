@@ -25,7 +25,7 @@ DAMICCCDSD::DAMICCCDSD(G4String name)
 {
     G4String HCname = "CCDColl";
     collectionName.insert(HCname);
-    fPositionCCD = {-305.405, -285.405, -265.405, -245.405, -225.405, -205.405};
+    fPositionCCD = {-298.886, -292.367, -285.848, -279.329, -272.81, -266.291, -259.772, -220.974 };
     fThickCCD = 0.675*mm;
 }
 

@@ -15,6 +15,8 @@ G4LogicalVolume* GetConstructionUpperPlate();
 G4LogicalVolume* GetConstructionSidePlate();
 G4LogicalVolume* GetConstructionTopPlate();
 G4LogicalVolume* GetConstructionCopperAndInner();
+G4LogicalVolume* GetConstructionLeadBlockInBox();
+G4LogicalVolume* GetConstructionBlockSupport();
 
 
 #endif

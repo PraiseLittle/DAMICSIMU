@@ -228,7 +228,7 @@ DAMICParticleSourceMessenger::DAMICParticleSourceMessenger(DAMICParticleSource* 
 
   // PArticle Specs
 
-  ParticleCmd = new G4UIcmdWithAString("/dmx/gun/particle",this);
+  ParticleCmd = new G4UIcmdWithAString("/damic/gun/particle",this);
   ParticleCmd->SetGuidance("Set particle to be generated.");
   ParticleCmd->SetGuidance(" (geantino is default)");
   ParticleCmd->SetGuidance(" (ion can be specified for shooting ions)");
@@ -263,16 +263,16 @@ DAMICParticleSourceMessenger::DAMICParticleSourceMessenger(DAMICParticleSource* 
 
 
   G4UIparameter* parami;
-  parami = new G4UIparameter("Z",'i',false);
+  parami = new G4UIparameter("Z",'i',true);
   parami->SetDefaultValue("1");
   IonCmd->SetParameter(param);
-  parami = new G4UIparameter("A",'i',false);
+  parami = new G4UIparameter("A",'i',true);
   parami->SetDefaultValue("1");
   IonCmd->SetParameter(param);
-  parami = new G4UIparameter("Q",'i',true);
+  parami = new G4UIparameter("Q",'i',false);
   parami->SetDefaultValue("0");
   IonCmd->SetParameter(param);
-  parami = new G4UIparameter("E",'d',true);
+  parami = new G4UIparameter("E",'d',false);
   parami->SetDefaultValue("0.0");
   IonCmd->SetParameter(param);
 
@@ -342,6 +342,7 @@ void DAMICParticleSourceMessenger::SetNewValue(G4UIcommand *command, G4String ne
     particleTable->DumpTable();
   }// SPECS
   else if(command == IonCmd){
+    G4cout << "on teste " << G4endl;
 
     if (fShootIon) {
       G4Tokenizer next( newValues );
