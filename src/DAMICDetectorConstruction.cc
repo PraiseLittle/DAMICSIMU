@@ -63,13 +63,11 @@ G4VPhysicalVolume* DAMICDetectorConstruction::Construct()
   G4LogicalVolumeStore::GetInstance()->Clean();
   G4SolidStore::GetInstance()->Clean();
 
-  //G4Box* muonsBox = new G4Box("muonsBox", 10*mm, 60*mm, 200*mm);
   G4Material* WorldMat = G4Material::GetMaterial("G4_Galactic");
 
   G4Box* WorldBox = new G4Box( "WorldBox", 1.1*m, 1.1*m, 1.1*m);
 
   G4LogicalVolume* WorldLV = new G4LogicalVolume(WorldBox, WorldMat, "WorldLV");
-  //G4LogicalVolume* muonsLV = new G4LogicalVolume (muonsBox, WorldMat, "MuonsLV");
 
 
   G4VPhysicalVolume* WorldPV = new G4PVPlacement (0, G4ThreeVector(), WorldLV, "World",0, false, 0, fCheckOverlaps);
@@ -78,7 +76,6 @@ G4VPhysicalVolume* DAMICDetectorConstruction::Construct()
   G4LogicalVolume* VesselLV = GetConstructionVesselandOutter();
 
   G4PVPlacement* VesselPV = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), VesselLV, "VesselPV", WorldLV, false, 0, fCheckOverlaps);
-  //G4PVPlacement* muonsPV = new G4PVPlacement(0, G4ThreeVector(50*cm, 0, -0.4*m), muonsLV, "muonsPV", WorldLV, false, 0, fCheckOverlaps);
   fCCDSensor = G4LogicalVolumeStore::GetInstance()->GetVolume("CCDSensor");
   return WorldPV;
 

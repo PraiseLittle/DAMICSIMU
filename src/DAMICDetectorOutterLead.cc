@@ -296,7 +296,7 @@ G4LogicalVolume* GetConstructionAssembly1()
 
 
 
-  G4PVPlacement* RestraintSheetPV = new G4PVPlacement(0, G4ThreeVector(0,0,0), RestraintSheetLV, "RestraintSheetPV", Assembly1, false, 0, false);
+  G4PVPlacement* RestraintSheet1PV = new G4PVPlacement(0, G4ThreeVector(0,0,0), RestraintSheetLV, "RestraintSheet1PV", Assembly1, false, 0, false);
   G4PVPlacement* RestraintBlocks1PV = new G4PVPlacement(RestraintBlocks1Rot, RestraintBlocks1Vect, RestraintBlocks1LV, "RestraintBlocks1PV", Assembly1, false, 0, false);
   G4PVPlacement* RestraintBlocks2PV = new G4PVPlacement(RestraintBlocks2Rot, RestraintBlocks2Vect, RestraintBlocks2LV, "RestraintBlocks2PV", Assembly1, false, 0, false);
   G4PVPlacement* RestraintBlocks3PV = new G4PVPlacement(RestraintBlocks3Rot, RestraintBlocks3Vect, RestraintBlocks3LV, "RestraintBlocks3PV", Assembly1, false, 0, false);
@@ -421,15 +421,15 @@ G4LogicalVolume* GetConstructionAssembly2()
   G4LogicalVolume* Assembly2 = new G4LogicalVolume(boxAssembly2, Galac, "Assembly2");
 
 
-  G4PVPlacement* RestraintSheetPV = new G4PVPlacement(0, G4ThreeVector(0,0,0), RestraintSheetLV, "RestraintSheetPV", Assembly2, false, 0, false);
-  G4PVPlacement* RestraintBlocks1PV = new G4PVPlacement(RestraintBlocks12Rot, RestraintBlocks1Vect, RestraintBlocks1LV, "RestraintBlocks1PV", Assembly2, false, 0, false);
-  G4PVPlacement* RestraintBlocks2PV = new G4PVPlacement(RestraintBlocks12Rot, RestraintBlocks2Vect, RestraintBlocks2LV, "RestraintBlocks2PV", Assembly2, false, 0, false);
-  G4PVPlacement* RestraintBlocks3PV = new G4PVPlacement(RestraintBlocks34Rot, RestraintBlocks3Vect, RestraintBlocks3LV, "RestraintBlocks3PV", Assembly2, false, 0, false);
-  G4PVPlacement* RestraintBlocks4PV = new G4PVPlacement(RestraintBlocks34Rot, RestraintBlocks4Vect, RestraintBlocks4LV, "RestraintBlocks4PV", Assembly2, false, 0, false);
-  G4PVPlacement* RestraintBlocks5PV = new G4PVPlacement(RestraintBlocks56Rot, RestraintBlocks5Vect, RestraintBlocks5LV, "RestraintBlocks5PV", Assembly2, false, 0, false);
-  G4PVPlacement* RestraintBlocks6PV = new G4PVPlacement(RestraintBlocks56Rot, RestraintBlocks6Vect, RestraintBlocks6LV, "RestraintBlocks6PV", Assembly2, false, 0, false);
-  G4PVPlacement* RestraintBlocks7PV = new G4PVPlacement(RestraintBlocks78Rot, RestraintBlocks7Vect, RestraintBlocks7LV, "RestraintBlocks7PV", Assembly2, false, 0, false);
-  G4PVPlacement* RestraintBlocks8PV = new G4PVPlacement(RestraintBlocks78Rot, RestraintBlocks8Vect, RestraintBlocks8LV, "RestraintBlocks8PV", Assembly2, false, 0, false);
+  G4PVPlacement* RestraintSheet2PV = new G4PVPlacement(0, G4ThreeVector(0,0,0), RestraintSheetLV, "RestraintSheet2PV", Assembly2, false, 0, false);
+  G4PVPlacement* RestraintBlocks5PV = new G4PVPlacement(RestraintBlocks12Rot, RestraintBlocks1Vect, RestraintBlocks1LV, "RestraintBlocks5V", Assembly2, false, 0, false);
+  G4PVPlacement* RestraintBlocks6PV = new G4PVPlacement(RestraintBlocks12Rot, RestraintBlocks2Vect, RestraintBlocks2LV, "RestraintBlocks6PV", Assembly2, false, 0, false);
+  G4PVPlacement* RestraintBlocks7PV = new G4PVPlacement(RestraintBlocks34Rot, RestraintBlocks3Vect, RestraintBlocks3LV, "RestraintBlocks7PV", Assembly2, false, 0, false);
+  G4PVPlacement* RestraintBlocks8PV = new G4PVPlacement(RestraintBlocks34Rot, RestraintBlocks4Vect, RestraintBlocks4LV, "RestraintBlocks8PV", Assembly2, false, 0, false);
+  G4PVPlacement* RestraintBlocks9PV = new G4PVPlacement(RestraintBlocks56Rot, RestraintBlocks5Vect, RestraintBlocks5LV, "RestraintBlocks9PV", Assembly2, false, 0, false);
+  G4PVPlacement* RestraintBlocks10PV = new G4PVPlacement(RestraintBlocks56Rot, RestraintBlocks6Vect, RestraintBlocks6LV, "RestraintBlocks10PV", Assembly2, false, 0, false);
+  G4PVPlacement* RestraintBlocks11PV = new G4PVPlacement(RestraintBlocks78Rot, RestraintBlocks7Vect, RestraintBlocks7LV, "RestraintBlocks11PV", Assembly2, false, 0, false);
+  G4PVPlacement* RestraintBlocks12PV = new G4PVPlacement(RestraintBlocks78Rot, RestraintBlocks8Vect, RestraintBlocks8LV, "RestraintBlocks12PV", Assembly2, false, 0, false);
 
 
   return Assembly2;
