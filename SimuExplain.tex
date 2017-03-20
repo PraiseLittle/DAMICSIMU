@@ -1,0 +1,199 @@
+\documentclass[français,final,twoside,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{palatino}
+\usepackage{vmargin}
+\usepackage{fancyhdr} 
+\usepackage{array}
+\usepackage{lmodern}
+\usepackage{mathtools}
+
+
+\setpapersize{A4}
+\setmargrb{2cm}{1.5cm}{2cm}{1.5cm}
+
+\title{Geant 4 DAMIC Simualtion: How to use it}
+\author{LPNHE DAMIC}
+\date{20/03/2017}
+
+\begin{document}
+
+\maketitle
+
+\section{Running the simulation}
+\subsection{Install Geant4}
+
+To use the simulation you need to install Geant4. The version used is the Geant4 10.2 .  You can use newer versions. 
+
+During installation of Geant 4 you should set to ON the option "GEANT4 INSTALL DATA". I recommend you to use QT for visualisation.  
+
+\subsection{Run the simulation}
+
+
+Once Geant4 installation is completed, go to the bin directory on your installation directory. Then use one of the bash files ( geant4.sh or geant4.csh). It will dowload the path for different datasets on your terminal. (You have to do it for each terminal where you want to run the simulation). \\
+
+
+You need to create two directories. One of them will contain all the simulation source code (/SourceDirectory). The other one will be for compiling the code (/RunDirectory). \\
+
+On your terminal open the empty directory (/RunDirectory) and compile the source code with the command : \textit{cmake \-DGeant4\_DIR=/PathtoyourG4InstallDirectory /pathtothe \_SourceDirectory}.
+Then you just have to use the command : \textit{make install}.\\
+
+If you change something on the code source you have to use the make install command to compile again. 
+Finally, you could run the simulation.\\
+
+If you want to use the visualization just call the executable on your terminal. It should open the QT interface. Then use the command \textit{/command/execute vis.mac}. The DAMIC Setup coded on Geant4 should appear. You can then use Geant4 commands on QT browser to visualize interaction.\\
+
+If you only want to use the bash mode, you call the executable followed by the macro file that you want to use( file with extension \textit{.mac}
+
+\section{Create a macro file for the simulation}
+
+\subsection{Macrofile Skeleton}
+
+We can divide the commands of a macro file in two parts :
+
+\begin{itemize}
+\item A Geant4 part where you put some information about the Geant4 simulation and two mandatory commands.
+\item A part where you choose your primary generator ( Particle type, Energy, Momentum...),and  where to generate it  (Volume, Shape, Source..). The commands of this part are made only for the DAMIC simulation only.
+\end{itemize}
+ 
+\subsection{Geant4 Commands}
+
+There is only two mandatory commands :
+\begin{itemize}
+\item /run/initialize
+\item /run/beamOn N
+\end{itemize}
+
+
+
+
+N is the number of primary particles that you want to simulate.For other Geant4 commands take a look at the Geant4 documentation. Don't use the Gun Particle commands of Geant4 they will not work. 
+
+\subsection{DAMIC Commands}
+
+At the moment the DAMIC Commands serves to parameterize the DAMIC Particle Gun. The Particle Gun is a code that defines the primary particle and its properties (also named primary generator).\\ 
+
+The DAMIC  Commands are divided in 4 categories:
+\begin{itemize}
+\item Particle  : Commands that change the primary generator definition
+\item Energy  : Commands that parametrized the primary generator energy
+\item Direction : Commands that parametrized the primary generator momentum direction
+\item Position : Commands that parametrized the primary generator position
+\newline
+\end{itemize}
+
+The DAMIC commands always begin with \textit{/damic/gun/}
+
+\subsubsection{DAMIC Particle Commands}
+
+There is 4 "Particle Commands" : 
+\\
+\begin{itemize}
+\item /damic/gun/list : This command gives the list of the particles that can be define as primary generators. 
+\item /damic/gun/particle nameparticle : Define the primary generator particle ( mass, charge...). If you want to define an ion ( for decay process) the nameparticle should be replaced by ion.
+\item /damic/gun/charge :  Change the primary generator charge, if different from the standard one.
+\item /damic/gun/ion Z A Q E : Defines the ion used for decay. Z is the atomic number, A is the AtomicMass, Q is the Charge of the ion, E the excitation energy. You need to use the command \textit{/damic/gun/particle ion} before using this one. 
+\end{itemize}
+\\
+
+\subsubsection{DAMIC energy commands}
+There is 4 "Energy Commands", three of them are dependant:\\
+
+\begin{itemize}
+\item /damic/gun/energy/mono Energy Unit : Set a monoenergetic energy of \textit{Energy Unit} for the primary generator (Energy Units).
+\item /damic/gun/energy/distri Candidate:  Set a distribution energy \textit{Candidate} for the primary generator. Candidates : Uniform.
+\item /damic/gun/energy/bot Energy Unit: Set the bottom energy value for a uniform energy distribution. 
+\item /damic/gun/energy/top Energy Unit: Set the top energy value for a uniform energy distribution.
+\end{itemize}
+\\
+
+\subsubsection{DAMIC direction commands}
+There is 9 "Direction Commands", divided in two parts. One to define a single particle generator direction and the second to define a distribution for the particle generator direction.\\
+
+The 4 commands to define a single direction:\\
+\begin{itemize}
+\item /damic/gun/direction/oned : Set the direction distribution to a single direction.
+\item /damic/gun/direction/onedX : Set the x value of the direction.
+\item /damic/gun/direction/onedY : Set the y value of the direction.
+\item /damic/gun/direction/onedZ : Set the z value of the direction.
+\newline
+\end{itemize}
+
+
+The 5 commands to define a distribution for the particle generator direction ( Only Isotropic for the moment):
+\begin{itemize}
+\item /damic/gun/direction/distri Candidate:  Set a distribution direction for the primary generator. Candidates: Isotropic.
+\item /damic/gun/direction/thetamin Value: Set the minimum value of theta for an isotropic distribution
+\item /damic/gun/direction/thetamax Value: Set the maximum value of theta for an isotropic distribution
+\item /damic/gun/direction/phimin Value: Set the minimum value of phi for an isotropic distribution
+\item /damic/gun/direction/phimax Value: Set the maximum value of phi for an isotropic distribution
+\end{itemize}
+
+\subsubsection{DAMIC position commands}
+
+There is  a lot of commands for the position. There is four ways to define the position of the primary generator. You can generate the primary particle:
+\begin{itemize}
+\item from a point source
+\item following a shape (Parallelepiped, Cylinder, Sphere)
+\item from a specific material
+\item from different parts of the DAMIC geometry
+\newline
+\end{itemize}
+
+
+
+To generate from a point source: 
+
+\begin{itemize}
+\item /damic/gun/position/dosource: Set the position to a point source
+\item /damic/gun/position/centerx Value Unit: Set the X coordinate of the point source 
+\item /damic/gun/position/centery Value Unit: Set the Y coordinate of the point source 
+\item /damic/gun/position/centerz Value Unit: Set the Z coordinate of the point source
+\newline 
+\end{itemize}
+
+To generate following a shape:
+
+\begin{itemize}
+\item /damic/gun/position/doshape shape: Set the position to a shape. Candidates: Para Sphere Cyl
+\item /damic/gun/position/centerx Value Unit: Set the X coordinate of the shape center
+\item /damic/gun/position/centery Value Unit: Set the Y coordinate of the shape center 
+\item /damic/gun/position/centerz Value Unit: Set the Z coordinate of the shape center
+\item /damic/gun/position/parax Value Unit : Set the lenght of the X side of the parallelepiped distribution.
+\item /damic/gun/position/paray Value Unit : Set the lenght of the Y side of the parallelepiped distribution.
+\item /damic/gun/position/paraz Value Unit : Set the lenght of the Z side of the parallelepiped distribution.
+\item /damic/gun/position/spherer Value Unit: Set the lenght of the radius of the sphere distribution.
+\item /damic/gun/position/cylr Value Unit: Set the lenght of the radius of the cylinder distribution.
+\item /damic/gun/position/cylh Value Unit: Set the lenght of the height of the cylinder distribution
+\newline
+\end{itemize}
+
+
+
+To generate from a material: 
+
+\begin{itemize}
+\item /damic/gun/position/domaterial Name: Set the position to a material source. Candidates: All materials of the DAMIC geometry. Look at DAMICDetectorConstruction.cc
+\item /damic/gun/position/mother Name: Set the mother volume to generate primaries in the material chosen.
+\newline 
+\end{itemize}
+
+
+To generate from different parts of the DAMIC geometry:
+
+\begin{itemize}
+\item /damic/gun/position/dovolume: Set the position to volumes.
+\item /damic/gun/position/addvolume Name Activity: Add volumes where primaries will be generated. Acitivity is in $\mu Bq.kg^{-1}$ 
+\newline
+\end{itemize}
+
+There is a Rootmacro that creates the macrofiles automaticaly for several volumes depending on a simple configuration file.  
+
+\end{document}
+
+
+
