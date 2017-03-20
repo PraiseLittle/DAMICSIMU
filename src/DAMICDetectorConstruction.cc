@@ -48,6 +48,7 @@ DAMICDetectorConstruction::DAMICDetectorConstruction():G4VUserDetectorConstructi
   G4Material* Silicon = nist->FindOrBuildMaterial("G4_Si");
   G4Material* Galac = nist->FindOrBuildMaterial("G4_Galactic");
   G4Material* StainSteel = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
+  G4Material* Nitrogen = nist->FindOrBuildMaterial("G4_N");
   G4cout << *(G4Material::GetMaterialTable()) << G4endl;
 
 

@@ -32,14 +32,14 @@
 
 G4LogicalVolume* GetConstructionVesselandOutter(){
 
-  G4double boxX = 1*m;
-  G4double boxY = 1*m;
-  G4double boxZ = 1*m;
+  G4double boxX = 0.62*m;
+  G4double boxY = 0.62*m;
+  G4double boxZ = 0.62*m;
 
 
   G4Box* BaseGeo = new G4Box("BaseGeo", boxX, boxY, boxZ);
-  G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
-  G4LogicalVolume* Base = new G4LogicalVolume(BaseGeo, Galac, "OutterLead");
+  G4Material* Nitro = G4Material::GetMaterial("G4_N");
+  G4LogicalVolume* Base = new G4LogicalVolume(BaseGeo, Nitro, "OutterLead");
 
   G4LogicalVolume* LowerTubeLV = GetConstructionLowerTube();
 
@@ -154,7 +154,38 @@ G4LogicalVolume* GetConstructionVesselandOutter(){
   G4double PosZCopperInner = -120;
   G4ThreeVector VectCopperInner = G4ThreeVector(0,0,PosZCopperInner);
 
+/*----------------------------ShieldingLead--------------------------*/
+  G4LogicalVolume* ShieldingLeadLV = GetConstructionShieldingLead();
+  G4double PosZShieldingLead = PosZCopperInner-70*mm + 1.0498*mm;
+  G4ThreeVector VectShieldingLead = G4ThreeVector(0,0,PosZShieldingLead);
 
+/*----------------------------LeadCastleFrame----------*/
+
+  G4LogicalVolume* LeadCastleFrameLV = GetConstructionLeadCastleFrame();
+  G4double PosZLeadCastle = PosZShieldingLead + 101.6/2*mm - 4.826*mm;
+  G4ThreeVector VectoLeadCastle = G4ThreeVector(0,0,PosZLeadCastle);
+
+
+/*-------------------PartLeadCastle-------------*/
+
+  G4LogicalVolume* PartLeadCastle1LV = GetConstructionPartLeadCastle();
+  G4LogicalVolume* PartLeadCastle2LV = GetConstructionPartLeadCastle();
+  G4LogicalVolume* PartLeadCastle3LV = GetConstructionPartLeadCastle();
+  G4LogicalVolume* PartLeadCastle4LV = GetConstructionPartLeadCastle();
+
+  G4double PosZPartLeadCastle = PosZLeadCastle;
+  G4double PosYPartLeadCastle = 0.8/2*mm + 609.6/2*mm;
+  G4double PosXPartLeadCastle = 0.8/2*mm + 609.6/2*mm;
+
+  G4ThreeVector VectPartLead1 = G4ThreeVector(0, PosYPartLeadCastle, PosZPartLeadCastle);
+  G4ThreeVector VectPartLead2 = G4ThreeVector(0, -PosYPartLeadCastle, PosZPartLeadCastle);
+  G4ThreeVector VectPartLead3 = G4ThreeVector(PosXPartLeadCastle, 0, PosZPartLeadCastle);
+  G4ThreeVector VectPartLead4 = G4ThreeVector(-PosXPartLeadCastle, 0,PosZPartLeadCastle);
+
+  G4ThreeVector uPartLead = G4ThreeVector(0,-1,0);
+  G4ThreeVector vPartLead = G4ThreeVector(1,0,0);
+  G4ThreeVector wPartLead = G4ThreeVector(0,0,1);
+  G4RotationMatrix* RotPartLead = new G4RotationMatrix(uPartLead, vPartLead, wPartLead);
 
   G4PVPlacement* LowerTubePV = new G4PVPlacement(0, G4ThreeVector(0,0,0), LowerTubeLV, "LowerTubePV", Base, false, 0, false);
   G4PVPlacement* LowerEndPV = new G4PVPlacement(0, VectLowerEnd, LowerEndLV, "LowerEndPV", Base, false, 0, false);
@@ -167,6 +198,13 @@ G4LogicalVolume* GetConstructionVesselandOutter(){
   G4PVPlacement* InsideLead1PV = new G4PVPlacement(0, InsideLead1Vect, InsideLead1, "InsideLead1PV", Base, false, 0, false);
   G4PVPlacement* InsideLead2PV = new G4PVPlacement(0, InsideLead2Vect, InsideLead2, "InsideLead2PV", Base, false, 0, false);
   G4PVPlacement* CopperBoxAndInnerPV = new G4PVPlacement(0, VectCopperInner, CopperBoxAndInnerLV, "CopperBoxAndInnerPV", Base, false, 0, false);
+  G4PVPlacement* ShieldingLeadPV = new G4PVPlacement(0, VectShieldingLead, ShieldingLeadLV, "ShieldingLeadPV", Base, false, 0, false);
+  G4PVPlacement* LeadCastlePV = new G4PVPlacement(0, VectoLeadCastle, LeadCastleFrameLV, "LeadCastlePV", Base, false, 0, false);
+  G4PVPlacement* PartLeadCastle1PV = new G4PVPlacement(0, VectPartLead1, PartLeadCastle1LV, "PartLeadCastle1PV", Base, false, 0, false);
+  G4PVPlacement* PartLeadCastle2PV = new G4PVPlacement(0, VectPartLead2, PartLeadCastle2LV, "PartLeadCastle2PV", Base, false, 0, false);
+  G4PVPlacement* PartLeadCastle3PV = new G4PVPlacement(RotPartLead, VectPartLead3, PartLeadCastle3LV, "PartLeadCastle3PV", Base, false, 0, false);
+  G4PVPlacement* PartLeadCastle4PV = new G4PVPlacement(RotPartLead, VectPartLead4, PartLeadCastle4LV, "PartLeadCastle4PV", Base, false, 0, false);
+
   return Base;
 }
 
@@ -291,8 +329,8 @@ G4LogicalVolume* GetConstructionAssembly1()
   G4RotationMatrix* CornerBlocks4Rot = new G4RotationMatrix(uCorner4, vCorner4, wCorner4);
 
 
-  G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
-  G4LogicalVolume* Assembly1 = new G4LogicalVolume(boxAssembly1, Galac, "Assembly1");
+  G4Material* Nitro = G4Material::GetMaterial("G4_N");
+  G4LogicalVolume* Assembly1 = new G4LogicalVolume(boxAssembly1, Nitro, "Assembly1");
 
 
 
@@ -417,8 +455,8 @@ G4LogicalVolume* GetConstructionAssembly2()
   G4ThreeVector RestraintBlocks8Vect = G4ThreeVector(RestraintBlocks8X, RestraintBlocks8Y, RestraintBlocks8Z);
 
 
-  G4Material* Galac = G4Material::GetMaterial("G4_Galactic");
-  G4LogicalVolume* Assembly2 = new G4LogicalVolume(boxAssembly2, Galac, "Assembly2");
+  G4Material* Nitro = G4Material::GetMaterial("G4_N");
+  G4LogicalVolume* Assembly2 = new G4LogicalVolume(boxAssembly2, Nitro, "Assembly2");
 
 
   G4PVPlacement* RestraintSheet2PV = new G4PVPlacement(0, G4ThreeVector(0,0,0), RestraintSheetLV, "RestraintSheet2PV", Assembly2, false, 0, false);
@@ -513,5 +551,120 @@ G4LogicalVolume* GetConstructionRestraintSheet()
   G4LogicalVolume * restraintSheet = new G4LogicalVolume(restraintSheetFinal, Copper,"RestraintSheet");
 
   return restraintSheet;
+
+}
+
+
+G4LogicalVolume* GetConstructionShieldingLead(){
+  G4double mainBoxX = 609.6*mm;
+  G4double mainBoxY = mainBoxX;
+  G4double mainBoxZ = 812.8*mm;
+
+  G4double rmBoxX = 304.8*mm;
+  G4double rmBoxY = rmBoxX;
+  G4double rmBoxZ = 485.8*mm;
+
+  G4double rmLittleBoxX = 406.4*mm;
+  G4double rmLittleBoxY = 406.4*mm;
+  G4double rmLittleBoxZ = 22.2*mm;
+
+  G4double rmcyl = 196.978/2*mm;
+  G4double rmH = 152.4*mm;
+  G4double angle0 = 0*mm;
+  G4double angle360 = M_PI*2+1;
+
+  G4Box* mainBox = new G4Box("mainBox", mainBoxX/2, mainBoxY/2, mainBoxZ/2);
+  G4Box* rmBox1 = new G4Box("rmBox1", rmBoxX/2, rmBoxY/2, rmBoxZ/2);
+  G4Box* rmBox2 = new G4Box("rmBox1", rmLittleBoxX/2, rmLittleBoxY/2, rmLittleBoxZ);
+  G4Tubs* tubrm = new G4Tubs("rmTub", angle0, rmcyl, rmH/2, angle0, angle360);
+
+
+  G4RotationMatrix* rot0 = new G4RotationMatrix;
+  G4double rmZ2Pos = 406.4*mm;
+  G4double rmZCylPos = rmZ2Pos - 22.2*mm -rmH/2;
+  G4double rmZ1Pos = rmZCylPos - rmH/2 - rmBoxZ/2;
+
+  G4ThreeVector posrm1 = G4ThreeVector(0,0,rmZ1Pos);
+  G4ThreeVector posrm2 = G4ThreeVector(0,0,rmZ2Pos);
+  G4ThreeVector posrmcyl = G4ThreeVector(0,0,rmZCylPos);
+
+
+  G4Transform3D Tr1Pos = G4Transform3D(*rot0, posrm1);
+  G4Transform3D Tr2Pos = G4Transform3D(*rot0, posrm2);
+  G4Transform3D TrCyl = G4Transform3D(*rot0, posrmcyl);
+
+  G4SubtractionSolid* Shielding1 = new G4SubtractionSolid("Shielding1", mainBox, rmBox1, Tr1Pos);
+  G4SubtractionSolid* Shielding2 = new G4SubtractionSolid("Shielding2", Shielding1, rmBox2, Tr2Pos);
+  G4SubtractionSolid* Shielding= new G4SubtractionSolid("Shielding", Shielding2, tubrm, TrCyl);
+
+
+  G4Material* Lead = G4Material::GetMaterial("G4_Pb");
+
+  G4LogicalVolume* ShieldingLead = new G4LogicalVolume(Shielding, Lead, "ShieldingLead");
+
+
+  return ShieldingLead;
+}
+
+G4LogicalVolume* GetConstructionLeadCastleFrame(){
+
+  G4double mainboxX = 644.5*mm;
+  G4double mainboxY = mainboxX;
+  G4double mainboxZ = 914.4*mm;
+
+  G4double rmBoxX = mainboxX - 2*4.826*mm;
+  G4double rmBoxY = mainboxY - 2*4.826*mm;
+  G4double rmBoxZ = mainboxZ - 2*4.826*mm;
+
+  G4double cylRmR = 196.978/2*mm;
+  G4double cylRmH = 20*mm;
+  G4double angle0 = 0;
+  G4double angle360 = M_PI*2+1;
+
+  G4double rm12BoxX = mainboxX - 50.8*mm;
+  G4double rm12BoxY = mainboxY - 50.8*mm;
+  G4double rm12BoxZ = mainboxZ - 50.8*mm;
+
+  G4Box* mainBox = new G4Box("mainBox", mainboxX/2, mainboxY/2, mainboxZ/2);
+  G4Box* rmMainBox = new G4Box("rmmainBox", rmBoxX/2, rmBoxY/2, rmBoxZ/2 );
+  G4Tubs* rmCyl = new G4Tubs("rmCyl", angle0, cylRmR, cylRmH/2, angle0, angle360);
+  G4Box* rmBox1 = new G4Box("rmBox1", rm12BoxX, rm12BoxY/2, rm12BoxZ/2);
+  G4Box* rmBox2 = new G4Box("rmBox1", rm12BoxX/2, rm12BoxY, rm12BoxZ/2);
+
+  G4ThreeVector zeroVect = G4ThreeVector(0,0,0);
+  G4RotationMatrix* rot0 = new G4RotationMatrix;
+
+  G4double ZCyl = mainboxZ/2;
+  G4ThreeVector cylVect = G4ThreeVector(0,0,ZCyl);
+
+  G4Transform3D zeroTr = G4Transform3D(*rot0, zeroVect);
+  G4Transform3D cylTr = G4Transform3D(*rot0, cylVect);
+
+  G4SubtractionSolid* LeadCastle1 = new G4SubtractionSolid("LeadCastle1", mainBox, rmMainBox, zeroTr);
+  G4SubtractionSolid* LeadCastle2 = new G4SubtractionSolid("LeadCastle2", LeadCastle1, rmBox1, zeroTr);
+  G4SubtractionSolid* LeadCastle3 = new G4SubtractionSolid("LeadCastle3", LeadCastle2, rmBox2, zeroTr);
+  G4SubtractionSolid* LeadCastleFinal = new G4SubtractionSolid("LeadCastleFinal", LeadCastle3, rmCyl, cylTr);
+
+  G4Material* Alu = G4Material::GetMaterial("G4_Al");
+
+  G4LogicalVolume* LeadCastleFrame = new G4LogicalVolume(LeadCastleFinal, Alu, "LeadCastleFrame");
+
+  return LeadCastleFrame;
+}
+
+G4LogicalVolume* GetConstructionPartLeadCastle(){
+
+
+    G4double SMainBoxX = 609.6*mm;
+    G4double SMainBoxY = 0.8*mm;
+    G4double SMainBoxZ = 863.6*mm;
+
+    G4Box* SMainBox = new G4Box("mainBox", SMainBoxX/2, SMainBoxY/2, SMainBoxZ/2);
+
+    G4Material* Alu = G4Material::GetMaterial("G4_Al");
+
+    G4LogicalVolume* PartLeadCastle = new G4LogicalVolume(SMainBox, Alu, "PartLeadCastle");
+
+    return PartLeadCastle;
 
 }
