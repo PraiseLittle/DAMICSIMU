@@ -23,4 +23,13 @@ DAMICSteppingAction::~DAMICSteppingAction()
 
 void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
 {
+
+  /*G4String nameProcess =step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
+  G4int  subPro = step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessSubType();
+
+  if *//*(nameProcess != "eIoni" &&*//* nameProcess != "Transportation" && nameProcess != "Scintillation"){
+    G4cout <<  step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessType() << G4endl;
+    G4cout << nameProcess << G4endl;
+    G4cout << "Process sub type : " << subPro << G4endl;
+  }*/
 }

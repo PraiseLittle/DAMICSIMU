@@ -58,7 +58,7 @@ void DAMICPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   particleGun->AddVolume("TopPlatePV",1);
   particleGun->AddVolume("EndCoverPlatePV",1);*/
 
-  particleGun->SetParticleDefinition(IonInject);
+  //particleGun->SetParticleDefinition(IonInject);
   particleGun->GeneratePrimaryVertex(anEvent);
   //G4cout << "je sors du prim" << G4endl;
 

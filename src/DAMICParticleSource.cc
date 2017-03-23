@@ -197,11 +197,13 @@ void DAMICParticleSource::SetOneD(G4bool one){
 
 void DAMICParticleSource::SetDirectionNumSize(G4int size){
   DirectionNum = std::vector<G4double>  (size,0);
-    G4cout << DirectionNum.size() << G4endl;
+  G4cout << DirectionNum.size() << G4endl;
 }
 
 void DAMICParticleSource::SetDirectionNumValue(G4double val, G4int id){
+  G4cout << "ici" << G4endl;
   DirectionNum[id] = val;
+  G4cout << "ici" << G4endl;
 }
 
 void DAMICParticleSource::ResetDirectionNum(){

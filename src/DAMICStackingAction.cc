@@ -35,26 +35,37 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
 {
     G4String Name = aTrack->GetDefinition()->GetParticleName();
     SetPartName(Name);
-    //G4cout << "je rentre dans le stack" << G4endl;
-    //G4cout << "bimbimoup" << G4endl;
+    //G4cout << "je rentre ClassifyNewTrack" << G4endl;
     G4double energy = aTrack->GetTotalEnergy();
     G4double energykin = aTrack->GetKineticEnergy();
     SetPartEnergyKin(energykin);
     SetPartEnergyTot(energy);
     G4int IDpart = aTrack->GetParentID();
-    G4String ProcessCreatorName;
+    G4int ProcessCreatorSub;
+    G4int ProcessCreatorType;
+
+    G4String nameVolume = "NULL";
+
     if (IDpart != 0){
-      ProcessCreatorName = aTrack->GetCreatorProcess()->GetProcessName();
+      ProcessCreatorSub = aTrack->GetCreatorProcess()->GetProcessSubType();
+      ProcessCreatorType = aTrack->GetCreatorProcess()->GetProcessType();
+      nameVolume = aTrack->GetVolume()->GetLogicalVolume()->GetName();
+    }
+    else {
+      ProcessCreatorSub = -1;
+      ProcessCreatorType = -1;
+      nameVolume = "NULL";
     }
     if (energykin<1*eV && Name=="e-"){ // Kill particles with less than 1 eV  kinetic energy
         return fKill;
     }
-    if (ProcessCreatorName == "eIoni" || ProcessCreatorName == "ionIoni" || ProcessCreatorName == "muIoni")
+    if ((ProcessCreatorSub == 2 || ProcessCreatorSub == 3 ) && energykin < 10*keV && nameVolume == "CCDSensor" && ProcessCreatorType == 2)
     {
-      //G4cout << Name << G4endl;
       return fKill;
     }
-    //G4cout << ProcessCreatorName << G4endl;
-    //G4cout <<" je sors du stack "<< G4endl;*/
+    if (ProcessCreatorSub == 2 && ProcessCreatorType == 2){//&& energykin < 20*keV)){
+      return fKill;
+    }
+    G4cout << Name<< G4endl;
     return fUrgent;
 }

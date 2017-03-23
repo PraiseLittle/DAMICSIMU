@@ -337,12 +337,12 @@ DAMICParticleSourceMessenger::~DAMICParticleSourceMessenger(){
 }
 
 void DAMICParticleSourceMessenger::SetNewValue(G4UIcommand *command, G4String newValues){
-  //LIST
+  //G4cout << "SetNew "  << G4endl;
   if (command == ListCmd){
     particleTable->DumpTable();
   }// SPECS
   else if(command == IonCmd){
-    G4cout << "on teste " << G4endl;
+    //G4cout << "on teste " << G4endl;
 
     if (fShootIon) {
       G4Tokenizer next( newValues );
@@ -418,13 +418,14 @@ void DAMICParticleSourceMessenger::SetNewValue(G4UIcommand *command, G4String ne
       fParticleGun->SetDirectionNumSize(3);
     }
     else if (command == DoOneDXCmd){
-      fParticleGun->SetPositionNumValue(DoOneDXCmd->GetNewDoubleValue(newValues),0);
+      G4cout << "prob" << G4endl;
+      fParticleGun->SetDirectionNumValue(DoOneDXCmd->GetNewDoubleValue(newValues),0);
     }
     else if (command == DoOneDYCmd){
-      fParticleGun->SetPositionNumValue(DoOneDYCmd->GetNewDoubleValue(newValues),1);
+      fParticleGun->SetDirectionNumValue(DoOneDYCmd->GetNewDoubleValue(newValues),1);
     }
     else if (command == DoOneDZCmd){
-      fParticleGun->SetPositionNumValue(DoOneDZCmd->GetNewDoubleValue(newValues),2);
+      fParticleGun->SetDirectionNumValue(DoOneDZCmd->GetNewDoubleValue(newValues),2);
     }
     else if (command == DoDistriDCmd){
       fParticleGun->DoDistriD(newValues);
@@ -494,5 +495,6 @@ void DAMICParticleSourceMessenger::SetNewValue(G4UIcommand *command, G4String ne
     else if (command == CylHCmd){
       fParticleGun->SetPositionNumValue(CylHCmd->GetNewDoubleValue(newValues), 4);
     }
+    //G4cout << "SetNew Byes "  << G4endl;
 
 }

@@ -106,7 +106,7 @@ void createMacroContaminent(TString fName, TString fConfig ){
     macroFile << energyCmd << endl;
 
     // Direction
-    TString direction = base + energyM;
+    TString direction = base + directionM;
     TString directionOne = direction+"oned";
     TString directionX = direction+"onedX 1";
     TString directionY = direction+"onedY 0";
