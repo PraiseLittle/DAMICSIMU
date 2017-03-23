@@ -66,6 +66,6 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     if (ProcessCreatorSub == 2 && ProcessCreatorType == 2){//&& energykin < 20*keV)){
       return fKill;
     }
-    G4cout << Name<< G4endl;
+    //G4cout << Name<< G4endl;
     return fUrgent;
 }
