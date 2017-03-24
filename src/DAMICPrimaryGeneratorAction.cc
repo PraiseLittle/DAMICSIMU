@@ -60,6 +60,5 @@ void DAMICPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   //particleGun->SetParticleDefinition(IonInject);
   particleGun->GeneratePrimaryVertex(anEvent);
-  //G4cout << "je sors du prim" << G4endl;
 
 }

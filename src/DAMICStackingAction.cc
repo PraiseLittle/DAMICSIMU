@@ -35,37 +35,51 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
 {
     G4String Name = aTrack->GetDefinition()->GetParticleName();
     SetPartName(Name);
-    //G4cout << "je rentre ClassifyNewTrack" << G4endl;
+    G4cout << "je rentre ClassifyNewTrack" << G4endl;
     G4double energy = aTrack->GetTotalEnergy();
     G4double energykin = aTrack->GetKineticEnergy();
     SetPartEnergyKin(energykin);
     SetPartEnergyTot(energy);
     G4int IDpart = aTrack->GetParentID();
-    G4int ProcessCreatorSub;
-    G4int ProcessCreatorType;
+    G4int ProcessCreatorSub = -1;
+    G4int ProcessCreatorType = -1;
 
     G4String nameVolume = "NULL";
+    G4cout << Name<< G4endl;
+
 
     if (IDpart != 0){
       ProcessCreatorSub = aTrack->GetCreatorProcess()->GetProcessSubType();
       ProcessCreatorType = aTrack->GetCreatorProcess()->GetProcessType();
-      nameVolume = aTrack->GetVolume()->GetLogicalVolume()->GetName();
     }
     else {
       ProcessCreatorSub = -1;
       ProcessCreatorType = -1;
       nameVolume = "NULL";
     }
-    if (energykin<1*eV && Name=="e-"){ // Kill particles with less than 1 eV  kinetic energy
-        return fKill;
+
+    // Kill electrons produced by ioni below 20 keV
+    if (ProcessCreatorSub == 2 && ProcessCreatorType == 2 && energykin < 20*keV){
+      return fKill;
     }
-    if ((ProcessCreatorSub == 2 || ProcessCreatorSub == 3 ) && energykin < 10*keV && nameVolume == "CCDSensor" && ProcessCreatorType == 2)
+    // Check volume from particles not produced by ioni.
+    if (IDpart != 0 && ProcessCreatorSub != 2 && ProcessCreatorType != 2 ){
+      nameVolume = aTrack->GetVolume()->GetName();
+    }
+    // Kill Brem in CCD
+    if ( ProcessCreatorSub == 3  && energykin < 1*keV && nameVolume == "CCDSensor" && ProcessCreatorType == 2)
     {
       return fKill;
     }
-    if (ProcessCreatorSub == 2 && ProcessCreatorType == 2){//&& energykin < 20*keV)){
+    // Kill Brem not in CCD
+    if ( ProcessCreatorSub == 3  && energykin < 10*keV && nameVolume != "CCDSensor" && ProcessCreatorType == 2)
+    {
       return fKill;
     }
-    //G4cout << Name<< G4endl;
+
+    if (energykin<1*eV && Name=="e-"){ // Kill particles with less than 1 eV  kinetic energy
+        return fKill;
+    }
+    G4cout << "je sors ClassifyNewTrack" << G4endl;
     return fUrgent;
 }

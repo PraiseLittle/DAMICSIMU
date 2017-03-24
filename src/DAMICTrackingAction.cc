@@ -17,7 +17,7 @@ DAMICTrackingAction::~DAMICTrackingAction()
 }
 
 void DAMICTrackingAction::PreUserTrackingAction(const G4Track* aTrack){
-  //G4cout << "je rentre dans le trackpre" << G4endl;
+  G4cout << "je rentre dans le trackpre" << G4endl;
 
   G4int IDTrack = aTrack->GetParentID();
   if (IDTrack == 0){
@@ -37,44 +37,50 @@ void DAMICTrackingAction::PreUserTrackingAction(const G4Track* aTrack){
 
 void DAMICTrackingAction::PostUserTrackingAction(const G4Track* aTrack){
   //G4cout << "je rentre dans le trackpost" << G4endl;
-  //VTrackingManager = G4TrackingManager->GetTrackingManager();
   G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
   if(secondaries)
     {
-      //G4cout << "opop1" << G4endl;
+
       DAMICTrackInformation* info = (DAMICTrackInformation*)(aTrack->GetUserInformation());
       size_t nSeco = secondaries->size();
       if(nSeco>0)
       {
         for(size_t i=0; i < nSeco; i++)
         {
-          G4String ProcessCreator;
+          G4int ProcessCreatorSub = -1;
+          G4int ProcessCreatorType = -1;
           G4int IDTrack = (*secondaries)[i]->GetParentID();
+          G4String VolumeName = "NULL";
+          G4double energykin = (*secondaries)[i]->GetKineticEnergy();
+          
           if (IDTrack != 0){
-            ProcessCreator = (*secondaries)[i]->GetCreatorProcess()->GetProcessName();
+            ProcessCreatorSub = (*secondaries)[i]->GetCreatorProcess()->GetProcessSubType();
+            ProcessCreatorType = (*secondaries)[i]->GetCreatorProcess()->GetProcessType();
           }
-          //ssG4cout << ProcessCreator << G4endl;
-          //G4cout << "opop3" << G4endl;
-          if (ProcessCreator != "eIoni" && ProcessCreator != "ionIoni" && ProcessCreator != "muIoni"){
-            //G4cout << "opop2" << G4endl;
 
-            //G4cout << i << G4endl;
+          G4bool ElecIo = (ProcessCreatorSub == 2 && ProcessCreatorType == 2 && energykin < 20*keV);
+
+          if (!ElecIo){
+            VolumeName = (*secondaries)[i]->GetVolume()->GetName();
+          }
+
+          G4bool BremCCD = (ProcessCreatorSub == 3  && energykin < 1*keV && VolumeName == "CCDSensor" && ProcessCreatorType == 2);
+          G4bool Brem = (ProcessCreatorSub == 3  && energykin < 10*keV && VolumeName != "CCDSensor" && ProcessCreatorType == 2);
+
+          if (!ElecIo && !BremCCD && !Brem){
+
             G4int ParticlePDG = (*secondaries)[i]->GetParticleDefinition()->GetPDGEncoding();
-            //G4cout << ParticlePDG << G4endl;
+
             G4double Energy = (*secondaries)[i]->GetKineticEnergy();
-            G4String VolumeName = (*secondaries)[i]->GetVolume()->GetName();
             G4ThreeVector Position = (*secondaries)[i]->GetPosition();
             G4double vTime = (*secondaries)[i]->GetGlobalTime()/s;
-            //G4cout << "the particle pdg is : " << ParticlePDG << G4endl;
-            //G4cout << "the creator process " << ProcessCreator << G4endl;
-            //G4cout << "the time is " << vTime;
+
             DAMICTrackInformation* infoNew = new DAMICTrackInformation(info, ParticlePDG, Energy, IDTrack, VolumeName, Position, vTime);
 
             (*secondaries)[i]->SetUserInformation(infoNew);
           }
+
         }
       }
-      //G4cout << "je sort dans le trackpost" << G4endl;
-      //G4cout << nSeco << G4endl;
     }
 }

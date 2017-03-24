@@ -109,7 +109,7 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
 
     if ((subProcess == 2 || subProcess == 3) && typeProcess == 2)
     {
-      G4RunManager::GetRunManager()->rndmSaveThisEvent();
+      //G4RunManager::GetRunManager()->rndmSaveThisEvent();
       if (PartIDElec == 0){
         Time = step->GetPostStepPoint()->GetGlobalTime()/s;
         std::vector<G4int> Particles = info->GetPDGParticle();
@@ -121,25 +121,24 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
         // Primary
         Time=step->GetPostStepPoint()->GetGlobalTime()/s;
         PDGPrimaryNuc = -1;
-
+        G4cout << "je rentre DAMICCCDSD5" << G4endl;
         PositionPrim = G4ThreeVector(-1,-1,-1);
         //Secondary Nucleus
         PDGSecondaryNuc = -1;
         //Part after Secodary
         PDGPartASecond = -1;
         EnergyPartASecond = -1;
-
       }
       else {
         Time = step->GetPostStepPoint()->GetGlobalTime()/s;
         std::vector<G4int> Particles = info->GetPDGParticle();
+
         G4int Lenght = Particles.size();
         Process = ProcessCreatorName;
         PDGNumber = Particles[Lenght-2];
         PartID = info->GetParticleID()[Lenght-2];
         ProdVolume = info->GetMaterialProd()[Lenght-2];
         Energy = info->GetEnergyParticle()[Lenght-2];
-
         PDGPrimaryNuc = Particles[0];
         PositionPrim = info->GetStartPosition()[0];
 
@@ -167,17 +166,18 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
       EventID = G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();
 
 
-
-
       G4int NumberSecond = step->GetNumberOfSecondariesInCurrentStep();
       for (G4int i =0; i<NumberSecond; i++){
-        EnergyDep += Secondaries[i]->GetKineticEnergy();
+        G4double nrjSecond = Secondaries[i]->GetKineticEnergy();
+        G4int PDGSaries = Secondaries[i]->GetParticleDefinition()->GetPDGEncoding();
+        if ((PDGSaries== 11 && nrjSecond < 20*keV) || (PDGSaries == 22 && nrjSecond < 1*keV)){
+          EnergyDep += nrjSecond;
+        }
       }
       EnergyDep += step->GetTotalEnergyDeposit();
 
 
       DAMICCCDHit* hit = new DAMICCCDHit(copyNo);
-
 
       hit->SetPos(Position);
       hit->SetTopBot(TopBot);
