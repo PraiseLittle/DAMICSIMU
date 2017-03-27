@@ -17,7 +17,7 @@ DAMICTrackingAction::~DAMICTrackingAction()
 }
 
 void DAMICTrackingAction::PreUserTrackingAction(const G4Track* aTrack){
-  G4cout << "je rentre dans le trackpre" << G4endl;
+  //G4cout << "je rentre dans le trackpre" << G4endl;
 
   G4int IDTrack = aTrack->GetParentID();
   if (IDTrack == 0){
@@ -52,7 +52,7 @@ void DAMICTrackingAction::PostUserTrackingAction(const G4Track* aTrack){
           G4int IDTrack = (*secondaries)[i]->GetParentID();
           G4String VolumeName = "NULL";
           G4double energykin = (*secondaries)[i]->GetKineticEnergy();
-          
+
           if (IDTrack != 0){
             ProcessCreatorSub = (*secondaries)[i]->GetCreatorProcess()->GetProcessSubType();
             ProcessCreatorType = (*secondaries)[i]->GetCreatorProcess()->GetProcessType();

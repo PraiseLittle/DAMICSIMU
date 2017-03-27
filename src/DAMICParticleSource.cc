@@ -201,9 +201,7 @@ void DAMICParticleSource::SetDirectionNumSize(G4int size){
 }
 
 void DAMICParticleSource::SetDirectionNumValue(G4double val, G4int id){
-  G4cout << "ici" << G4endl;
   DirectionNum[id] = val;
-  G4cout << "ici" << G4endl;
 }
 
 void DAMICParticleSource::ResetDirectionNum(){
@@ -478,7 +476,6 @@ void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUs
       posx = 2.15*m*G4UniformRand()-1.075*m;
       posy = 2.2*m*G4UniformRand()-1.1*m;
       posz = 2.2*m*G4UniformRand()-1.1*m;
-      //G4cout << "bimbim ici" << G4endl;
     }
 
     else if (MotherUse == "VesselLV" || MotherUse =="Assembly1"|| MotherUse =="Assembly2"){
@@ -489,7 +486,6 @@ void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUs
 
     }
     else if (MotherUse == "PrinTubLV"){
-      //G4cout << "ici" << G4endl;
 
       G4double RadiusRan = 191.287/2*mm * G4UniformRand();
       G4double AngleRan = M_PI*2*G4UniformRand();
