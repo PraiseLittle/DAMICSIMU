@@ -121,7 +121,6 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
         // Primary
         Time=step->GetPostStepPoint()->GetGlobalTime()/s;
         PDGPrimaryNuc = -1;
-        G4cout << "je rentre DAMICCCDSD5" << G4endl;
         PositionPrim = G4ThreeVector(-1,-1,-1);
         //Secondary Nucleus
         PDGSecondaryNuc = -1;

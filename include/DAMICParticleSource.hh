@@ -125,6 +125,9 @@ class DAMICParticleSource: public G4VPrimaryGenerator{
 
     void FindInMother(); // hit and miss
 
+
+    G4double SpectrumBeta(G4double);
+
   private:
     // Particle Carac
 
@@ -153,6 +156,11 @@ class DAMICParticleSource: public G4VPrimaryGenerator{
     G4bool bDistriNRJ;
     G4bool bMonoNRJ;
     G4String DistriNRJ;
+
+    //Tritium
+
+    G4bool CalculatedMaxTri;
+    G4double MaxTritium;
 
     //Direction
 

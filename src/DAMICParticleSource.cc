@@ -60,6 +60,11 @@ DAMICParticleSource::DAMICParticleSource(){
       bDistriD = false;
       bOneD = true;
 
+      // Tritium
+
+      CalculatedMaxTri = false;
+      MaxTritium = 0;
+
       //Navigator for Geometry
       gNavigator = G4TransportationManager::GetTransportationManager()
     ->GetNavigatorForTracking();
@@ -589,9 +594,54 @@ void DAMICParticleSource::EnergyValue(){
     if (DistriNRJ == "Uniform"){
       EnergyRand = G4UniformRand() * (EnergyNum[1]-EnergyNum[0]) + EnergyNum[0];
     }
+    if (DistriNRJ == "Tritium"){
+      G4double endpoint = 18580;
+      if (!CalculatedMaxTri){
+        G4double max = 0;
+
+        for (int i = 0; i < endpoint; i+=10){
+          G4double tempMax = SpectrumBeta(i);
+          if (tempMax > max){
+            max = tempMax;
+          }
+        }
+        CalculatedMaxTri = true;
+        MaxTritium = max;
+      }
+
+      G4bool doneFind = false;
+      while (!doneFind){
+        G4double tempRand1 = G4UniformRand() * (endpoint-1) +1;
+        G4double relation = SpectrumBeta(tempRand1)/MaxTritium;
+        G4double tempRand2 = G4UniformRand();
+        if ( tempRand2 < relation){
+          doneFind = true;
+        }
+        EnergyRand = tempRand1*eV;
+
+      }
+    }
     SetParticleEnergy(EnergyRand);
   }
 
+}
+
+G4double DAMICParticleSource::SpectrumBeta(G4double En){
+  G4double Q = 18580;
+  G4double E = En;
+  G4double elecMass = 511000;
+  G4double FirstPart = sqrt(E*E+2*E*elecMass);
+  G4double SecondPart = (Q-E)*(Q-E)*(E+elecMass);
+
+  G4double Z = 1;
+  G4double alpha = 7.2973525664 * 0.001;
+  G4double nu = alpha*Z*(E+elecMass)/(FirstPart);
+
+  G4double FermiFunction = 2*3.14*nu/(1-exp(-2*3.14*nu));
+
+  G4double result = FirstPart*SecondPart*FermiFunction;
+
+  return result;
 }
 
 // DIRECTION VALUE

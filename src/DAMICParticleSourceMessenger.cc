@@ -55,7 +55,7 @@ DAMICParticleSourceMessenger::DAMICParticleSourceMessenger(DAMICParticleSource* 
   DoDistriNRJCmd->SetGuidance("Set a distribution energy.");
   DoDistriNRJCmd->SetParameterName("DisType", true, true);
   DoDistriNRJCmd->SetDefaultValue("Uniform");
-  DoDistriNRJCmd->SetCandidates("Uniform");
+  DoDistriNRJCmd->SetCandidates("Uniform Tritium");
 
   UniformBotCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/energy/bot", this);
   UniformBotCmd->SetGuidance("Bottom energy value for uniform.");
