@@ -41,8 +41,8 @@ DAMICPrimaryGeneratorAction::~DAMICPrimaryGeneratorAction()
 void DAMICPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
 
+  //G4cout << "je rentre prim" << G4endl;
   // seeds
-  //G4cout << "je rentre dans prim" << G4endl;
   //seeds[0] = *G4Random::getTheSeeds();
   //seeds[1] = *(G4Random::getTheSeeds()+1);
   G4ParticleTable* tablePart = G4ParticleTable::GetParticleTable();
@@ -60,5 +60,6 @@ void DAMICPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   //particleGun->SetParticleDefinition(IonInject);
   particleGun->GeneratePrimaryVertex(anEvent);
+  //G4cout << "je sors prim" << G4endl;
 
 }

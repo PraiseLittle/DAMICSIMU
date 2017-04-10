@@ -41,7 +41,7 @@ G4LogicalVolume* GetConstructionVesselandOutter(){
   G4Material* Nitro = G4Material::GetMaterial("G4_N");
   G4LogicalVolume* Base = new G4LogicalVolume(BaseGeo, Nitro, "OutterLead");
 
-  G4LogicalVolume* LowerTubeLV = GetConstructionLowerTube();
+  G4LogicalVolume* LowerTubeAllLV = GetConstructionLowerTubeAll();
 
   G4LogicalVolume* LowerEndLV = GetConstructionLowerEnd();
   G4double PosZLowerEnd = -755.65*mm/2-(12.7*mm+3.175*mm)/2+3.175*mm;
@@ -50,7 +50,7 @@ G4LogicalVolume* GetConstructionVesselandOutter(){
   G4ThreeVector VectLowerEnd = G4ThreeVector(PosXLowerEnd, PosYLowerEnd, PosZLowerEnd);
 
 
-  G4LogicalVolume* LowerFlangeLV = GetConstructionLowerFlange();
+  G4LogicalVolume* LowerFlangeAllLV = GetConstructionLowerFlangeAll();
   G4double PosZLowerFlange = 755.65/2*mm+28.448/2*mm;
   G4double PosYLowerFlange = 0;
   G4double PosXLowerFlange = 0;
@@ -150,9 +150,7 @@ G4LogicalVolume* GetConstructionVesselandOutter(){
 
 /*-------------------------------------CopperBox---------------------------------*/
 
-  G4LogicalVolume* CopperBoxAndInnerLV = GetConstructionCopperAndInner();
   G4double PosZCopperInner = -120;
-  G4ThreeVector VectCopperInner = G4ThreeVector(0,0,PosZCopperInner);
 
 /*----------------------------ShieldingLead--------------------------*/
   G4LogicalVolume* ShieldingLeadLV = GetConstructionShieldingLead();
@@ -187,23 +185,22 @@ G4LogicalVolume* GetConstructionVesselandOutter(){
   G4ThreeVector wPartLead = G4ThreeVector(0,0,1);
   G4RotationMatrix* RotPartLead = new G4RotationMatrix(uPartLead, vPartLead, wPartLead);
 
-  G4PVPlacement* LowerTubePV = new G4PVPlacement(0, G4ThreeVector(0,0,0), LowerTubeLV, "LowerTubePV", Base, false, 0, false);
+  G4PVPlacement* LowerTubeAllPV = new G4PVPlacement(0, G4ThreeVector(0,0,0), LowerTubeAllLV, "LowerTubeAllPV", Base, false, 0, false);
   G4PVPlacement* LowerEndPV = new G4PVPlacement(0, VectLowerEnd, LowerEndLV, "LowerEndPV", Base, false, 0, false);
-  G4PVPlacement* LowerFlangePV = new G4PVPlacement(0, VectLowerFlange, LowerFlangeLV, "LowerFlangePV", Base, false, 0, false);
+  G4PVPlacement* LowerFlangeAllPV = new G4PVPlacement(0, VectLowerFlange, LowerFlangeAllLV, "LowerFlangeAllPV", Base, false, 0, false);
   G4PVPlacement* UpperFlangePV = new G4PVPlacement(0, VectUpperFlange, UpperFlangeLV, "UpperFlangePV", Base, false, 0, false);
-  G4PVPlacement* Assembly1PV = new G4PVPlacement(0, VectAssembly1, Assembly1LV, "Assembly1PV", Base, false, 0, false);
-  G4PVPlacement* Assembly2PV = new G4PVPlacement(0, Assembly2Vect, Assembly2LV, "Assembly2PV", Base, false, 0, false);
-  G4PVPlacement* BoxTopLeadPV = new G4PVPlacement(0, TopLeadVect, BoxTopLead, "BoxTopLeadPV", Base, false, 0, false);
-  G4PVPlacement* BoxBottomLeadPV = new G4PVPlacement(0, BoxBottomLeadVect, BoxBottomLead, "BoxBottomLeadPV", Base, false, 0, false);
-  G4PVPlacement* InsideLead1PV = new G4PVPlacement(0, InsideLead1Vect, InsideLead1, "InsideLead1PV", Base, false, 0, false);
-  G4PVPlacement* InsideLead2PV = new G4PVPlacement(0, InsideLead2Vect, InsideLead2, "InsideLead2PV", Base, false, 0, false);
-  G4PVPlacement* CopperBoxAndInnerPV = new G4PVPlacement(0, VectCopperInner, CopperBoxAndInnerLV, "CopperBoxAndInnerPV", Base, false, 0, false);
-  G4PVPlacement* ShieldingLeadPV = new G4PVPlacement(0, VectShieldingLead, ShieldingLeadLV, "ShieldingLeadPV", Base, false, 0, false);
-  G4PVPlacement* LeadCastlePV = new G4PVPlacement(0, VectoLeadCastle, LeadCastleFrameLV, "LeadCastlePV", Base, false, 0, false);
-  G4PVPlacement* PartLeadCastle1PV = new G4PVPlacement(0, VectPartLead1, PartLeadCastle1LV, "PartLeadCastle1PV", Base, false, 0, false);
-  G4PVPlacement* PartLeadCastle2PV = new G4PVPlacement(0, VectPartLead2, PartLeadCastle2LV, "PartLeadCastle2PV", Base, false, 0, false);
-  G4PVPlacement* PartLeadCastle3PV = new G4PVPlacement(RotPartLead, VectPartLead3, PartLeadCastle3LV, "PartLeadCastle3PV", Base, false, 0, false);
-  G4PVPlacement* PartLeadCastle4PV = new G4PVPlacement(RotPartLead, VectPartLead4, PartLeadCastle4LV, "PartLeadCastle4PV", Base, false, 0, false);
+  //G4PVPlacement* Assembly1PV = new G4PVPlacement(0, VectAssembly1, Assembly1LV, "Assembly1PV", Base, false, 0, false);
+  //G4PVPlacement* Assembly2PV = new G4PVPlacement(0, Assembly2Vect, Assembly2LV, "Assembly2PV", Base, false, 0, false);
+  //G4PVPlacement* BoxTopLeadPV = new G4PVPlacement(0, TopLeadVect, BoxTopLead, "BoxTopLeadPV", Base, false, 0, false);
+  //G4PVPlacement* BoxBottomLeadPV = new G4PVPlacement(0, BoxBottomLeadVect, BoxBottomLead, "BoxBottomLeadPV", Base, false, 0, false);
+  //G4PVPlacement* InsideLead1PV = new G4PVPlacement(0, InsideLead1Vect, InsideLead1, "InsideLead1PV", Base, false, 0, false);
+  //G4PVPlacement* InsideLead2PV = new G4PVPlacement(0, InsideLead2Vect, InsideLead2, "InsideLead2PV", Base, false, 0, false);
+  //G4PVPlacement* ShieldingLeadPV = new G4PVPlacement(0, VectShieldingLead, ShieldingLeadLV, "ShieldingLeadPV", Base, false, 0, false);
+  //G4PVPlacement* LeadCastlePV = new G4PVPlacement(0, VectoLeadCastle, LeadCastleFrameLV, "LeadCastlePV", Base, false, 0, false);
+  //G4PVPlacement* PartLeadCastle1PV = new G4PVPlacement(0, VectPartLead1, PartLeadCastle1LV, "PartLeadCastle1PV", Base, false, 0, false);
+  //G4PVPlacement* PartLeadCastle2PV = new G4PVPlacement(0, VectPartLead2, PartLeadCastle2LV, "PartLeadCastle2PV", Base, false, 0, false);
+  //G4PVPlacement* PartLeadCastle3PV = new G4PVPlacement(RotPartLead, VectPartLead3, PartLeadCastle3LV, "PartLeadCastle3PV", Base, false, 0, false);
+  //G4PVPlacement* PartLeadCastle4PV = new G4PVPlacement(RotPartLead, VectPartLead4, PartLeadCastle4LV, "PartLeadCastle4PV", Base, false, 0, false);
 
   return Base;
 }
@@ -568,7 +565,7 @@ G4LogicalVolume* GetConstructionShieldingLead(){
   G4double rmLittleBoxY = 406.4*mm;
   G4double rmLittleBoxZ = 22.2*mm;
 
-  G4double rmcyl = 196.978/2*mm;
+  G4double rmcyl = 196.978/2*mm+1*mm;
   G4double rmH = 152.4*mm;
   G4double angle0 = 0*mm;
   G4double angle360 = M_PI*2+1;
@@ -616,7 +613,7 @@ G4LogicalVolume* GetConstructionLeadCastleFrame(){
   G4double rmBoxY = mainboxY - 2*4.826*mm;
   G4double rmBoxZ = mainboxZ - 2*4.826*mm;
 
-  G4double cylRmR = 196.978/2*mm;
+  G4double cylRmR = 196.978/2*mm+1*mm;
   G4double cylRmH = 20*mm;
   G4double angle0 = 0;
   G4double angle360 = M_PI*2+1;

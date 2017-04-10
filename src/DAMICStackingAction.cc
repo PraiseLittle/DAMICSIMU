@@ -105,7 +105,7 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
 {
     G4String Name = aTrack->GetDefinition()->GetParticleName();
     SetPartName(Name);
-    //G4cout << "je rentre ClassifyNewTrack" << G4endl;
+    //G4cout << "je rentre Stack" << G4endl;
     G4double energy = aTrack->GetTotalEnergy();
     G4double energykin = aTrack->GetKineticEnergy();
     SetPartEnergyKin(energykin);
@@ -113,7 +113,7 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     G4int IDpart = aTrack->GetParentID();
     G4int ProcessCreatorSub = -1;
     G4int ProcessCreatorType = -1;
-
+    G4String ProcessName = "NULL";
     G4String nameVolume = "NULL";
 
     /* Test */
@@ -126,13 +126,14 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     if (DoKillNucleus(PDGEnco)){
       return fKill;
     }
-    /*EndTest*/
 
 
 
     if (IDpart != 0){
       ProcessCreatorSub = aTrack->GetCreatorProcess()->GetProcessSubType();
       ProcessCreatorType = aTrack->GetCreatorProcess()->GetProcessType();
+      //ProcessName= aTrack->GetCreatorProcess()->GetProcessName();
+
     }
     else {
       ProcessCreatorSub = -1;
@@ -141,7 +142,7 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     }
 
     // Kill electrons produced by ioni below 20 keV
-    if (ProcessCreatorSub == 2 && ProcessCreatorType == 2 && energykin < 20*keV){
+    if (ProcessCreatorSub == 2 && ProcessCreatorType == 2 && energykin < 50*keV){
       return fKill;
     }
     // Check volume from particles not produced by ioni.
@@ -162,6 +163,13 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     if (energykin<1*eV && Name=="e-"){ // Kill particles with less than 1 eV  kinetic energy
         return fKill;
     }
-    //G4cout << "je sors ClassifyNewTrack" << G4endl;
+
+    /*if (Name =="gamma"){
+      G4cout << energykin  << "   " << ProcessName << G4endl;
+    }*/
+
+    //G4cout << Name << G4endl;
+
+    //G4cout << "je sors Stack" << G4endl;
     return fUrgent;
 }

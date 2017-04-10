@@ -19,7 +19,7 @@
 DAMICPhysicsList::DAMICPhysicsList() : G4VUserPhysicsList()
 {
 
-  defaultCutValue     = 1.0*micrometer;
+  defaultCutValue     = 0.1*micrometer;
   cutForGamma         = defaultCutValue;
   cutForElectron      = 1.0*nanometer;
   cutForPositron      = defaultCutValue;
@@ -188,6 +188,7 @@ DAMICPhysicsList::~DAMICPhysicsList()
   #include "G4hBremsstrahlung.hh"
   #include "G4ionIonisation.hh"
   #include "G4IonParametrisedLossModel.hh"
+  #include "G4UAtomicDeexcitation.hh"
 
   //em process options to allow msc step-limitation to be switched off
   #include "G4EmProcessOptions.hh"
@@ -200,6 +201,12 @@ DAMICPhysicsList::~DAMICPhysicsList()
     opt.SetMaxEnergy(100*GeV);
     opt.SetDEDXBinning(200);
     opt.SetLambdaBinning(200);
+
+    G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
+    de->SetFluo(false);
+    de->SetAuger(false);
+    de->SetPIXE(false);
+    G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 
     theParticleIterator->reset();
     while( (*theParticleIterator)() ){

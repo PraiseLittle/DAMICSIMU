@@ -1,4 +1,5 @@
 #include "DAMICDetectorVessel.hh"
+#include "DAMICDetectorCopperBox.hh"
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 
@@ -51,6 +52,7 @@ G4LogicalVolume* GetConstructionLowerEnd()
   return lowerEnd;
 }
 
+
 G4LogicalVolume* GetConstructionLowerTube()
 {
   G4double RTubeIn = 196.723/2*mm;
@@ -68,6 +70,42 @@ G4LogicalVolume* GetConstructionLowerTube()
 
 }
 
+G4LogicalVolume* GetConstructionLowerTubeAll(){
+
+  G4double RTubeOut = 196.977/2*mm;
+  G4double RTubeIn = 196.723/2*mm;
+  G4double HTube  = 755.65*mm;
+  G4double zero= 0;
+  G4double angle360 = 360;
+  G4double Hrm = 3.5*mm;
+
+  G4Tubs* tubeR =  new G4Tubs("tubeR",zero, RTubeOut, HTube/2, zero, angle360);
+  G4Tubs* rM=  new G4Tubs("rM",zero, RTubeIn, Hrm, zero, angle360);
+
+  G4RotationMatrix* rot0 = new G4RotationMatrix;
+  G4ThreeVector lowerTubV = G4ThreeVector(0,0,-HTube/2);
+  G4Transform3D lowerTubTr = G4Transform3D(*rot0, lowerTubV);
+
+  G4SubtractionSolid* lowerTubeFinal = new G4SubtractionSolid( "LowerTubeFinal",tubeR, rM, lowerTubTr);
+  G4Material* Copper = G4Material::GetMaterial("G4_Galactic");
+  G4LogicalVolume *lowerTubeAll = new G4LogicalVolume(lowerTubeFinal, Copper,"LowerTubeAll");
+
+  G4LogicalVolume *LowerTubeLV = GetConstructionLowerTube();
+
+  /*-------------------------------------CopperBox---------------------------------*/
+
+  G4LogicalVolume* CopperBoxAndInnerLV = GetConstructionCopperAndInner();
+  G4double PosZCopperInner = -120;
+  G4ThreeVector VectCopperInner = G4ThreeVector(0,0,PosZCopperInner);
+
+  G4PVPlacement* LowerTubePV = new G4PVPlacement(0, G4ThreeVector(0,0,0), LowerTubeLV, "LowerTubePV", lowerTubeAll, false, 0, false);
+  G4PVPlacement* CopperBoxAndInnerPV = new G4PVPlacement(0, VectCopperInner, CopperBoxAndInnerLV, "CopperBoxAndInnerPV", lowerTubeAll, false, 0, false);
+  return lowerTubeAll;
+
+}
+
+
+
 G4LogicalVolume* GetConstructionLowerFlange()
 {
 
@@ -81,7 +119,29 @@ G4LogicalVolume* GetConstructionLowerFlange()
   G4Material* Copper = G4Material::GetMaterial("G4_Cu");
   G4LogicalVolume *lowerFlange= new G4LogicalVolume(lowerFlangeFinal, Copper,"LowerFlange");
 
+
+
+
   return lowerFlange;
+}
+
+G4LogicalVolume* GetConstructionLowerFlangeAll()
+{
+
+  G4double tubeRout = 304.8/2*mm;
+  G4double tubeDepth = 28.448*mm;
+  G4double angle0 = 0;
+  G4double angle360 = M_PI*2+1;
+  G4Tubs * lowerFlangeFinal = new G4Tubs(" LowerFlangeFinal", angle0, tubeRout, tubeDepth/2, angle0, angle360 );
+
+  G4Material* Gal = G4Material::GetMaterial("G4_Galactic");
+  G4LogicalVolume *lowerFlangeAll= new G4LogicalVolume(lowerFlangeFinal, Gal,"LowerFlangeAll");
+
+  G4LogicalVolume* LowerFlangeLV = GetConstructionLowerFlange();
+  G4PVPlacement* LowerFlangePV = new G4PVPlacement(0, G4ThreeVector(0,0,0), LowerFlangeLV, "LowerFlangePV", lowerFlangeAll, false, 0, false);
+
+
+  return lowerFlangeAll;
 }
 
 G4LogicalVolume* GetConstructionUpperFlange()

@@ -477,6 +477,7 @@ void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUs
   G4bool MaterialFit;
   G4bool VolumeFit;
   while(!found){
+
     if (MotherUse == "WorldLV" ){
       posx = 2.15*m*G4UniformRand()-1.075*m;
       posy = 2.2*m*G4UniformRand()-1.1*m;
@@ -490,8 +491,12 @@ void DAMICParticleSource::CalculPosition(G4String MotherUse, G4String MaterialUs
       posz = 2.0*m*G4UniformRand()-1*m;
 
     }
+    else if (MotherUse == "EmptyBox"){
+      posx = 304.8*mm*G4UniformRand()-304.8/2*mm;
+      posy = 304.8*mm*G4UniformRand()-304.8/2*mm;
+      posz = 482.6*mm*G4UniformRand()-482.6/2*mm-186.4*mm;
+    }
     else if (MotherUse == "PrinTubLV"){
-
       G4double RadiusRan = 191.287/2*mm * G4UniformRand();
       G4double AngleRan = M_PI*2*G4UniformRand();
       G4double HeightRan = 413.512*mm *(G4UniformRand()-0.5);
@@ -583,9 +588,7 @@ void DAMICParticleSource::ShapeCoordinates(){
 // ENERGY VALUES
 
 void DAMICParticleSource::EnergyValue(){
-//G4cout << "test 2 Energy" << G4endl;
   if (IsMonoNRJ()){
-    //G4cout << "test 2 Ezzzzznergy" << G4endl;
     SetParticleEnergy(EnergyNum[0]);
   }
   if (IsDistriNRJ()){
@@ -697,9 +700,9 @@ void DAMICParticleSource::GeneratePrimaryVertex(G4Event* evt){
     MaterialCoordinates();
   }
   if (IsVolume()){
+
     CalculProba();
     ChooseVolume();
-    //G4cout << "bimbimoup" << G4endl;
     VolumeCoordinates();
   }
 

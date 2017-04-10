@@ -32,4 +32,18 @@ void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
     G4cout << nameProcess << G4endl;
     G4cout << "Process sub type : " << subPro << G4endl;
   }*/
+/*  //G4cout << "cl" << G4endl;
+  G4String particle = step->GetTrack()->GetDefinition()->GetParticleName();
+  //G4cout << "cla" << G4endl;
+  G4String volume = "NULL";
+  G4int id = step->GetTrack()->GetParentID();
+  //G4cout << "clap" << G4endl;
+  if ( particle != "e-" && particle != "anti_nu_e"){
+    //G4cout << particle << G4endl;
+    volume = step->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetName();
+  }
+  if (volume == "CCDSensor"){
+    G4String inter = step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
+    G4cout << inter << G4endl;
+  }*/
 }
