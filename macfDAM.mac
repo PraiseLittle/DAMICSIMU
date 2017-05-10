@@ -3,19 +3,16 @@
 /run/initialize
 /tracking/verbose 0
 /event/verbose 0
-/random/resetEngineFrom currentEvent.rndm
-/damic/gun/particle ion
-/damic/gun/ion 83 212 0 0
-/damic/stack/ionlimit 82 20
+/damic/gun/particle e-
 /damic/gun/direction/distri Isotropic
 /damic/gun/direction/thetamin 0
 /damic/gun/direction/thetamax 180
 /damic/gun/direction/phimin -180
 /damic/gun/direction/phimax 180
-/damic/gun/position/domaterial G4_N
-/damic/gun/position/mother EmptyBox
+/damic/gun/position/domaterial G4_Si
+/damic/gun/position/mother PrinTubLV
 /damic/gun/energy/distri Uniform
-/damic/gun/energy/bot 0 MeV
-/damic/gun/energy/top 0 MeV
-/analysis/setFileName 220Rn
-/run/beamOn 50000
+/damic/gun/energy/bot 0.5 MeV
+/damic/gun/energy/top 4 MeV
+/analysis/setFileName testelec
+/run/beamOn 200

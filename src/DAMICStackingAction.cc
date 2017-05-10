@@ -100,7 +100,7 @@ G4bool DAMICStackingAction::DoKillNucleus(G4int PartPDG){
 
 }
 
-/*G4bool DAMICStackingAction::DoOneDecay(G4int PartPDG, G4int IDpart){ // construction 
+G4bool DAMICStackingAction::DoOneDecay(G4int PartPDG, G4int IDpart){ // construction
   if (PartPDG < 1000000000){
     return false;
   }
@@ -111,7 +111,7 @@ G4bool DAMICStackingAction::DoKillNucleus(G4int PartPDG){
     return true;
   }
 
-}*/
+}
 
 void DAMICStackingAction::ResetNewRun(){
   ParticlesKill = {};
@@ -146,9 +146,9 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     if (DoKillNucleus(PDGEnco)){
       return fKill;
     }
-    if (DoOneDecay(PDGEnco, IDpart)){
+    /*if (DoOneDecay(PDGEnco, IDpart)){
       return fKill;
-    }
+    }*/
 
     //G4cout << Name << G4endl;
     if (IDpart != 0){
