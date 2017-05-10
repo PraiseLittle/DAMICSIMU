@@ -7,7 +7,8 @@
 #include "G4SystemOfUnits.hh"
 #include <cmath>
 #include <vector>
-
+#include "G4DecayTable.hh"
+#include "G4RunManager.hh"
 
 DAMICStackingAction::DAMICStackingAction()
 :G4UserStackingAction(),PartName("ez"), PartEnergyKin(0.), PartEnergyTot(0.)
@@ -67,18 +68,22 @@ G4bool DAMICStackingAction::DoKillNucleus(G4int PartPDG){
   if (PartPDG == 1000020040){
     return false;
   }
+  //G4cout << PartPDG << G4endl;
   int Z = floor(PartPDG/10000)- 100000;
   int A = floor(PartPDG/10)-100000000 - Z*1000 ;
   int Zbase = floor(LimitNucleus/10000)- 100000;
   int Abase = floor(LimitNucleus/10)- 100000000 - Zbase*1000;
   int unity = PartPDG - 1000000000 - Z *10000 - A *10;
-
+  G4bool alphaC = A >= Abase+4;
   G4bool firstC = A < Abase;
   G4bool secondC = Z < Zbase-1;
   G4bool thirdC = Z > Zbase +1;
   G4bool sameZ = Z ==Zbase;
   G4bool sameA = A == Abase;
   G4bool nulUnity = unity ==0 ;
+  if (alphaC){
+    return false;
+  }
   if (firstC){
     return true;
   }
@@ -95,6 +100,19 @@ G4bool DAMICStackingAction::DoKillNucleus(G4int PartPDG){
 
 }
 
+/*G4bool DAMICStackingAction::DoOneDecay(G4int PartPDG, G4int IDpart){ // construction 
+  if (PartPDG < 1000000000){
+    return false;
+  }
+  if (IDpart == 0){
+    return false;
+  }
+  if((PartPDG % 10) == 0){
+    return true;
+  }
+
+}*/
+
 void DAMICStackingAction::ResetNewRun(){
   ParticlesKill = {};
   LimitNucleus = -1;
@@ -103,6 +121,7 @@ void DAMICStackingAction::ResetNewRun(){
 
 G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* aTrack)
 {
+
     G4String Name = aTrack->GetDefinition()->GetParticleName();
     SetPartName(Name);
     //G4cout << "je rentre Stack" << G4endl;
@@ -119,16 +138,19 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     /* Test */
 
     G4int PDGEnco = aTrack->GetDefinition()->GetPDGEncoding();
-
+    //G4cout << Name << G4endl;
+    //G4cout << aTrack->GetDefinition()->GetPDGEncoding() << G4endl;
     if (DoKill(PDGEnco)){
       return fKill;
     }
     if (DoKillNucleus(PDGEnco)){
       return fKill;
     }
+    if (DoOneDecay(PDGEnco, IDpart)){
+      return fKill;
+    }
 
-
-
+    //G4cout << Name << G4endl;
     if (IDpart != 0){
       ProcessCreatorSub = aTrack->GetCreatorProcess()->GetProcessSubType();
       ProcessCreatorType = aTrack->GetCreatorProcess()->GetProcessType();
@@ -155,7 +177,7 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
       return fKill;
     }
     // Kill Brem not in CCD
-    if ( ProcessCreatorSub == 3  && energykin < 10*keV && nameVolume != "CCDSensor" && ProcessCreatorType == 2)
+    if ( ProcessCreatorSub == 3  && energykin < 1*keV && nameVolume != "CCDSensor" && ProcessCreatorType == 2)
     {
       return fKill;
     }
@@ -171,5 +193,6 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     //G4cout << Name << G4endl;
 
     //G4cout << "je sors Stack" << G4endl;
+    //G4RunManager::GetRunManager()->rndmSaveThisEvent();
     return fUrgent;
 }

@@ -72,6 +72,12 @@ void DAMICAnalysisManager::Book()
     man->CreateNtupleDColumn(PositionPrim,"Z");
     man->FinishNtuple(PositionPrim);
 
+    G4int GammasFluo = man->CreateNtuple("Fluo", "Fluo");
+    man->CreateNtupleSColumn(GammasFluo, "Volume");
+    man->CreateNtupleDColumn(GammasFluo, "Energy");
+    man->CreateNtupleIColumn(GammasFluo, "PartID");
+    man->FinishNtuple(GammasFluo);
+
 
 
 

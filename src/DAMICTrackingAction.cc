@@ -30,7 +30,9 @@ void DAMICTrackingAction::PreUserTrackingAction(const G4Track* aTrack){
 
 
   fpTrackingManager->SetUserTrackInformation(new DAMICTrackInformation(ParticlePDG, Energy, IDTrack, VolumeName, Position, vTime));
+  //G4cout << "je sors track pre" << G4endl;
   }
+
 
 }
 
@@ -52,28 +54,33 @@ void DAMICTrackingAction::PostUserTrackingAction(const G4Track* aTrack){
           G4int IDTrack = (*secondaries)[i]->GetParentID();
           G4String VolumeName = "NULL";
           G4double energykin = (*secondaries)[i]->GetKineticEnergy();
+
           if (IDTrack != 0){
             ProcessCreatorSub = (*secondaries)[i]->GetCreatorProcess()->GetProcessSubType();
             ProcessCreatorType = (*secondaries)[i]->GetCreatorProcess()->GetProcessType();
           }
+
           G4bool ElecIo = (ProcessCreatorSub == 2 && ProcessCreatorType == 2 && energykin < 20*keV);
           G4bool ElecIoSup = (ProcessCreatorSub == 2 && ProcessCreatorType == 2);
           if (!ElecIoSup){
             VolumeName = (*secondaries)[i]->GetVolume()->GetName();
           }
+
           G4bool BremCCD = (ProcessCreatorSub == 3  && energykin < 1*keV && VolumeName == "CCDSensor" && ProcessCreatorType == 2);
-          G4bool Brem = (ProcessCreatorSub == 3  && energykin < 10*keV && VolumeName != "CCDSensor" && ProcessCreatorType == 2);
+          G4bool Brem = (ProcessCreatorSub == 3  && energykin < 1*keV && VolumeName != "CCDSensor" && ProcessCreatorType == 2);
           if (!ElecIo && !BremCCD && !Brem){
+
             G4int ParticlePDG = (*secondaries)[i]->GetParticleDefinition()->GetPDGEncoding();
 
             G4double Energy = (*secondaries)[i]->GetKineticEnergy();
+
             G4ThreeVector Position = (*secondaries)[i]->GetPosition();
+
             G4double vTime = (*secondaries)[i]->GetGlobalTime()/s;
 
             DAMICTrackInformation* infoNew = new DAMICTrackInformation(info, ParticlePDG, Energy, IDTrack, VolumeName, Position, vTime);
             (*secondaries)[i]->SetUserInformation(infoNew);
           }
-
         }
       }
     }

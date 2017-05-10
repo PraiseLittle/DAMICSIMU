@@ -3,9 +3,10 @@
 /run/initialize
 /tracking/verbose 0
 /event/verbose 0
+/random/resetEngineFrom currentEvent.rndm
 /damic/gun/particle ion
-/damic/gun/ion 83 214 0 0
-/damic/stack/ionlimit 84 214
+/damic/gun/ion 83 212 0 0
+/damic/stack/ionlimit 82 20
 /damic/gun/direction/distri Isotropic
 /damic/gun/direction/thetamin 0
 /damic/gun/direction/thetamax 180
@@ -16,5 +17,5 @@
 /damic/gun/energy/distri Uniform
 /damic/gun/energy/bot 0 MeV
 /damic/gun/energy/top 0 MeV
-/analysis/setFileName 214Bismuth
+/analysis/setFileName 220Rn
 /run/beamOn 50000

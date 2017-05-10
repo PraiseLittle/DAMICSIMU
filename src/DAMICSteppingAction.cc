@@ -23,27 +23,33 @@ DAMICSteppingAction::~DAMICSteppingAction()
 
 void DAMICSteppingAction::UserSteppingAction(const G4Step* step)
 {
+/*  G4AnalysisManager* man = G4AnalysisManager::Instance();
+  G4String Material = step->GetPreStepPoint()->GetMaterial()->GetName();
 
-  /*G4String nameProcess =step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
-  G4int  subPro = step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessSubType();
+  if (Material == "G4_Cu"){
+    G4String nameProcess = step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
+    G4int IDPart = step->GetTrack()->GetDefinition()->GetPDGEncoding();
+    G4String volumeName = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetName();
 
-  if *//*(nameProcess != "eIoni" &&*//* nameProcess != "Transportation" && nameProcess != "Scintillation"){
-    G4cout <<  step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessType() << G4endl;
-    G4cout << nameProcess << G4endl;
-    G4cout << "Process sub type : " << subPro << G4endl;
-  }*/
-/*  //G4cout << "cl" << G4endl;
-  G4String particle = step->GetTrack()->GetDefinition()->GetParticleName();
-  //G4cout << "cla" << G4endl;
-  G4String volume = "NULL";
-  G4int id = step->GetTrack()->GetParentID();
-  //G4cout << "clap" << G4endl;
-  if ( particle != "e-" && particle != "anti_nu_e"){
-    //G4cout << particle << G4endl;
-    volume = step->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetName();
-  }
-  if (volume == "CCDSensor"){
-    G4String inter = step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
-    G4cout << inter << G4endl;
+    if (nameProcess== "eIoni" || nameProcess == "ionIoni" || nameProcess == "compt" || nameProcess == "phot"){
+      const G4TrackVector* secondaries = step->GetSecondary();
+      size_t nSeco = secondaries->size();
+      for (size_t i = 0; i< nSeco; i++){
+        G4String NamePart = (*secondaries)[i]->GetParticleDefinition()->GetParticleName();
+        G4double EnergyPart = (*secondaries)[i]->GetKineticEnergy();
+        if (NamePart == "gamma" ){
+
+          man->FillNtupleSColumn(4,0,volumeName);
+          man->FillNtupleDColumn(4,1,EnergyPart);
+          man->FillNtupleIColumn(4,2,IDPart);
+          man->AddNtupleRow(4);*/
+          /*G4cout << nameProcess << G4endl;
+          G4cout << volumeName << G4endl;
+          G4cout << "Partcle Name: "  << namePart << G4endl;
+          G4cout << " Secondaire " << i  << "  :" << NamePart << G4endl;
+          G4cout << " Energy :" << EnergyPart << G4endl;*/
+        /*}
+      }
+    }
   }*/
 }

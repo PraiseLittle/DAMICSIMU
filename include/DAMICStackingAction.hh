@@ -32,6 +32,7 @@ public:
     void ResetNewRun();
     G4bool DoKill(G4int);
     G4bool DoKillNucleus(G4int);
+    G4bool DoOneDecay(G4int, G4int);
 
 private:
     G4String PartName;

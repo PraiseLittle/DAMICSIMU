@@ -203,9 +203,9 @@ DAMICPhysicsList::~DAMICPhysicsList()
     opt.SetLambdaBinning(200);
 
     G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
-    de->SetFluo(false);
+    de->SetFluo(true);
     de->SetAuger(false);
-    de->SetPIXE(false);
+    de->SetPIXE(true);
     G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 
     theParticleIterator->reset();

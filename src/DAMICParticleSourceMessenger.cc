@@ -436,13 +436,13 @@ void DAMICParticleSourceMessenger::SetNewValue(G4UIcommand *command, G4String ne
       fParticleGun->SetDirectionNumValue(IsoThetaMinCmd->GetNewDoubleValue(newValues)*M_PI/180,0);
     }
     else if (command == IsoThetaMaxCmd){
-      fParticleGun->SetDirectionNumValue(IsoThetaMaxCmd->GetNewDoubleValue(newValues)*M_PI/180,0);
+      fParticleGun->SetDirectionNumValue(IsoThetaMaxCmd->GetNewDoubleValue(newValues)*M_PI/180,1);
     }
     else if (command == IsoPhiMinCmd){
-      fParticleGun->SetDirectionNumValue(IsoPhiMinCmd->GetNewDoubleValue(newValues)*M_PI/180,0);
+      fParticleGun->SetDirectionNumValue(IsoPhiMinCmd->GetNewDoubleValue(newValues)*M_PI/180,2);
     }
     else if (command == IsoPhiMaxCmd){
-      fParticleGun->SetDirectionNumValue(IsoPhiMaxCmd->GetNewDoubleValue(newValues)*M_PI/180,0);
+      fParticleGun->SetDirectionNumValue(IsoPhiMaxCmd->GetNewDoubleValue(newValues)*M_PI/180,3);
     }
     else if (command == DoMaterialCmd){
       fParticleGun->DoMaterial();
