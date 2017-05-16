@@ -189,6 +189,7 @@ DAMICPhysicsList::~DAMICPhysicsList()
   #include "G4ionIonisation.hh"
   #include "G4IonParametrisedLossModel.hh"
   #include "G4UAtomicDeexcitation.hh"
+  #include "G4LossTableManager.hh"
 
   //em process options to allow msc step-limitation to be switched off
   #include "G4EmProcessOptions.hh"
@@ -206,11 +207,16 @@ DAMICPhysicsList::~DAMICPhysicsList()
     de->SetFluo(true);
     de->SetAuger(false);
     de->SetPIXE(true);
-    G4LossTableManager::Instance()->SetAtomDeexcitation(de);
+    G4LossTableManager* man = G4LossTableManager::Instance();
+    G4VAtomDeexcitation* ad = man->AtomDeexcitation();
+    if(!ad) {
+      man->SetAtomDeexcitation(new G4UAtomicDeexcitation());
+    }
 
-    theParticleIterator->reset();
-    while( (*theParticleIterator)() ){
-      G4ParticleDefinition* particle = theParticleIterator->value();
+    auto particleIterator= GetParticleIterator();
+    particleIterator->reset();
+    while( (*particleIterator)() ){
+      G4ParticleDefinition* particle = particleIterator->value();
       G4ProcessManager* pmanager = particle->GetProcessManager();
       G4String particleName = particle->GetParticleName();
       G4String particleType = particle->GetParticleType();
@@ -399,10 +405,11 @@ DAMICPhysicsList::~DAMICPhysicsList()
     // theRayleighScatteringProcess->SetVerboseLevel(OpVerbLevel);
     theBoundaryProcess->SetVerboseLevel(OpVerbLevel);
 
-    theParticleIterator->reset();
-    while( (*theParticleIterator)() )
+    auto particleIterator = GetParticleIterator();
+    particleIterator->reset();
+    while( (*particleIterator)() )
       {
-        G4ParticleDefinition* particle = theParticleIterator->value();
+        G4ParticleDefinition* particle = particleIterator->value();
         G4ProcessManager* pmanager = particle->GetProcessManager();
         G4String particleName = particle->GetParticleName();
         if (theScintProcessDef->IsApplicable(*particle)) {
@@ -551,10 +558,11 @@ DAMICPhysicsList::~DAMICPhysicsList()
     G4ComponentGGNuclNuclXsc * ggNuclNuclXsec = new G4ComponentGGNuclNuclXsc();
     G4VCrossSectionDataSet * theGGNuclNuclData = new G4CrossSectionInelastic(ggNuclNuclXsec);
 
-    theParticleIterator->reset();
-    while ((*theParticleIterator)())
+    auto particleIterator = GetParticleIterator();
+    particleIterator->reset();
+    while ((*particleIterator)())
       {
-        G4ParticleDefinition* particle = theParticleIterator->value();
+        G4ParticleDefinition* particle = particleIterator->value();
         G4ProcessManager* pmanager = particle->GetProcessManager();
         G4String particleName = particle->GetParticleName();
 
@@ -807,10 +815,11 @@ DAMICPhysicsList::~DAMICPhysicsList()
 
     // Add Decay Process
     G4Decay* theDecayProcess = new G4Decay();
-    theParticleIterator->reset();
-    while( (*theParticleIterator)() )
+    auto particleIterator = GetParticleIterator();
+    particleIterator->reset();
+    while( (*particleIterator)() )
       {
-        G4ParticleDefinition* particle = theParticleIterator->value();
+        G4ParticleDefinition* particle = particleIterator->value();
         G4ProcessManager* pmanager = particle->GetProcessManager();
 
         if (theDecayProcess->IsApplicable(*particle) && !particle->IsShortLived())

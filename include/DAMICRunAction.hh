@@ -2,7 +2,7 @@
 #define DAMICRunAction_h
 
 #include "G4UserRunAction.hh"
-#include "G4Parameter.hh"
+#include "G4Accumulable.hh"
 #include "globals.hh"
 
 class G4Run;

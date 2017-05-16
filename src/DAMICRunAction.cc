@@ -5,7 +5,7 @@
 
 #include "G4RunManager.hh"
 #include "G4Run.hh"
-#include "G4ParameterManager.hh"
+#include "G4AccumulableManager.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
 #include "G4UnitsTable.hh"
@@ -24,8 +24,8 @@ void DAMICRunAction::BeginOfRunAction(const G4Run*)
   G4AnalysisManager* man = G4AnalysisManager::Instance();
   man->OpenFile();
 
-  G4ParameterManager* parameterManager = G4ParameterManager::Instance();
-  parameterManager->Reset();
+  G4AccumulableManager* AccumulableManager = G4AccumulableManager::Instance();
+  AccumulableManager->Reset();
   man->FillNtupleDColumn(0,0,0.0675);
   man->FillNtupleDColumn(0,1,6.174);
   man->FillNtupleDColumn(0,2,6.222);
@@ -37,9 +37,9 @@ void DAMICRunAction::BeginOfRunAction(const G4Run*)
 void DAMICRunAction::EndOfRunAction(const G4Run* run)
 {
 
-  // Merge parameters
-  G4ParameterManager* parameterManager = G4ParameterManager::Instance();
-  parameterManager->Merge();
+  // Merge Accumulables
+  G4AccumulableManager* AccumulableManager = G4AccumulableManager::Instance();
+  AccumulableManager->Merge();
   G4AnalysisManager* man = G4AnalysisManager::Instance();
   man->Write();
   man->CloseFile();
