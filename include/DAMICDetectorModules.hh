@@ -15,6 +15,8 @@ G4LogicalVolume* GetConstructionCopperTopPlate44();
 G4LogicalVolume* GetConstructionFlexCable44();
 G4LogicalVolume* GetConstructionCCDSubAssy44();
 G4LogicalVolume* GetConstructionCCDSubAssy44WSi();
+G4LogicalVolume* GetConstructionCCDLayers();
+G4LogicalVolume* GetConstructionSensiblePart();
 
 
 #endif

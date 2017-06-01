@@ -160,43 +160,43 @@ DAMICParticleSourceMessenger::DAMICParticleSourceMessenger(DAMICParticleSource* 
   CenterXCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/centerx", this);
   CenterXCmd->SetGuidance(" Set center coordinate x of the shape or the source");
   CenterXCmd->SetParameterName("X", true, true);
-  CenterXCmd->SetUnitCategory("Lenght");
+  CenterXCmd->SetUnitCategory("Length");
   CenterXCmd->SetDefaultUnit("mm");
   CenterXCmd->SetUnitCandidates("nm um mm cm m");
 
   CenterYCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/centery", this);
   CenterYCmd->SetGuidance(" Set center coordinate y of the shape or the source");
   CenterYCmd->SetParameterName("Y", true, true);
-  CenterYCmd->SetUnitCategory("Lenght");
+  CenterYCmd->SetUnitCategory("Length");
   CenterYCmd->SetDefaultUnit("mm");
   CenterYCmd->SetUnitCandidates("nm um mm cm m");
 
   CenterZCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/centerz", this);
   CenterZCmd->SetGuidance(" Set center coordinate z of the shape or the source");
   CenterZCmd->SetParameterName("Z", true, true);
-  CenterZCmd->SetUnitCategory("Lenght");
+  CenterZCmd->SetUnitCategory("Length");
   CenterZCmd->SetDefaultUnit("mm");
   CenterZCmd->SetUnitCandidates("nm um mm cm m");
   // Para
 
   ParaXCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/parax", this);
-  ParaXCmd->SetGuidance(" Set the lenght of the X Side of the Parallelepiped Rectangle");
+  ParaXCmd->SetGuidance(" Set the Length of the X Side of the Parallelepiped Rectangle");
   ParaXCmd->SetParameterName("X", true, true);
-  ParaXCmd->SetUnitCategory("Lenght");
+  ParaXCmd->SetUnitCategory("Length");
   ParaXCmd->SetDefaultUnit("mm");
   ParaXCmd->SetUnitCandidates("nm um mm cm m");
 
   ParaYCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/paray", this);
-  ParaYCmd->SetGuidance(" Set the lenght of the Y Side of the Parallelepiped Rectangle");
+  ParaYCmd->SetGuidance(" Set the Length of the Y Side of the Parallelepiped Rectangle");
   ParaYCmd->SetParameterName("Y", true, true);
-  ParaYCmd->SetUnitCategory("Lenght");
+  ParaYCmd->SetUnitCategory("Length");
   ParaYCmd->SetDefaultUnit("mm");
   ParaYCmd->SetUnitCandidates("nm um mm cm m");
 
   ParaZCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/paraz", this);
-  ParaZCmd->SetGuidance(" Set the lenght of the Z Side of the Parallelepiped Rectangle");
+  ParaZCmd->SetGuidance(" Set the Length of the Z Side of the Parallelepiped Rectangle");
   ParaZCmd->SetParameterName("Z", true, true);
-  ParaYCmd->SetUnitCategory("Lenght");
+  ParaYCmd->SetUnitCategory("Length");
   ParaZCmd->SetDefaultUnit("mm");
   ParaZCmd->SetUnitCandidates("nm um mm cm m");
   // Sphere
@@ -204,7 +204,7 @@ DAMICParticleSourceMessenger::DAMICParticleSourceMessenger(DAMICParticleSource* 
   SphereRCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/spherer", this);
   SphereRCmd->SetGuidance(" Set the radius of the sphere");
   SphereRCmd->SetParameterName("R", true, true);
-  SphereRCmd->SetUnitCategory("Lenght");
+  SphereRCmd->SetUnitCategory("Length");
   SphereRCmd->SetDefaultUnit("mm");
   SphereRCmd->SetUnitCandidates("nm um mm cm m");
   SphereRCmd->SetRange(" R >= 0");
@@ -213,7 +213,7 @@ DAMICParticleSourceMessenger::DAMICParticleSourceMessenger(DAMICParticleSource* 
   CylRCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/cylr", this);
   CylRCmd->SetGuidance(" Set the radius of the cylinder");
   CylRCmd->SetParameterName("R", true, true);
-  CylRCmd->SetUnitCategory("Lenght");
+  CylRCmd->SetUnitCategory("Length");
   CylRCmd->SetDefaultUnit("mm");
   CylRCmd->SetUnitCandidates("nm um mm cm m");
   CylRCmd->SetRange(" R >= 0");
@@ -222,7 +222,7 @@ DAMICParticleSourceMessenger::DAMICParticleSourceMessenger(DAMICParticleSource* 
   CylHCmd = new G4UIcmdWithADoubleAndUnit("/damic/gun/position/cylh", this);
   CylHCmd->SetGuidance(" Set the height of the cylinder");
   CylHCmd->SetParameterName("H", true, true);
-  CylHCmd->SetUnitCategory("Lenght");
+  CylHCmd->SetUnitCategory("Length");
   CylHCmd->SetDefaultUnit("mm");
   CylHCmd->SetUnitCandidates("nm um mm cm m");
 

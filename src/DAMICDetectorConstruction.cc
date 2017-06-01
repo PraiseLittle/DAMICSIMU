@@ -70,14 +70,13 @@ G4VPhysicalVolume* DAMICDetectorConstruction::Construct()
 
   G4LogicalVolume* WorldLV = new G4LogicalVolume(WorldBox, WorldMat, "WorldLV");
 
-
   G4VPhysicalVolume* WorldPV = new G4PVPlacement (0, G4ThreeVector(), WorldLV, "World",0, false, 0, fCheckOverlaps);
-
 
   G4LogicalVolume* VesselLV = GetConstructionVesselandOutter();
 
   G4PVPlacement* VesselPV = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), VesselLV, "VesselPV", WorldLV, false, 0, fCheckOverlaps);
-  fCCDSensor = G4LogicalVolumeStore::GetInstance()->GetVolume("CCDSensor");
+  fCCDSensor = G4LogicalVolumeStore::GetInstance()->GetVolume("Sens");
+  G4cout << " ICI" << G4endl;
   return WorldPV;
 
 }

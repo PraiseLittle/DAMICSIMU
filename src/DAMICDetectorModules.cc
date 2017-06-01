@@ -334,17 +334,63 @@ G4LogicalVolume* GetConstructionProtectiveCover()
 
 G4LogicalVolume* GetConstructionCCDSensor44(){
 
-  G4double mainBoxX = 61.74*mm;
-  G4double mainBoxY = 62.22*mm;
+  G4double mainBoxX = 63.99*mm;
+  G4double mainBoxY = 64.36*mm;
   G4double mainBoxZ = 0.675*mm;
 
   G4Box* mainBox  = new G4Box("mainBox", mainBoxX/2, mainBoxY/2, mainBoxZ/2);
 
   G4Material* Silicon = G4Material::GetMaterial("G4_Si");
   G4LogicalVolume *CCDSensor= new G4LogicalVolume(mainBox, Silicon,"CCDSensor");
+  G4LogicalVolume* LayerTopLV = GetConstructionCCDLayers();
+  G4LogicalVolume* LayerBotLV = GetConstructionCCDLayers();
+  G4LogicalVolume* SensPartLV = GetConstructionSensiblePart();
+
+  /*------------ LayerTop---------*/
+  G4double LayerTopX = 0;
+  G4double LayerTopY = 0;
+  G4double LayerTopZ = mainBoxZ/2 - 0.01/2*mm;
+  G4ThreeVector LayerTopVect = G4ThreeVector(LayerTopX, LayerTopY, LayerTopZ);
+  G4RotationMatrix* rot0Top = new G4RotationMatrix;
+
+  /*------------ LayerBot---------*/
+  G4double LayerBotX = 0;
+  G4double LayerBotY = 0;
+  G4double LayerBotZ = -mainBoxZ/2 + 0.01/2*mm;
+  G4ThreeVector LayerBotVect = G4ThreeVector(LayerBotX, LayerBotY, LayerBotZ);
+
+  G4PVPlacement* LayerTopPV = new G4PVPlacement(0, LayerTopVect, LayerTopLV, "LayerTopPV", CCDSensor, false, 0, false);
+  G4PVPlacement* LayerBotPV = new G4PVPlacement(0, LayerBotVect, LayerBotLV, "LayerBotPV", CCDSensor, false, 0, false);
+  G4PVPlacement* SensPartPV = new G4PVPlacement(0, G4ThreeVector(0,0,0), SensPartLV, "SensPartPV", CCDSensor, false, 0, false);
 
   return CCDSensor;
 
+}
+
+G4LogicalVolume* GetConstructionCCDLayers(){
+
+  G4double layerX = 61.74*mm;
+  G4double layerY = 62.22*mm;
+  G4double layerZ = 0.01*mm;
+
+  G4Box* mainLay = new G4Box("mainLay", layerX/2, layerY/2, layerZ/2);
+  G4Material* Silicon = G4Material::GetMaterial("G4_Si");
+
+  G4LogicalVolume *Layer= new G4LogicalVolume(mainLay, Silicon,"Layer");
+  return Layer;
+}
+
+G4LogicalVolume* GetConstructionSensiblePart(){
+
+  G4double sensX = 61.74*mm;
+  G4double sensY = 62.22*mm;
+  G4double sensZ = 0.655*mm;
+
+  G4Box* mainSens = new G4Box("mainSens", sensX/2, sensY/2, sensZ/2);
+  G4Material* Silicon = G4Material::GetMaterial("G4_Si");
+
+  G4LogicalVolume* Sens = new G4LogicalVolume(mainSens, Silicon,"Sens");
+  return Sens;
 }
 
 

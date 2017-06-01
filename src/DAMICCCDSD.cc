@@ -62,8 +62,9 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
 
     G4TouchableHistory* touchable
       = (G4TouchableHistory*)(step->GetPreStepPoint()->GetTouchable());
-    G4int copyNo = GetCCDNumber(worldPosition.getZ());
-
+    //G4int copyNo = GetCCDNumber(worldPosition.getZ());
+    G4VPhysicalVolume* motherPhysical = touchable->GetVolume(3); // mother
+    G4int copyNo = motherPhysical->GetCopyNo()+1;
     G4ThreeVector tesVector = G4ThreeVector(3,-38.667+60.045+1, fPositionCCD[copyNo-1]);
     G4ThreeVector localTest = theTouchable->GetHistory()->GetTopTransform().TransformPoint(tesVector);
     G4int TopBot = 0;
