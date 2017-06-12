@@ -1,4 +1,8 @@
+#ifdef G4MULTITHREADED
+#include "G4MTRunManager.hh"
+#else
 #include "G4RunManager.hh"
+#endif
 
 #include "G4UImanager.hh"
 #include "Randomize.hh"
@@ -19,9 +23,16 @@
 
 int main(int argc,char** argv) {
 
+  G4int nofThreads = 3;
   G4Random::setTheEngine(new CLHEP::HepJamesRandom);
-
-  G4RunManager* runManager = new G4RunManager;
+  #ifdef G4MULTITHREADED
+    G4MTRunManager* runManager = new G4MTRunManager;
+    if ( nofThreads > 0 ) {
+      runManager->SetNumberOfThreads(nofThreads);
+    }
+  #else
+    G4RunManager* runManager = new G4RunManager;
+  #endif
 
 
   DAMICDetectorConstruction* det= new DAMICDetectorConstruction;

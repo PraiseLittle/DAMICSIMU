@@ -371,7 +371,7 @@ G4LogicalVolume* GetConstructionCCDLayers(){
 
   G4double layerX = 61.74*mm;
   G4double layerY = 62.22*mm;
-  G4double layerZ = 0.01*mm;
+  G4double layerZ = 0.002*mm;
 
   G4Box* mainLay = new G4Box("mainLay", layerX/2, layerY/2, layerZ/2);
   G4Material* Silicon = G4Material::GetMaterial("G4_Si");

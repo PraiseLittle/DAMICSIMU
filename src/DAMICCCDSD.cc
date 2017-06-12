@@ -78,7 +78,7 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
     else{
       TopBot = 2;
     }
-
+    G4int PDGEMI = 0;
     G4double EnergyDep = 0;
     G4int PartIDElec = step->GetTrack()->GetParentID();
     G4String Process = "NULL";
@@ -128,6 +128,7 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
         //Part after Secodary
         PDGPartASecond = -1;
         EnergyPartASecond = -1;
+        PDGEMI = step->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
       }
       else {
         Time = step->GetPostStepPoint()->GetGlobalTime()/s;
@@ -141,7 +142,7 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
         Energy = info->GetEnergyParticle()[Lenght-2];
         PDGPrimaryNuc = Particles[0];
         PositionPrim = info->GetStartPosition()[0];
-
+        PDGEMI = step->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
         G4int PosSecondNuc = -1;
         for (G4int i = 0; i <Lenght; i++){
           G4int result = Particles[i] - 1000000000;
@@ -217,24 +218,28 @@ G4bool DAMICCCDSD::ProcessHits(G4Step* step, G4TouchableHistory*)
       man->FillNtupleIColumn(1,8,CCDNum);
       man->AddNtupleRow(1);
 
-      //Particle that created Elec
+      man->FillNtupleIColumn(2,0,PDGEMI);
 
-      man->FillNtupleIColumn(2,0,PDGNumber);
-      man->FillNtupleIColumn(2,1,PartID);
-      man->FillNtupleSColumn(2,2,ProdVolume);
-      man->FillNtupleDColumn(2,3,Energy);
+      //Particle that created Elec or Ion or Muon
+
+
+
+      man->FillNtupleIColumn(2,1, PDGNumber);
+      man->FillNtupleIColumn(2,2,PartID);
+      man->FillNtupleSColumn(2,3,ProdVolume);
+      man->FillNtupleDColumn(2,4,Energy);
       // Primary
-      man->FillNtupleDColumn(2,4,Time);
-      man->FillNtupleIColumn(2,5,PDGPrimaryNuc);
+      man->FillNtupleDColumn(2,5,Time);
+      man->FillNtupleIColumn(2,6,PDGPrimaryNuc);
 
-      man->FillNtupleDColumn(2,6,PositionPrim.getX());
-      man->FillNtupleDColumn(2,7,PositionPrim.getY());
-      man->FillNtupleDColumn(2,8,PositionPrim.getZ());
+      man->FillNtupleDColumn(2,7,PositionPrim.getX());
+      man->FillNtupleDColumn(2,8,PositionPrim.getY());
+      man->FillNtupleDColumn(2,9,PositionPrim.getZ());
       //Secondary Nucleus
-      man->FillNtupleIColumn(2,9,PDGSecondaryNuc);
+      man->FillNtupleIColumn(2,10,PDGSecondaryNuc);
       //Part after Secodary
-      man->FillNtupleIColumn(2,10,PDGPartASecond);
-      man->FillNtupleDColumn(2,11,EnergyPartASecond);
+      man->FillNtupleIColumn(2,11,PDGPartASecond);
+      man->FillNtupleDColumn(2,12,EnergyPartASecond);
       // CCD Num
 
       man->AddNtupleRow(2);

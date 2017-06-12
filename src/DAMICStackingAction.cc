@@ -81,7 +81,7 @@ G4bool DAMICStackingAction::DoKillNucleus(G4int PartPDG){
   G4bool sameZ = Z ==Zbase;
   G4bool sameA = A == Abase;
   G4bool nulUnity = unity ==0 ;
-  if (alphaC){
+  /*if (alphaC){
     return false;
   }
   if (firstC){
@@ -90,8 +90,8 @@ G4bool DAMICStackingAction::DoKillNucleus(G4int PartPDG){
   else if (secondC || thirdC)
   {
     return true;
-  }
-  else if(sameZ && sameA && nulUnity){
+  }*/
+  if(sameZ && sameA && nulUnity){
     return true;
   }
   else{
@@ -138,6 +138,12 @@ G4ClassificationOfNewTrack DAMICStackingAction::ClassifyNewTrack(const G4Track* 
     /* Test */
 
     G4int PDGEnco = aTrack->GetDefinition()->GetPDGEncoding();
+
+    /*if (IDpart !=0 && aTrack->GetCreatorProcess()->GetProcessName() != "ionIoni" && aTrack->GetCreatorProcess()->GetProcessName() != "eIoni"){
+    G4cout << Name << G4endl;
+    G4cout << energykin  << "   " << aTrack->GetCreatorProcess()->GetProcessName() << G4endl;
+  }*/
+
     //G4cout << Name << G4endl;
     //G4cout << aTrack->GetDefinition()->GetPDGEncoding() << G4endl;
     if (DoKill(PDGEnco)){

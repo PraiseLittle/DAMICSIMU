@@ -18,7 +18,10 @@ DAMICActionInitialization::~DAMICActionInitialization()
 {}
 
 void DAMICActionInitialization::BuildForMaster() const
-{}
+{
+  DAMICRunAction* runAction = new DAMICRunAction();
+  SetUserAction(runAction);
+}
 
 void DAMICActionInitialization::Build() const
 {

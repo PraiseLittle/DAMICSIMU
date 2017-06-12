@@ -44,7 +44,7 @@ void DAMICAnalysisManager::Book()
 
     G4int InfoAna = man->CreateNtuple("InfoAna", "InfoAna");
     // Electron on CCD
-
+    man->CreateNtupleIColumn(InfoAna,"PDGEMI");
     // Particle that created the Electron
     man->CreateNtupleIColumn(InfoAna,"PDGNumber");
     man->CreateNtupleIColumn(InfoAna,"PartID");
